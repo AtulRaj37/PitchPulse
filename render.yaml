@@ -12,7 +12,7 @@ services:
     env: node
     plan: free
     region: singapore # Closest to your AWS ap-southeast-1 Neon region!
-    buildCommand: npm install && npm run build -w packages/shared && npm run build:backend && npm run db:migrate:prod -w backend
+    buildCommand: npm install && npm run build -w packages/shared && npm run build:backend
     startCommand: npm run start -w backend
     envVars:
       - key: DATABASE_URL
