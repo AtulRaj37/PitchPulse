@@ -31,7 +31,7 @@ export function TabCommentary({ matchData }: TabCommentaryProps) {
       <div className="text-center py-12 border border-dashed border-white/10 rounded-2xl bg-[#0a0f1c]/50">
         <MessageSquareText className="w-8 h-8 text-zinc-600 mx-auto mb-3" />
         <p className="text-zinc-500 font-bold tracking-widest uppercase text-xs">No commentary available</p>
-        <p className="text-zinc-600 text-xs mt-1">Match events haven't started yet.</p>
+        <p className="text-zinc-600 text-xs mt-1">Match events haven&apos;t started yet.</p>
       </div>
     );
   }
@@ -62,12 +62,12 @@ export function TabCommentary({ matchData }: TabCommentaryProps) {
       const mode = (e.payload.wicketType || e.payload.dismissalMode || 'Out').replace(/_/g, ' ');
       return <span className="text-rose-200 font-bold">WICKET! ({mode}) The bowler strikes.</span>;
     }
-    if (e.eventType === 'MATCH_STARTED') return <span className="text-emerald-400 font-bold">Let's Play! The match has officially begun.</span>;
+    if (e.eventType === 'MATCH_STARTED') return <span className="text-emerald-400 font-bold">Let&apos;s Play! The match has officially begun.</span>;
     if (e.eventType === 'INNINGS_COMPLETED') return <span className="text-amber-400 font-bold">Innings comes to a close.</span>;
     
     if (e.eventType === 'BALL_BOWLED') {
-      if (e.payload.runs === 4) return <span className="text-emerald-400">Smash! That's a boundary. Four runs.</span>;
-      if (e.payload.runs === 6) return <span className="text-emerald-400 font-black tracking-wide">HUGE! That's out of the park for a SIX.</span>;
+      if (e.payload.runs === 4) return <span className="text-emerald-400">Smash! That&apos;s a boundary. Four runs.</span>;
+      if (e.payload.runs === 6) return <span className="text-emerald-400 font-black tracking-wide">HUGE! That&apos;s out of the park for a SIX.</span>;
       if (e.payload.runs === 0) return <span className="text-zinc-400">Dot ball. Nicely bowled.</span>;
       return <span className="text-zinc-300">{e.payload.runs} run{e.payload.runs > 1 ? 's' : ''} pushed into the gap.</span>;
     }

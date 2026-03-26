@@ -44,7 +44,7 @@ export class ErrorBoundary extends Component<Props, State> {
             
             <h2 className="text-2xl font-black font-clash text-white mb-2 relative z-10">Oops, something broke!</h2>
             <p className="text-zinc-400 mb-8 relative z-10 text-sm">
-              We encountered an unexpected error. Don't worry, your data is safe.
+              We encountered an unexpected error. Don&apos;t worry, your data is safe.
             </p>
             
             <button 

@@ -349,7 +349,7 @@ export default function HybridLandingPage() {
           <div className="relative">
             <div className="absolute -inset-10 bg-rose-500/10 blur-3xl rounded-full" />
             <h2 className="relative text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 font-clash leading-tight drop-shadow-xl">
-              Umpire's Call Reversed? <br /><span className="text-rose-500">No Problem.</span>
+              Umpire&apos;s Call Reversed? <br /><span className="text-rose-500">No Problem.</span>
             </h2>
             <p className="relative text-zinc-300 text-sm md:text-base leading-relaxed font-medium max-w-sm drop-shadow-md border-l-2 border-rose-500/30 pl-4 py-1">
               Standard scoring apps fail on the turf. PitchPulse allows you to safely pause, reverse, and replay any ball without corrupting the match state.
