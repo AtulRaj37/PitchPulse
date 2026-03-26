@@ -1,0 +1,32 @@
+services:
+  # Internal Redis Server for WebSockets and Live Match Updates
+  - type: redis
+    name: pitchpulse-redis
+    ipAllowList: [] # Internal only for maximum security
+    plan: free
+    maxmemoryPolicy: noeviction
+
+  # The main PitchPulse Event Sourcing Backend Engine
+  - type: web
+    name: pitchpulse-api
+    env: node
+    plan: free
+    region: singapore # Closest to your AWS ap-southeast-1 Neon region!
+    buildCommand: npm install && npm run build -w packages/shared && npm run build:backend && npm run db:migrate -w backend
+    startCommand: npm run start -w backend
+    envVars:
+      - key: DATABASE_URL
+        value: postgresql://neondb_owner:npg_4QsbRJVMpdP0@ep-dawn-feather-a13q6f1o-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: pitchpulse-redis
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        value: "*" # Set this to your exact Vercel URL later!
