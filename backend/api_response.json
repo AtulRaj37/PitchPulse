@@ -1,0 +1,2032 @@
+{
+    "success":  true,
+    "data":  {
+                 "id":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                 "team1Id":  "b23cd5ec-d8d4-4ead-b70b-665918a528e6",
+                 "team2Id":  "41f48cef-785e-45d5-8562-682db678ee3f",
+                 "venue":  "Street",
+                 "startTime":  "2026-03-25T15:31:55.724Z",
+                 "endTime":  null,
+                 "status":  "LIVE",
+                 "format":  "CUSTOM",
+                 "overs":  5,
+                 "ballsPerOver":  6,
+                 "maxOversPerBowler":  null,
+                 "gullyRules":  null,
+                 "currentSnapshot":  {
+                                         "target":  null,
+                                         "innings":  1,
+                                         "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                         "strikerId":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                         "nonStrikerId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e"
+                                     },
+                 "tournamentId":  null,
+                 "createdBy":  "c4723dbd-60b7-4dcd-aabb-be9e218fdedc",
+                 "createdAt":  "2026-03-25T15:31:55.770Z",
+                 "updatedAt":  "2026-03-25T18:45:11.701Z",
+                 "team1":  {
+                               "id":  "b23cd5ec-d8d4-4ead-b70b-665918a528e6",
+                               "name":  "royal challenger bangalore",
+                               "logoUrl":  null,
+                               "players":  [
+                                               {
+                                                   "id":  "f2c76dac-b7e8-4a02-b8d4-3a1934ff02df",
+                                                   "name":  "kohli",
+                                                   "role":  "BATSMAN"
+                                               },
+                                               {
+                                                   "id":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                                   "name":  "gayle",
+                                                   "role":  "BATSMAN"
+                                               },
+                                               {
+                                                   "id":  "8b245992-b49d-4f6c-8b2a-f634cd702479",
+                                                   "name":  "patidar",
+                                                   "role":  "BATSMAN"
+                                               },
+                                               {
+                                                   "id":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e",
+                                                   "name":  "abd",
+                                                   "role":  "BATSMAN"
+                                               },
+                                               {
+                                                   "id":  "3bf34e0e-9589-4ca7-bf0f-6b28ba8165d4",
+                                                   "name":  "deravid",
+                                                   "role":  "BATSMAN"
+                                               }
+                                           ]
+                           },
+                 "team2":  {
+                               "id":  "41f48cef-785e-45d5-8562-682db678ee3f",
+                               "name":  "Chennai Super Kings",
+                               "logoUrl":  null,
+                               "players":  [
+                                               {
+                                                   "id":  "20d8a2f1-10f9-4789-9655-910a45068108",
+                                                   "name":  "dhoni",
+                                                   "role":  "WICKET_KEEPER_BATSMAN"
+                                               },
+                                               {
+                                                   "id":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                   "name":  "raina",
+                                                   "role":  "BATSMAN"
+                                               },
+                                               {
+                                                   "id":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                   "name":  "hussey",
+                                                   "role":  "BATSMAN"
+                                               },
+                                               {
+                                                   "id":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                   "name":  "jakati",
+                                                   "role":  "BOWLER"
+                                               },
+                                               {
+                                                   "id":  "ab3945c4-646a-41de-bd0b-71c95f8f4793",
+                                                   "name":  "faf",
+                                                   "role":  "BATSMAN"
+                                               }
+                                           ]
+                           },
+                 "events":  [
+                                {
+                                    "id":  "cf3139c1-fdf4-4427-8a5b-031631188595",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  1,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "20d8a2f1-10f9-4789-9655-910a45068108",
+                                                    "batsmanId":  "8b245992-b49d-4f6c-8b2a-f634cd702479"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:08.088Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "66d3ef0a-a227-4ff5-9e0a-eb2a7cc203d9",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  2,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "20d8a2f1-10f9-4789-9655-910a45068108",
+                                                    "batsmanId":  "8b245992-b49d-4f6c-8b2a-f634cd702479",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:08.107Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "165b2e8d-2b97-409c-b5f8-70976cff5e85",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  3,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "20d8a2f1-10f9-4789-9655-910a45068108",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:08.177Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "da19ffe4-864b-4b78-ad1a-1e7ae8ec45ee",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  4,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "20d8a2f1-10f9-4789-9655-910a45068108",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:08.194Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "44e47653-0266-428b-ab23-fd6af202774c",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  5,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "20d8a2f1-10f9-4789-9655-910a45068108",
+                                                    "batsmanId":  "8b245992-b49d-4f6c-8b2a-f634cd702479"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:08.307Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "95605389-b360-4237-8382-60367c04b194",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  6,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "20d8a2f1-10f9-4789-9655-910a45068108",
+                                                    "batsmanId":  "8b245992-b49d-4f6c-8b2a-f634cd702479",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:08.318Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "1b2f05a5-7f16-4382-b241-8457ea619072",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  7,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "20d8a2f1-10f9-4789-9655-910a45068108",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:08.429Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "48b802fe-9c85-42e8-b6a6-135eb1075b7a",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  8,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "20d8a2f1-10f9-4789-9655-910a45068108",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:08.435Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "b42785ed-706a-448f-a50c-b74f47384aa0",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  9,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "20d8a2f1-10f9-4789-9655-910a45068108",
+                                                    "batsmanId":  "8b245992-b49d-4f6c-8b2a-f634cd702479"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:08.550Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "32d3b04e-0abf-4209-b2d2-59feeeaeaa84",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  10,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "20d8a2f1-10f9-4789-9655-910a45068108",
+                                                    "batsmanId":  "8b245992-b49d-4f6c-8b2a-f634cd702479",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:08.554Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "7c8f92e8-8909-4687-b68e-032a87925488",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  11,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "20d8a2f1-10f9-4789-9655-910a45068108",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:08.679Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "8362a78f-f349-4d44-8f6e-e3c404cfb460",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  12,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "20d8a2f1-10f9-4789-9655-910a45068108",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:08.686Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "128b17d9-d63c-451a-a0ad-8c2a5183ab90",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  13,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "8b245992-b49d-4f6c-8b2a-f634cd702479"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:10.767Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "7a08dcb4-56ce-4a87-9003-0096c43ebed7",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  14,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "8b245992-b49d-4f6c-8b2a-f634cd702479",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:10.773Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "a48196ee-42f0-485d-b762-10f09fb51eba",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  15,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:10.922Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "549607f8-8fe3-4fa5-9dc4-d3603edbb50d",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  16,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:10.930Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "a4efa03d-820b-41a9-9aa5-b80c2919646d",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  17,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "8b245992-b49d-4f6c-8b2a-f634cd702479"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:11.040Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "7dbb7d12-ad02-44d7-a125-509163ab1bb9",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  18,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "8b245992-b49d-4f6c-8b2a-f634cd702479",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:11.044Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "b4d01d48-43a0-49c1-aa4a-befe1b256bec",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  19,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:11.166Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "0815c307-e381-4570-810d-7d338b8ea8be",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  20,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:11.170Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "4c28dd7f-099e-44ed-8d05-6b3644326c1c",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  21,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "8b245992-b49d-4f6c-8b2a-f634cd702479"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:11.296Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "7afc1f7b-bc12-4466-ad94-1b87e355ce28",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  22,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "8b245992-b49d-4f6c-8b2a-f634cd702479",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:11.301Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "e51ded77-4a52-4b56-9a3a-fd4fa2aef8f1",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  23,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:11.409Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "29cc45e3-b61b-4756-9e8e-58795fe1a144",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  24,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:11.416Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "5eaae97d-43f6-4573-a90f-a6451d99e0aa",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  25,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                    "batsmanId":  "8b245992-b49d-4f6c-8b2a-f634cd702479"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:13.202Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "1ff9b091-4fac-4301-b6a1-ed4e32c5a20a",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  26,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                    "batsmanId":  "8b245992-b49d-4f6c-8b2a-f634cd702479",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:13.225Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "8fe98c3d-971d-4351-b247-ea631f0702aa",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  27,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:13.348Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "558df3ab-1223-46ca-81ea-07017133ef72",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  28,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:13.353Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "33315321-fe79-47f6-bde4-9c4b79933da2",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  29,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                    "batsmanId":  "8b245992-b49d-4f6c-8b2a-f634cd702479"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:13.470Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "f522b1bf-65df-4892-a3f4-e96769ee3038",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  30,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                    "batsmanId":  "8b245992-b49d-4f6c-8b2a-f634cd702479",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:13.473Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "5ff07538-6583-4476-9ff2-74aa95e13acd",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  31,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:13.586Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "9be55784-89c6-491a-8544-9852b5b3f6d7",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  32,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:13.591Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "26507c0d-ab07-45f2-a03b-c7cc10d7ac1d",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  33,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                    "batsmanId":  "8b245992-b49d-4f6c-8b2a-f634cd702479"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:13.705Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "e9098c9f-4fff-4222-8ddb-27857b2f8b4e",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  34,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                    "batsmanId":  "8b245992-b49d-4f6c-8b2a-f634cd702479",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:13.712Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "03e65978-337c-4a59-a6ea-30501cb76f64",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  35,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:13.854Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "97db8325-d669-4a58-b213-5437c74c9e95",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  36,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:13.871Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "1e0ad72f-53e8-4f94-9abd-ad34f9d44aa1",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  37,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  3,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:18.800Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "30e35765-735f-42a6-bdb3-5965ac4641d2",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  38,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  3,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:18.807Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "d927a28f-9edb-4b7f-93bb-61186fd9f693",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  39,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  3,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:18.929Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "820bd06b-f17f-4796-b0be-8d62b5413b73",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  40,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  3,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:18.934Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "12d3009c-fdab-40a6-a20f-a90d309be3cc",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  41,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  3,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:19.047Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "a9fef072-e698-4a56-ab10-2a5852b41dee",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  42,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  3,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:19.052Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "7794bcd4-0254-46ba-848e-224f4b4808e3",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  43,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  3,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:19.186Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "80277a5c-bf78-424a-8d3f-c6be927ee2df",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  44,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  3,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:19.193Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "f7d2faef-f84e-46ec-9dcd-9950c5bdbf6f",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  45,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  3,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:19.308Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "8f3a4586-8373-4a81-b1f9-afa0d9ed9ac3",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  46,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  3,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:19.313Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "6b62f7f1-4028-4898-8365-e3c6223bcf36",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  47,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:21.916Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "2e0e8d1f-6133-4d12-a721-11f9c7720bb0",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  48,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:21.921Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "665bec1d-757d-40fa-9ac8-7cdd3b2dd1ab",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  49,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  0,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:29:22.210Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "4bf449c8-84f0-42c2-9d3f-a35e377ec39a",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  50,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:30:21.271Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "4b984d39-4174-404f-85ea-758d6347b89d",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  51,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:30:21.277Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "8b9b39a8-7b03-42e3-a2e9-bf8e219de5dc",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  52,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:35:58.285Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "b9da6052-8664-45e2-b34d-b21a341c1224",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  53,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:35:58.308Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "b1d67e41-f05f-49d2-a9dc-8c46b0cce9a8",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  54,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  2,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:35:58.734Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "c9b4c468-3b36-4f2c-91f8-18298f7a5441",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  55,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  2,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:35:58.739Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "343b61e2-3f68-43d1-b97f-b25770ad027b",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  56,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:36:06.183Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "48a44068-781c-41c4-bb5e-f6811ea185cb",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  57,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:36:06.190Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "2ecfca74-7e84-4bb4-937a-0610319b97ad",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  58,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:58:37.494Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "c62abf83-bc67-42c1-8047-f2ca205f4d43",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  59,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:58:37.504Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "e3d7a053-6bf5-41e1-b7fb-9ab8cea56718",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  60,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  2,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:58:45.026Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "724cd5a9-4abb-4dcf-9e13-e7805d91dcc4",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  61,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  2,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:58:45.035Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "9da874eb-9b31-431f-aafe-67bae995a6bf",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  62,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  2,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:58:46.005Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "83da10b4-1cf5-4c84-8d79-dcd7e775d76b",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  63,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  2,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:58:46.010Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "2cdbd464-caec-4b71-9f98-0393aa4f5c53",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  64,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  2,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:59:32.849Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "215533c7-4caa-4e71-afe9-be0cbcf049d6",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  65,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  2,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:59:32.855Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "efcca64b-c9fb-4be8-98a8-abfb4b2871e2",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BYE",
+                                    "sequenceNumber":  66,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  6,
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:59:44.334Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "b2fc3b7b-d13d-44a1-a25c-26e9ddffbe38",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  67,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  2,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:59:47.190Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "20d2fb55-3e5b-4018-a9f8-4d9f8c0d8f8d",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  68,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  2,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:59:47.194Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "1db65b46-bf0d-4949-9961-5805d63274d1",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  69,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  2,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:59:48.137Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "a76c74fb-ff6f-4392-a59e-df93bfc54849",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  70,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  2,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:59:48.142Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "b825f00b-c177-4c6f-8eef-fb2e69fd229f",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  71,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  4,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:59:51.512Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "d884186d-6156-422e-8d4f-d7805209f346",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  72,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  4,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:59:51.517Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "2cc294e2-83bf-4d61-8c1a-7804dea25826",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BOUNDARY_SCORED",
+                                    "sequenceNumber":  73,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  4,
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:59:51.521Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "1d723b7b-f9be-4454-ba29-a9ffb9312f35",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  74,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  4,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:59:51.904Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "e1ae7064-cd6d-4cf0-aab3-b1ed4cd07a8e",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  75,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  4,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:59:51.909Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "672094cb-d675-48df-af8a-d816fb45cd80",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BOUNDARY_SCORED",
+                                    "sequenceNumber":  76,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  4,
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:59:51.914Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "2a079063-e479-47d5-a8cc-aacdce4a48bd",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  77,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  4,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:59:52.309Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "39cabceb-cbde-406f-9038-4e291a4de58d",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  78,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  4,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:59:52.316Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "2e0782c3-d795-44bc-b571-ac0dc6d8bced",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BOUNDARY_SCORED",
+                                    "sequenceNumber":  79,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  4,
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:59:52.321Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "99e369ac-bd27-4ffb-bfa3-6f11bc0019a9",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  80,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  4,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:59:52.708Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "b8b1ae0f-1454-4d19-8ee4-0b3eb737f2c3",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  81,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  4,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:59:52.714Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "1ef0d3b3-b700-4e14-ac12-aaa1374ac7ac",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BOUNDARY_SCORED",
+                                    "sequenceNumber":  82,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  4,
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:59:52.719Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "d84bbf6c-9d23-4af9-9bff-602746908d00",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  83,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  0,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:59:54.872Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "293e582b-213a-4174-a8c3-a1a8f42c40a2",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  84,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  0,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T17:59:56.922Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "634c52d4-7d12-4c67-af75-6633789cc68e",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "NO_BALL",
+                                    "sequenceNumber":  85,
+                                    "overNumber":  0,
+                                    "ballNumber":  -1,
+                                    "payload":  {
+                                                    "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e",
+                                                    "extraRuns":  3,
+                                                    "isFreeHit":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T18:00:26.346Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "b3b3cdc5-dfb9-4d24-be64-de1c3a55a49e",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  86,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T18:32:47.242Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "38002676-bddc-4249-941f-8fa6a7f13b6c",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  87,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  1,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                    "batsmanId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T18:32:47.291Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "be2d2bbd-f25b-456c-8eab-5cf2f43da0d6",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BALL_BOWLED",
+                                    "sequenceNumber":  88,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  4,
+                                                    "isExtra":  false,
+                                                    "ballType":  "NORMAL",
+                                                    "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T18:45:11.775Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "e76c85ab-38f4-4566-ad41-e7c76f741676",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "RUN_SCORED",
+                                    "sequenceNumber":  89,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  4,
+                                                    "isByes":  false,
+                                                    "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                                    "isLegByes":  false
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T18:45:11.790Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                },
+                                {
+                                    "id":  "f4e20831-49a6-43a1-a372-d2792cd293c3",
+                                    "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                    "eventType":  "BOUNDARY_SCORED",
+                                    "sequenceNumber":  90,
+                                    "overNumber":  0,
+                                    "ballNumber":  0,
+                                    "payload":  {
+                                                    "runs":  4,
+                                                    "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                    "batsmanId":  "ec180660-b4cc-47f0-9428-fd544f83f752"
+                                                },
+                                    "version":  1,
+                                    "timestamp":  "2026-03-25T18:45:11.797Z",
+                                    "createdBy":  "0b25c39b-b754-462e-83e6-9e6dd0cb0575",
+                                    "source":  "api",
+                                    "ipAddress":  "127.0.0.1"
+                                }
+                            ],
+                 "innings":  [
+                                 {
+                                     "id":  "89864758-3799-499d-b120-8c79baf81a4f",
+                                     "matchId":  "7750a5bd-6947-4423-8300-7dd960b16049",
+                                     "inningsNumber":  1,
+                                     "battingTeamId":  "b23cd5ec-d8d4-4ead-b70b-665918a528e6",
+                                     "bowlingTeamId":  "41f48cef-785e-45d5-8562-682db678ee3f",
+                                     "totalRuns":  4,
+                                     "totalWickets":  0,
+                                     "overs":  0,
+                                     "balls":  0,
+                                     "runRate":  0,
+                                     "declared":  false,
+                                     "followsOn":  false,
+                                     "createdAt":  "2026-03-25T18:53:01.440Z",
+                                     "updatedAt":  "2026-03-25T18:56:22.856Z",
+                                     "battingStats":  [
+                                                          {
+                                                              "id":  "29e7a0f4-8f82-4970-a8ad-ecefb4571599",
+                                                              "inningsId":  "89864758-3799-499d-b120-8c79baf81a4f",
+                                                              "playerId":  "9a71e6fc-16ec-40d3-b7d6-2184010d099e",
+                                                              "position":  1,
+                                                              "runs":  48,
+                                                              "balls":  24,
+                                                              "fours":  0,
+                                                              "sixes":  0,
+                                                              "strikeRate":  0,
+                                                              "dismissal":  null,
+                                                              "dismissalType":  null,
+                                                              "fielderId":  null,
+                                                              "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                              "isOut":  false,
+                                                              "isNotOut":  true,
+                                                              "updatedAt":  "2026-03-25T18:56:22.849Z",
+                                                              "player":  "@{id=9a71e6fc-16ec-40d3-b7d6-2184010d099e; name=abd; role=BATSMAN}"
+                                                          },
+                                                          {
+                                                              "id":  "b8a9b639-a6ad-4bf0-a312-1817e4fa3d75",
+                                                              "inningsId":  "89864758-3799-499d-b120-8c79baf81a4f",
+                                                              "playerId":  "ec180660-b4cc-47f0-9428-fd544f83f752",
+                                                              "position":  1,
+                                                              "runs":  76,
+                                                              "balls":  38,
+                                                              "fours":  10,
+                                                              "sixes":  0,
+                                                              "strikeRate":  0,
+                                                              "dismissal":  null,
+                                                              "dismissalType":  null,
+                                                              "fielderId":  null,
+                                                              "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                              "isOut":  false,
+                                                              "isNotOut":  true,
+                                                              "updatedAt":  "2026-03-25T18:56:22.858Z",
+                                                              "player":  "@{id=ec180660-b4cc-47f0-9428-fd544f83f752; name=gayle; role=BATSMAN}"
+                                                          },
+                                                          {
+                                                              "id":  "59549c1f-27c9-4004-8df5-87958e625b0e",
+                                                              "inningsId":  "89864758-3799-499d-b120-8c79baf81a4f",
+                                                              "playerId":  "8b245992-b49d-4f6c-8b2a-f634cd702479",
+                                                              "position":  1,
+                                                              "runs":  18,
+                                                              "balls":  18,
+                                                              "fours":  0,
+                                                              "sixes":  0,
+                                                              "strikeRate":  0,
+                                                              "dismissal":  null,
+                                                              "dismissalType":  null,
+                                                              "fielderId":  null,
+                                                              "bowlerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                              "isOut":  false,
+                                                              "isNotOut":  true,
+                                                              "updatedAt":  "2026-03-25T18:56:22.664Z",
+                                                              "player":  "@{id=8b245992-b49d-4f6c-8b2a-f634cd702479; name=patidar; role=BATSMAN}"
+                                                          }
+                                                      ],
+                                     "bowlingStats":  [
+                                                          {
+                                                              "id":  "8411dd19-c458-4e69-845f-ee0a36220a41",
+                                                              "inningsId":  "89864758-3799-499d-b120-8c79baf81a4f",
+                                                              "playerId":  "20d8a2f1-10f9-4789-9655-910a45068108",
+                                                              "overs":  0,
+                                                              "balls":  66,
+                                                              "maidens":  0,
+                                                              "runs":  11,
+                                                              "wickets":  0,
+                                                              "economy":  0,
+                                                              "dots":  0,
+                                                              "foursConceded":  0,
+                                                              "sixesConceded":  0,
+                                                              "wides":  0,
+                                                              "noBalls":  0,
+                                                              "updatedAt":  "2026-03-25T18:56:22.548Z",
+                                                              "player":  "@{id=20d8a2f1-10f9-4789-9655-910a45068108; name=dhoni; role=WICKET_KEEPER_BATSMAN}"
+                                                          },
+                                                          {
+                                                              "id":  "3e577a53-4520-47d0-b64f-9fb0d120ec96",
+                                                              "inningsId":  "89864758-3799-499d-b120-8c79baf81a4f",
+                                                              "playerId":  "5b75d724-eceb-4fbb-b163-91d712180584",
+                                                              "overs":  0,
+                                                              "balls":  192,
+                                                              "maidens":  0,
+                                                              "runs":  62,
+                                                              "wickets":  0,
+                                                              "economy":  0,
+                                                              "dots":  0,
+                                                              "foursConceded":  0,
+                                                              "sixesConceded":  0,
+                                                              "wides":  0,
+                                                              "noBalls":  0,
+                                                              "updatedAt":  "2026-03-25T18:56:22.796Z",
+                                                              "player":  "@{id=5b75d724-eceb-4fbb-b163-91d712180584; name=hussey; role=BATSMAN}"
+                                                          },
+                                                          {
+                                                              "id":  "c5d86e6c-48cc-4df0-aa53-de1dbfa984a8",
+                                                              "inningsId":  "89864758-3799-499d-b120-8c79baf81a4f",
+                                                              "playerId":  "ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d",
+                                                              "overs":  0,
+                                                              "balls":  156,
+                                                              "maidens":  0,
+                                                              "runs":  46,
+                                                              "wickets":  0,
+                                                              "economy":  0,
+                                                              "dots":  0,
+                                                              "foursConceded":  0,
+                                                              "sixesConceded":  0,
+                                                              "wides":  0,
+                                                              "noBalls":  0,
+                                                              "updatedAt":  "2026-03-25T18:56:22.839Z",
+                                                              "player":  "@{id=ce82cdc5-b0a0-44ff-8e7e-b0b07a21817d; name=raina; role=BATSMAN}"
+                                                          },
+                                                          {
+                                                              "id":  "3194ac32-9a05-47b1-9aaf-c72a07fbfd72",
+                                                              "inningsId":  "89864758-3799-499d-b120-8c79baf81a4f",
+                                                              "playerId":  "f8a73210-bcf8-4980-91db-a7584106ad9c",
+                                                              "overs":  0,
+                                                              "balls":  96,
+                                                              "maidens":  0,
+                                                              "runs":  22,
+                                                              "wickets":  0,
+                                                              "economy":  0,
+                                                              "dots":  0,
+                                                              "foursConceded":  0,
+                                                              "sixesConceded":  0,
+                                                              "wides":  0,
+                                                              "noBalls":  0,
+                                                              "updatedAt":  "2026-03-25T18:56:22.854Z",
+                                                              "player":  "@{id=f8a73210-bcf8-4980-91db-a7584106ad9c; name=jakati; role=BOWLER}"
+                                                          }
+                                                      ]
+                                 }
+                             ]
+             }
+}

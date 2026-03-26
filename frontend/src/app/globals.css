@@ -1,0 +1,371 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   CSS VARIABLES - DARK SPORTS THEME
+   ============================================ */
+
+:root {
+  /* Primary Colors */
+  --color-primary: 14 165 233; /* sky-500 */
+  --color-primary-dark: 7 89 133; /* sky-800 */
+  --color-primary-light: 56 189 248; /* sky-400 */
+
+  /* Secondary Colors */
+  --color-secondary: 168 85 247; /* purple-500 */
+
+  /* Accent Colors */
+  --color-accent: 249 115 22; /* orange-500 */
+
+  /* Background Colors */
+  --color-bg-primary: 9 9 11; /* zinc-950 */
+  --color-bg-secondary: 24 24 27; /* zinc-900 */
+  --color-bg-tertiary: 39 39 42; /* zinc-800 */
+
+  /* Surface Colors */
+  --color-surface: 24 24 27; /* zinc-900 */
+  --color-surface-elevated: 63 63 70; /* zinc-700 */
+
+  /* Text Colors */
+  --color-text-primary: 250 250 250; /* zinc-50 */
+  --color-text-secondary: 161 161 170; /* zinc-400 */
+  --color-text-muted: 113 113 122; /* zinc-500 */
+
+  /* Border Colors */
+  --color-border: 63 63 70; /* zinc-700 */
+  --color-border-light: 82 82 91; /* zinc-600 */
+
+  /* Status Colors */
+  --color-success: 34 197 94; /* green-500 */
+  --color-warning: 245 158 11; /* amber-500 */
+  --color-error: 239 68 68; /* red-500 */
+  --color-info: 59 130 246; /* blue-500 */
+
+  /* Cricket-specific */
+  --color-ball: 220 38 38; /* red-600 */
+  --color-wicket: 250 204 21; /* yellow-400 */
+  --color-run: 34 197 94; /* green-500 */
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+  --shadow-glow: 0 0 20px rgb(var(--color-primary) / 0.3);
+  --shadow-glow-lg: 0 0 40px rgb(var(--color-primary) / 0.4);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 300ms ease;
+  --transition-slow: 500ms ease;
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+
+  html, html.lenis, html.lenis body {
+    height: auto;
+    scroll-behavior: auto !important;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-app text-zinc-50;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Scrollbar Styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-zinc-900;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-zinc-700 rounded-full;
+    transition: background-color var(--transition-fast);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-zinc-600;
+  }
+
+  /* Selection */
+  ::selection {
+    @apply bg-primary-500/30 text-primary-100;
+  }
+
+  /* Focus Visible */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2 ring-offset-zinc-950;
+  }
+}
+
+/* ============================================
+   COMPONENT UTILITIES
+   ============================================ */
+
+@layer components {
+  /* Glass Effect */
+  .glass {
+    @apply bg-zinc-900/80 backdrop-blur-xl border border-zinc-700/50;
+  }
+
+  .glass-light {
+    @apply bg-zinc-800/60 backdrop-blur-lg border border-zinc-700/30;
+  }
+
+  /* Premium Glass Effect */
+  .glass-premium {
+    @apply bg-[#0e1424]/80 backdrop-blur-2xl border border-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.5)] shadow-inner-glow;
+  }
+
+  /* Card */
+  .card {
+    @apply bg-[#151a28] rounded-2xl border border-white/5 shadow-lg;
+    @apply transition-all duration-300 ease-expo;
+  }
+
+  .card:hover {
+    @apply border-white/10 shadow-2xl -translate-y-1;
+  }
+
+  /* Button Base */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl font-medium;
+    @apply transition-all duration-300 ease-expo;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 ring-offset-app;
+  }
+
+  .btn:hover {
+    @apply scale-[1.03];
+  }
+
+  .btn:active {
+    @apply scale-[0.97];
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-sky-500 to-cyan-400 text-white border border-cyan-400/20 shadow-[0_0_20px_rgba(6,182,212,0.3)];
+    @apply hover:from-sky-400 hover:to-cyan-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.5)];
+    @apply active:from-sky-600 active:to-cyan-500;
+    @apply focus:ring-cyan-500;
+  }
+
+  .btn-secondary {
+    @apply btn bg-zinc-800 text-zinc-100 hover:bg-zinc-700 active:bg-zinc-600;
+    @apply border border-zinc-700;
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100;
+  }
+
+  .btn-danger {
+    @apply btn bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/30;
+  }
+
+  .btn-success {
+    @apply btn bg-green-500/10 text-green-400 hover:bg-green-500/20 border border-green-500/30;
+  }
+
+  /* Score Display */
+  .score-display {
+    @apply font-display text-5xl font-bold tracking-tight;
+    @apply bg-gradient-to-r from-zinc-100 via-zinc-200 to-zinc-300;
+    @apply bg-clip-text text-transparent;
+  }
+
+  /* Run Display */
+  .run-display {
+    @apply text-green-400 font-bold;
+  }
+
+  /* Wicket Display */
+  .wicket-display {
+    @apply text-yellow-400 font-bold;
+  }
+
+  /* Over Display */
+  .over-display {
+    @apply text-zinc-400 font-mono;
+  }
+
+  /* Status Badge */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-live {
+    @apply badge bg-red-500/20 text-red-400 border border-red-500/30;
+  }
+
+  .badge-success {
+    @apply badge bg-green-500/20 text-green-400 border border-green-500/30;
+  }
+
+  .badge-warning {
+    @apply badge bg-yellow-500/20 text-yellow-400 border border-yellow-500/30;
+  }
+
+  .badge-info {
+    @apply badge bg-blue-500/20 text-blue-400 border border-blue-500/30;
+  }
+
+  .badge-neutral {
+    @apply badge bg-zinc-700/50 text-zinc-400 border border-zinc-600/50;
+  }
+
+  /* Input */
+  .input {
+    @apply w-full px-4 py-3 rounded-xl bg-[#111624] border border-white/10;
+    @apply text-zinc-100 placeholder-zinc-500;
+    @apply transition-all duration-300 ease-expo;
+    @apply focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/50 focus:bg-[#151a28];
+  }
+
+  /* Cricket Pitch Animation */
+  .pitch-glow {
+    animation: pitchPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pitchPulse {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(250, 204, 21, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 40px rgba(250, 204, 21, 0.6);
+    }
+  }
+
+  /* Score Update Animation */
+  .score-update {
+    animation: scoreFlash 0.5s ease-out;
+  }
+
+  @keyframes scoreFlash {
+    0% {
+      transform: scale(1.2);
+      color: rgb(var(--color-primary));
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  /* Wicket Animation */
+  .wicket-fall {
+    animation: wicketShake 0.5s ease-out;
+  }
+
+  @keyframes wicketShake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(3px); }
+  }
+}
+
+/* ============================================
+   ANIMATION UTILITIES
+   ============================================ */
+
+@layer utilities {
+  /* Gradient Text */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-400 via-primary-300 to-secondary-400;
+  }
+
+  /* Animated Background */
+  .bg-gradient-animated {
+    @apply bg-gradient-to-r from-primary-500/20 via-secondary-500/20 to-accent-500/20;
+    background-size: 200% 200%;
+    animation: gradientShift 15s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Noise Texture */
+  .noise {
+    position: relative;
+  }
+
+  .noise::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Glow Effects */
+  .glow-primary {
+    box-shadow: 0 0 20px rgb(var(--color-primary) / 0.3);
+  }
+
+  .glow-secondary {
+    box-shadow: 0 0 20px rgb(var(--color-secondary) / 0.3);
+  }
+
+  /* Stagger Animation Delays */
+  .stagger-1 { animation-delay: 100ms; }
+  .stagger-2 { animation-delay: 200ms; }
+  .stagger-3 { animation-delay: 300ms; }
+  .stagger-4 { animation-delay: 400ms; }
+  .stagger-5 { animation-delay: 500ms; }
+}
+
+/* ============================================
+   SCROLLBAR FOR SPECIFIC ELEMENTS
+   ============================================ */
+
+.commentary-feed::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scorecard-table::-webkit-scrollbar {
+  height: 6px;
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+
+@media print {
+  body {
+    @apply bg-white text-black;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}

@@ -1,0 +1,73 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+.DS_Store
+
+# Testing
+coverage/
+.nyc_output/
+
+# Prisma
+*.db
+*.db-journal
+
+# Docker
+.docker/
+
+# Misc
+*.tgz
+.cache/
+*.pid
+*.seed
+*.pid.lock
+
+# Debug
+.npm
+.eslintcache
+
+# TypeScript
+*.tsbuildinfo
+
+# Vercel
+.vercel
+
+# Turborepo
+.turbo/
+
+# Local env files
+*.local
+
+# Vite
+vite.config.ts.timestamp-*
+vite.config.ts.timestamp
+
+# Backup files
+*.bak
+*.backup

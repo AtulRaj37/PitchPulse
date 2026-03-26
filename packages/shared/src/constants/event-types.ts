@@ -1,0 +1,133 @@
+// Event Sourcing Event Types for Cricket Scoring
+
+export enum EventType {
+  // Core Match Events
+  MATCH_CREATED = 'MATCH_CREATED',
+  MATCH_STARTED = 'MATCH_STARTED',
+  MATCH_PAUSED = 'MATCH_PAUSED',
+  MATCH_RESUMED = 'MATCH_RESUMED',
+  MATCH_COMPLETED = 'MATCH_COMPLETED',
+  MATCH_ABANDONED = 'MATCH_ABANDONED',
+
+  // Toss Events
+  TOSS_COMPLETED = 'TOSS_COMPLETED',
+
+  // innings Events
+  INNINGS_STARTED = 'INNINGS_STARTED',
+  INNINGS_COMPLETED = 'INNINGS_COMPLETED',
+
+  // Ball Events
+  BALL_BOWLED = 'BALL_BOWLED',
+  RUN_SCORED = 'RUN_SCORED',
+  BOUNDARY_SCORED = 'BOUNDARY_SCORED',
+  SIX_SCORED = 'SIX_SCORED',
+  WICKET_FELL = 'WICKET_FELL',
+  WIDE_BALL = 'WIDE_BALL',
+  NO_BALL = 'NO_BALL',
+  BYE = 'BYE',
+  LEG_BYE = 'LEG_BYE',
+  OVER_COMPLETED = 'OVER_COMPLETED',
+
+  // Batting Events
+  BATSMAN_ON_STRIKE = 'BATSMAN_ON_STRIKE',
+  BATSMAN_OUT = 'BATSMAN_OUT',
+  BATSMAN_RETIRED = 'BATSMAN_RETIRED',
+  NEW_BATSMAN = 'NEW_BATSMAN',
+  FIFTY_SCORED = 'FIFTY_SCORED',
+  CENTURY_SCORED = 'CENTURY_SCORED',
+
+  // Bowling Events
+  BOWLER_CHANGED = 'BOWLER_CHANGED',
+  MAIDEN_OVER = 'MAIDEN_OVER',
+
+  // Extras
+  PENALTY_RUNS = 'PENALTY_RUNS',
+
+  // Dispute Events
+  DISPUTE_FLAGGED = 'DISPUTE_FLAGGED',
+  DISPUTE_RESOLVED = 'DISPUTE_RESOLVED',
+  DECISION_REVERSED = 'DECISION_REVERSED',
+
+  // Correction Events
+  EVENT_CORRECTED = 'EVENT_CORRECTED',
+  EVENT_DELETED = 'EVENT_DELETED',
+}
+
+export enum MatchStatus {
+  CREATED = 'CREATED',
+  LIVE = 'LIVE',
+  COMPLETED = 'COMPLETED',
+  ABANDONED = 'ABANDONED',
+}
+
+export enum MatchFormat {
+  T20 = 'T20',
+  ODI = 'ODI',
+  TEST = 'TEST',
+  T10 = 'T10',
+  CUSTOM = 'CUSTOM',
+}
+
+export enum TossDecision {
+  BAT = 'BAT',
+  BOWL = 'BOWL',
+}
+
+export enum inningsNumber {
+  FIRST = 1,
+  SECOND = 2,
+  THIRD = 3,
+  FOURTH = 4,
+}
+
+export enum WicketType {
+  BOWLED = 'BOWLED',
+  CAUGHT = 'CAUGHT',
+  LBW = 'LBW',
+  STUMPED = 'STUMPED',
+  RUN_OUT = 'RUN_OUT',
+  HIT_WICKET = 'HIT_WICKET',
+  HANDLED_BALL = 'HANDLED_BALL',
+  TIMED_OUT = 'TIMED_OUT',
+}
+
+export enum DismissalMode {
+  BATSMAN_OUT = 'BATSMAN_OUT',
+  RETIRED_HURT = 'RETIRED_HURT',
+  NOT_OUT = 'NOT_OUT',
+}
+
+export enum BallType {
+  NORMAL = 'NORMAL',
+  WIDE = 'WIDE',
+  NO_BALL = 'NO_BALL',
+  BYE = 'BYE',
+  LEG_BYE = 'LEG_BYE',
+}
+
+export enum DisputeReason {
+  WRONG_RUNS = 'WRONG_RUNS',
+  WRONG_WICKET = 'WRONG_WICKET',
+  WRONG_BALL_COUNT = 'WRONG_BALL_COUNT',
+  MISSED_WICKET = 'MISSED_WICKET',
+  WRONG_DISMISSAL = 'WRONG_DISMISSAL',
+  OTHER = 'OTHER',
+}
+
+export enum DisputeStatus {
+  PENDING = 'PENDING',
+  ACCEPTED = 'ACCEPTED',
+  REJECTED = 'REJECTED',
+  RESOLVED = 'RESOLVED',
+}
+
+export enum OverStatus {
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  MAIDEN = 'MAIDEN',
+}
+
+export enum TeamType {
+  HOME = 'HOME',
+  AWAY = 'AWAY',
+}

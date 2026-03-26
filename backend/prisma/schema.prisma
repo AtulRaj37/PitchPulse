@@ -1,0 +1,691 @@
+// PitchPulse Database Schema
+// Event Sourcing + CQRS Architecture
+//
+// Event Store Design:
+// - All events are immutable (append-only)
+// - sequenceNumber ensures strict ordering per match
+// - version field for optimistic concurrency control
+// - eventId uniqueness for idempotency
+// - Metadata for audit trail (userId, source, ipAddress)
+//
+// Snapshotting:
+// - Snapshots store match state at intervals
+// - Event replay starts from latest snapshot
+// - Reduces replay time for large event streams
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [uuid_ossp(map: "uuid-ossp"), pg_trgm]
+}
+
+// ============================================
+// USER & AUTHENTICATION
+// ============================================
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password      String?
+  name          String
+  avatarUrl     String?
+  phone         String?
+  role          UserRole @default(SCORER)
+  googleId      String?  @unique
+  emailVerified Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  teams       Team[]       @relation("TeamCreator")
+  matches     Match[]      @relation("MatchCreator")
+  tournaments Tournament[] @relation("TournamentOrganizer")
+  players     Player[]
+  sessions    Session[]
+
+  @@index([email])
+  @@index([googleId])
+}
+
+enum UserRole {
+  ADMIN
+  ORGANIZER
+  PLAYER
+  SCORER
+  VIEWER
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  token        String   @unique
+  refreshToken String   @unique
+  expiresAt    DateTime
+  userAgent    String?
+  ipAddress    String?
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@index([refreshToken])
+}
+
+// ============================================
+// TEAM & PLAYER MANAGEMENT
+// ============================================
+
+model Team {
+  id            String   @id @default(uuid())
+  name          String
+  shortName     String?
+  logoUrl       String?
+  homeGround    String?
+  captainId     String?
+  viceCaptainId String?
+  coachId       String?
+  createdBy     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  creator User     @relation("TeamCreator", fields: [createdBy], references: [id])
+  players Player[]
+
+  tournaments TournamentTeam[]
+  matchTeam1  Match[]          @relation("MatchTeam1")
+  matchTeam2  Match[]          @relation("MatchTeam2")
+  fixtures    Fixture[]        @relation("FixtureTeam1")
+  fixture2    Fixture[]        @relation("FixtureTeam2")
+  fixtureWins Fixture[]        @relation("FixtureWinner")
+
+  @@index([name])
+  @@index([createdBy])
+}
+
+model Player {
+  id           String        @id @default(uuid())
+  userId       String?       @unique
+  name         String
+  phone        String?
+  email        String?
+  avatarUrl    String?
+  dateOfBirth  DateTime?
+  battingStyle BattingStyle?
+  bowlingStyle BowlingStyle?
+  role         PlayerRole
+  teamId       String?
+  jerseyNumber Int?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  // Relations
+  user User? @relation(fields: [userId], references: [id])
+  team Team? @relation(fields: [teamId], references: [id])
+
+  stats        PlayerStats?
+  matchPlayers MatchPlayer[]
+  BattingStats BattingStats[]
+  BowlingStats BowlingStats[]
+
+  @@index([name])
+  @@index([teamId])
+  @@index([userId])
+}
+
+enum BattingStyle {
+  RIGHT_HANDED
+  LEFT_HANDED
+}
+
+enum BowlingStyle {
+  RIGHT_ARM_FAST
+  RIGHT_ARM_MEDIUM_FAST
+  RIGHT_ARM_MEDIUM
+  RIGHT_ARM_OFF_SPIN
+  RIGHT_ARM_LEG_SPIN
+  LEFT_ARM_FAST
+  LEFT_ARM_MEDIUM_FAST
+  LEFT_ARM_SPIN
+  CHINAMAN
+  LEG_BREAK
+  OFF_BREAK
+  GOOGLY
+}
+
+enum PlayerRole {
+  BATSMAN
+  BOWLER
+  ALL_ROUNDER
+  WICKET_KEEPER
+  WICKET_KEEPER_BATSMAN
+}
+
+// ============================================
+// TOURNAMENT MANAGEMENT
+// ============================================
+
+model Tournament {
+  id                   String           @id @default(uuid())
+  name                 String
+  description          String?
+  format               MatchFormat
+  overs                Int
+  maxOversPerBowler    Int?
+  startDate            DateTime
+  endDate              DateTime
+  registrationDeadline DateTime?
+  maxTeams             Int
+  minTeams             Int              @default(2)
+  status               TournamentStatus @default(DRAFT)
+  rules                Json?
+  prizeMoney           String?
+  venue                String?
+  organizerId          String
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+
+  // Relations
+  organizer User             @relation("TournamentOrganizer", fields: [organizerId], references: [id])
+  teams     TournamentTeam[]
+  matches   Match[]
+  fixtures  Fixture[]
+  groups    Group[]
+
+  @@index([name])
+  @@index([status])
+  @@index([organizerId])
+}
+
+enum MatchFormat {
+  T20
+  ODI
+  TEST
+  T10
+  CUSTOM
+}
+
+enum TournamentStatus {
+  DRAFT
+  REGISTRATION_OPEN
+  REGISTRATION_CLOSED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model TournamentTeam {
+  id           String               @id @default(uuid())
+  tournamentId String
+  teamId       String
+  groupName    String?
+  status       TeamTournamentStatus @default(REGISTERED)
+  registeredAt DateTime             @default(now())
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  team       Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([tournamentId, teamId])
+  @@index([tournamentId])
+  @@index([teamId])
+}
+
+enum TeamTournamentStatus {
+  REGISTERED
+  CONFIRMED
+  ELIMINATED
+  WINNER
+  RUNNER_UP
+}
+
+model Fixture {
+  id            String        @id @default(uuid())
+  tournamentId  String
+  matchId       String?       @unique
+  round         Int
+  matchNumber   Int
+  team1Id       String?
+  team2Id       String?
+  winnerId      String?
+  scheduledDate DateTime?
+  venue         String?
+  status        FixtureStatus @default(TBD)
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  match      Match?     @relation(fields: [matchId], references: [id])
+  team1      Team?      @relation("FixtureTeam1", fields: [team1Id], references: [id])
+  team2      Team?      @relation("FixtureTeam2", fields: [team2Id], references: [id])
+  winner     Team?      @relation("FixtureWinner", fields: [winnerId], references: [id])
+
+  @@index([tournamentId])
+  @@index([matchId])
+  @@index([round])
+}
+
+enum FixtureStatus {
+  TBD
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model Group {
+  id           String @id @default(uuid())
+  tournamentId String
+  name         String
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  teamIds    Json // Array of team IDs
+
+  @@index([tournamentId])
+}
+
+// ============================================
+// MATCH MANAGEMENT
+// ============================================
+
+model Match {
+  id                String      @id @default(uuid())
+  team1Id           String
+  team2Id           String
+  venue             String?
+  startTime         DateTime
+  endTime           DateTime?
+  status            MatchStatus @default(CREATED)
+  format            MatchFormat
+  overs             Int
+  ballsPerOver      Int         @default(6)
+  maxOversPerBowler Int?
+  gullyRules        Json?
+  currentSnapshot   Json?
+  tournamentId      String?
+  createdBy         String
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  // Relations
+  team1      Team        @relation("MatchTeam1", fields: [team1Id], references: [id])
+  team2      Team        @relation("MatchTeam2", fields: [team2Id], references: [id])
+  tournament Tournament? @relation(fields: [tournamentId], references: [id])
+  creator    User        @relation("MatchCreator", fields: [createdBy], references: [id])
+
+  events       Event[]
+  snapshots    Snapshot[]
+  innings      Innings[]
+  toss         Toss?
+  scorecard    Scorecard?
+  fixture      Fixture?
+  players      MatchPlayer[]
+  pointsTables PointsTable[]
+
+  @@index([team1Id])
+  @@index([team2Id])
+  @@index([status])
+  @@index([tournamentId])
+  @@index([createdBy])
+}
+
+// Match Status enum - Minimal set: CREATED, LIVE, COMPLETED, ABANDONED
+enum MatchStatus {
+  CREATED // Match created, players assigned, waiting for toss
+  LIVE // Match is live and being scored
+  INNINGS_BREAK // Match halfway point
+  COMPLETED // Match completed normally
+  ABANDONED // Match abandoned
+}
+
+enum TossDecision {
+  BAT
+  BOWL
+}
+
+model Toss {
+  id        String       @id @default(uuid())
+  matchId   String       @unique
+  winnerId  String
+  decision  TossDecision
+  timestamp DateTime     @default(now())
+
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  @@index([matchId])
+}
+
+model MatchPlayer {
+  id             String   @id @default(uuid())
+  matchId        String
+  playerId       String
+  teamId         String
+  battingOrder   Int?
+  bowlingOrder   Int?
+  isCaptain      Boolean  @default(false)
+  isWicketKeeper Boolean  @default(false)
+  role           String?
+  createdAt      DateTime @default(now())
+
+  match  Match  @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  player Player @relation(fields: [playerId], references: [id])
+
+  @@unique([matchId, playerId])
+  @@index([matchId])
+  @@index([playerId])
+}
+
+// ============================================
+// EVENT SOURCING - EVENT STORE (Immutable)
+// ============================================
+//
+// Design Principles:
+// 1. APPEND-ONLY: Never update or delete events
+// 2. IMMUTABLE: Events cannot be modified after creation
+// 3. ORDERED: sequenceNumber ensures strict ordering per match
+// 4. IDEMPOTENT: eventId uniqueness prevents duplicate events
+// 5. VERSIONED: version field for optimistic concurrency control
+// 6. AUDITABLE: Full audit trail with metadata
+//
+// Metadata:
+// - userId: Who created the event
+// - source: Where the event originated (web, mobile, api)
+// - ipAddress: Client IP address
+
+model Event {
+  id             String    @id // Client-generated UUID for idempotency
+  matchId        String
+  eventType      EventType
+  sequenceNumber Int // Strict ordering within a match (auto-increment)
+  overNumber     Int
+  ballNumber     Int
+  payload        Json // Event-specific data (typed by eventType)
+  version        Int       @default(1) // Optimistic concurrency control
+  timestamp      DateTime  @default(now())
+
+  // Metadata for audit trail
+  createdBy String // User ID who created this event
+  source    String  @default("api") // web, mobile, api
+  ipAddress String? // Client IP address
+
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  // Indexes for efficient querying
+  @@unique([id]) // Idempotency: prevent duplicate events
+  @@index([matchId])
+  @@index([eventType])
+  @@index([timestamp])
+  @@index([matchId, sequenceNumber]) // Efficient range queries
+  @@index([matchId, eventType])
+  @@index([createdBy])
+}
+
+enum EventType {
+  // Match Events
+  MATCH_CREATED
+  MATCH_STARTED
+  MATCH_PAUSED
+  MATCH_RESUMED
+  MATCH_COMPLETED
+  MATCH_ABANDONED
+
+  // Toss Events
+  TOSS_COMPLETED
+
+  // Innings Events
+  INNINGS_STARTED
+  INNINGS_COMPLETED
+
+  // Ball Events
+  BALL_BOWLED
+  RUN_SCORED
+  BOUNDARY_SCORED
+  SIX_SCORED
+  WICKET_FELL
+  WIDE_BALL
+  NO_BALL
+  BYE
+  LEG_BYE
+  OVER_COMPLETED
+
+  // Batting Events
+  BATSMAN_ON_STRIKE
+  BATSMAN_OUT
+  BATSMAN_RETIRED
+  NEW_BATSMAN
+  FIFTY_SCORED
+  CENTURY_SCORED
+
+  // Bowling Events
+  BOWLER_CHANGED
+  MAIDEN_OVER
+
+  // Extras
+  PENALTY_RUNS
+
+  // Dispute Events
+  DISPUTE_FLAGGED
+  DISPUTE_RESOLVED
+  DECISION_REVERSED
+
+  // Correction Events
+  EVENT_CORRECTED
+  EVENT_DELETED
+}
+
+// ============================================
+// SNAPSHOT STORE
+// ============================================
+//
+// Snapshotting Design:
+// - Store match state at intervals (default: every 20 events)
+// - Reduces replay time for large event streams
+// - Event replay starts from latest snapshot + events after
+// - Snapshots are immutable once created
+
+model Snapshot {
+  id             String   @id @default(uuid())
+  matchId        String
+  sequenceNumber Int // Last event sequence in this snapshot
+  state          Json // Serialized match state
+  eventCount     Int // Number of events since last snapshot
+  createdAt      DateTime @default(now())
+
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  @@unique([matchId, sequenceNumber]) // One snapshot per sequence number
+  @@index([matchId])
+  @@index([matchId, sequenceNumber])
+}
+
+// ============================================
+// CQRS - READ MODELS / PROJECTIONS
+// ============================================
+
+model Innings {
+  id            String   @id @default(uuid())
+  matchId       String
+  inningsNumber Int // 1, 2, 3, or 4
+  battingTeamId String
+  bowlingTeamId String
+  totalRuns     Int      @default(0)
+  totalWickets  Int      @default(0)
+  overs         Float    @default(0)
+  balls         Int      @default(0)
+  runRate       Float    @default(0)
+  declared      Boolean  @default(false)
+  followsOn     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  battingStats BattingStats[]
+  bowlingStats BowlingStats[]
+
+  @@unique([matchId, inningsNumber])
+  @@index([matchId])
+}
+
+model BattingStats {
+  id            String   @id @default(uuid())
+  inningsId     String
+  playerId      String
+  position      Int
+  runs          Int      @default(0)
+  balls         Int      @default(0)
+  fours         Int      @default(0)
+  sixes         Int      @default(0)
+  strikeRate    Float    @default(0)
+  dismissal     String?
+  dismissalType String?
+  fielderId     String?
+  bowlerId      String?
+  isOut         Boolean  @default(false)
+  isNotOut      Boolean  @default(false)
+  updatedAt     DateTime @updatedAt
+
+  innings Innings @relation(fields: [inningsId], references: [id], onDelete: Cascade)
+  player  Player  @relation(fields: [playerId], references: [id])
+
+  @@unique([inningsId, playerId])
+  @@index([inningsId])
+  @@index([playerId])
+}
+
+model BowlingStats {
+  id            String   @id @default(uuid())
+  inningsId     String
+  playerId      String
+  overs         Float    @default(0)
+  balls         Int      @default(0)
+  maidens       Int      @default(0)
+  runs          Int      @default(0)
+  wickets       Int      @default(0)
+  economy       Float    @default(0)
+  dots          Int      @default(0)
+  foursConceded Int      @default(0)
+  sixesConceded Int      @default(0)
+  wides         Int      @default(0)
+  noBalls       Int      @default(0)
+  updatedAt     DateTime @updatedAt
+
+  innings Innings @relation(fields: [inningsId], references: [id], onDelete: Cascade)
+  player  Player  @relation(fields: [playerId], references: [id])
+
+  @@unique([inningsId, playerId])
+  @@index([inningsId])
+  @@index([playerId])
+}
+
+model Scorecard {
+  id             String   @id @default(uuid())
+  matchId        String   @unique
+  innings1Data   Json?
+  innings2Data   Json?
+  innings3Data   Json?
+  innings4Data   Json?
+  currentInnings Int      @default(1)
+  matchResult    Json?
+  lastUpdated    DateTime @updatedAt
+
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  @@index([matchId])
+}
+
+model PlayerStats {
+  id             String  @id @default(uuid())
+  playerId       String  @unique
+  player         Player  @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  totalMatches   Int     @default(0)
+  innings        Int     @default(0)
+  notOuts        Int     @default(0)
+  runs           Int     @default(0)
+  highestScore   Int     @default(0)
+  highestNotOut  Boolean @default(false)
+  highestMatchId String?
+  ballsFaced     Int     @default(0)
+  average        Float   @default(0)
+  strikeRate     Float   @default(0)
+  hundreds       Int     @default(0)
+  fifties        Int     @default(0)
+  fours          Int     @default(0)
+  sixes          Int     @default(0)
+  ducks          Int     @default(0)
+
+  wickets            Int     @default(0)
+  ballsBowled        Int     @default(0)
+  runsConceded       Int     @default(0)
+  bowlingAverage     Float   @default(0)
+  economy            Float   @default(0)
+  bowlingStrikeRate  Float   @default(0)
+  bestBowlingWickets Int     @default(0)
+  bestBowlingRuns    Int     @default(0)
+  bestBowlingMatchId String?
+  fiveWicketHauls    Int     @default(0)
+  maidenOvers        Int     @default(0)
+
+  updatedAt DateTime @updatedAt
+
+  @@index([playerId])
+}
+
+// Tournament Points Table
+model PointsTable {
+  id           String @id @default(uuid())
+  tournamentId String
+  teamId       String
+  matchId      String
+
+  played       Int   @default(0)
+  won          Int   @default(0)
+  lost         Int   @default(0)
+  tied         Int   @default(0)
+  noResult     Int   @default(0)
+  points       Int   @default(0)
+  netRunRate   Float @default(0)
+  runsScored   Int   @default(0)
+  runsConceded Int   @default(0)
+  oversFaced   Float @default(0)
+  oversBowled  Float @default(0)
+
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+
+  @@unique([tournamentId, teamId, matchId])
+  @@index([tournamentId])
+  @@index([teamId])
+}
+
+// ============================================
+// DISPUTES
+// ============================================
+
+model Dispute {
+  id          String        @id @default(uuid())
+  matchId     String
+  eventId     String
+  reason      String
+  description String
+  status      DisputeStatus @default(PENDING)
+  flaggedBy   String
+  resolvedBy  String?
+  resolution  String?
+  createdAt   DateTime      @default(now())
+  resolvedAt  DateTime?
+
+  @@index([matchId])
+  @@index([status])
+}
+
+enum DisputeStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  RESOLVED
+}
+
+

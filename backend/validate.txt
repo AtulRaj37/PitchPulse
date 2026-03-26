@@ -1,0 +1,38 @@
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+
+Error: Prisma schema validation - (validate wasm)
+Error code: P1012
+[1;91merror[0m: [1mError validating field `homeMatches` in model `Team`: The relation field `homeMatches` on model `Team` is missing an opposite relation field on the model `Match`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:100[0m
+[1;94m   | [0m
+[1;94m99 | [0m  players      Player[]
+[1;94m100 | [0m  [1;91mhomeMatches  Match[]   @relation("HomeMatch")[0m
+[1;94m101 | [0m  awayMatches  Match[]   @relation("AwayMatch")
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `awayMatches` in model `Team`: The relation field `awayMatches` on model `Team` is missing an opposite relation field on the model `Match`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:101[0m
+[1;94m   | [0m
+[1;94m100 | [0m  homeMatches  Match[]   @relation("HomeMatch")
+[1;94m101 | [0m  [1;91mawayMatches  Match[]   @relation("AwayMatch")[0m
+[1;94m102 | [0m  tournaments  TournamentTeam[]
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `match` in model `Fixture`: The relation field `match` on model `Fixture` is missing an opposite relation field on the model `Match`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:259[0m
+[1;94m   | [0m
+[1;94m258 | [0m  tournament    Tournament    @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+[1;94m259 | [0m  [1;91mmatch        Match?        @relation(fields: [matchId], references: [id])[0m
+[1;94m260 | [0m  team1        Team?         @relation("FixtureTeam1", fields: [team1Id], references: [id])
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `winner` in model `Fixture`: The relation field `winner` on model `Fixture` is missing an opposite relation field on the model `Team`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:262[0m
+[1;94m   | [0m
+[1;94m261 | [0m  team2        Team?         @relation("FixtureTeam2", fields: [team2Id], references: [id])
+[1;94m262 | [0m  [1;91mwinner       Team?         @relation("FixtureWinner", fields: [winnerId], references: [id])[0m
+[1;94m263 | [0m
+[1;94m   | [0m
+
+Validation Error Count: 4
+[Context: validate]
+
+Prisma CLI Version : 5.22.0
