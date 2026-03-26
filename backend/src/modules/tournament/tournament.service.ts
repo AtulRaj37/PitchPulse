@@ -36,7 +36,7 @@ export class TournamentService {
     const limit = query.limit || 20;
     const offset = query.offset || 0;
     
-    let where: any = {};
+    const where: any = {};
     if (query.status && query.status.length > 0) where.status = { in: query.status };
     if (query.organizerId) where.organizerId = query.organizerId;
 

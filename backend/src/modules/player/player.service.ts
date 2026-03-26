@@ -40,7 +40,7 @@ export class PlayerService {
     const limit = query.limit || 20;
     const offset = query.offset || 0;
     
-    let where: any = {};
+    const where: any = {};
     if (query.search) {
       where.name = { contains: query.search, mode: 'insensitive' };
     }

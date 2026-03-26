@@ -1,0 +1,25 @@
+
+> @pitchpulse/backend@1.0.0 lint
+> eslint src --ext .ts
+
+
+C:\Users\Atul Raj\Desktop\PitchPulse\backend\src\core\redis\pub-sub.ts
+  138:27  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+C:\Users\Atul Raj\Desktop\PitchPulse\backend\src\event-sourcing\projections\projection-manager.ts
+   21:28  error  Constraining the generic type `T` to `any` does nothing and is unnecessary  @typescript-eslint/no-unnecessary-type-constraint
+   83:27  error  Constraining the generic type `T` to `any` does nothing and is unnecessary  @typescript-eslint/no-unnecessary-type-constraint
+  296:34  error  Constraining the generic type `T` to `any` does nothing and is unnecessary  @typescript-eslint/no-unnecessary-type-constraint
+
+C:\Users\Atul Raj\Desktop\PitchPulse\backend\src\modules\auth\auth.service.ts
+  292:3  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+✖ 5 problems (5 errors, 0 warnings)
+
+npm error Lifecycle script `lint` failed with error:
+npm error code 1
+npm error path C:\Users\Atul Raj\Desktop\PitchPulse\backend
+npm error workspace @pitchpulse/backend@1.0.0
+npm error location C:\Users\Atul Raj\Desktop\PitchPulse\backend
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c eslint src --ext .ts

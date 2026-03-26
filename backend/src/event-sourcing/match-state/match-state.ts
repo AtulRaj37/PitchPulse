@@ -398,7 +398,7 @@ function processBallBowled(acc: BuilderAccumulator, event: StoredEvent): Builder
   const innings = acc.innings[acc.currentInningsIndex];
 
   // Update batting position for striker
-  let battingOrder = [...innings.battingOrder];
+  const battingOrder = [...innings.battingOrder];
   const strikerIdx = battingOrder.findIndex(b => b.playerId === payload.batsmanId);
   if (strikerIdx === -1) {
     battingOrder.push({
@@ -422,7 +422,7 @@ function processBallBowled(acc: BuilderAccumulator, event: StoredEvent): Builder
   }
 
   // Update bowling figures
-  let bowlingFigures = [...innings.bowlingFigures];
+  const bowlingFigures = [...innings.bowlingFigures];
   const bowlerIdx = bowlingFigures.findIndex(b => b.playerId === payload.bowlerId);
   if (bowlerIdx === -1) {
     bowlingFigures.push({
