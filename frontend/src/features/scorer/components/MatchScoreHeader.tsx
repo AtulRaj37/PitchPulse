@@ -82,24 +82,24 @@ export function MatchScoreHeader({
       initial={{ opacity: 0, scale: 0.98, y: -10 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="relative overflow-hidden bg-[#0e1424]/90 backdrop-blur-3xl rounded-[2rem] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+      className="relative overflow-hidden bg-zinc-950/90 backdrop-blur-3xl rounded-[2rem] border border-zinc-800 shadow-2xl"
     >
       {/* Dynamic Background Glows */}
-      <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-emerald-500/10 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2 pointer-events-none" />
+      <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-primary-500/10 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-accent-500/10 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2 pointer-events-none" />
       
       {/* Top Banner: Teams & Avatars */}
-      <div className="flex justify-between items-center px-6 sm:px-8 py-4 bg-white/[0.03] border-b border-white/5 relative z-10 w-full">
+      <div className="flex justify-between items-center px-6 sm:px-8 py-4 bg-white/[0.02] border-b border-zinc-800 relative z-10 w-full">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full">
           
           {/* Batting Team (Left) */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-700 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.4)] border border-emerald-300/30 shrink-0">
-              <span className="text-[12px] font-black text-white tracking-widest">{getInitials(battingTeamName)}</span>
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-400 to-primary-700 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.4)] border border-primary-300/30 shrink-0">
+              <span className="text-[12px] font-black text-zinc-950 tracking-widest">{getInitials(battingTeamName)}</span>
             </div>
             <div className="flex flex-col">
               <span className="text-white font-black tracking-tight text-sm sm:text-base uppercase drop-shadow-md">{battingTeamName}</span>
-              <span className="text-[10px] text-emerald-400 font-bold tracking-widest uppercase mt-0.5">Batting</span>
+              <span className="text-[10px] text-primary-400 font-bold tracking-widest uppercase mt-0.5">Batting</span>
             </div>
           </div>
 
@@ -109,12 +109,12 @@ export function MatchScoreHeader({
 
           {/* Bowling Team (Right) */}
           <div className="flex items-center gap-3 sm:flex-row-reverse text-left sm:text-right">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-800 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.3)] border border-blue-400/20 opacity-90 shrink-0">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent-500 to-accent-800 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.3)] border border-accent-400/20 opacity-90 shrink-0">
               <span className="text-[12px] font-black text-white tracking-widest">{getInitials(bowlingTeamName)}</span>
             </div>
             <div className="flex flex-col">
               <span className="text-zinc-300 font-bold tracking-tight text-sm sm:text-base uppercase">{bowlingTeamName}</span>
-              <span className="text-[10px] text-blue-400/80 font-bold tracking-widest uppercase mt-0.5">Bowling</span>
+              <span className="text-[10px] text-accent-400/80 font-bold tracking-widest uppercase mt-0.5">Bowling</span>
             </div>
           </div>
 
@@ -124,43 +124,76 @@ export function MatchScoreHeader({
       {/* Main Score Area */}
       <div className="px-6 sm:px-10 py-8 flex flex-col md:flex-row md:items-end justify-between gap-8 relative z-10">
         
-        {/* Left: Score */}
-        <div className="flex flex-col items-start gap-1">
-          {renderStatusBadge()}
-          <div className="flex items-baseline gap-3 mt-3">
-            <h1 className="text-7xl sm:text-8xl font-black font-clash text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-400 tracking-tighter drop-shadow-2xl">
-              {runs}<span className="text-zinc-500 text-5xl sm:text-6xl">/{wickets}</span>
-            </h1>
-            <span className="text-2xl sm:text-3xl font-bold text-zinc-500 tracking-tight">({oversFormatted})</span>
-          </div>
+        {/* Left: Score / Match State */}
+        <div className="flex flex-col items-start gap-1 relative w-full md:w-auto">
+          {status === 'INNINGS_BREAK' ? (
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} 
+              className="py-4 mt-2"
+            >
+              <h2 className="text-4xl sm:text-6xl font-black font-clash text-blue-500 tracking-tighter uppercase drop-shadow-[0_0_30px_rgba(59,130,246,0.5)]">
+                Innings <span className="text-white italic">Break</span>
+              </h2>
+              <div className="flex items-center gap-4 mt-2">
+                <span className="text-zinc-400 font-bold uppercase tracking-widest text-xs bg-blue-500/10 border border-blue-500/20 px-3 py-1 rounded">
+                  Target: {runs + 1}
+                </span>
+                <span className="text-zinc-500 font-bold uppercase tracking-widest text-xs">
+                  Req RR: {((runs + 1) / totalOvers).toFixed(1)}
+                </span>
+              </div>
+            </motion.div>
+          ) : status === 'COMPLETED' ? (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} 
+              className="py-4 mt-2"
+            >
+              <h2 className="text-4xl sm:text-6xl font-black font-clash text-emerald-500 tracking-tighter uppercase drop-shadow-[0_0_30px_rgba(16,185,129,0.5)]">
+                Match <span className="text-white italic">Completed</span>
+              </h2>
+              <div className="mt-2 text-zinc-400 font-bold uppercase tracking-widest text-xs bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded inline-block">
+                Final Score: {runs}/{wickets}
+              </div>
+            </motion.div>
+          ) : (
+            <>
+              {renderStatusBadge()}
+              <div className="flex items-baseline gap-3 mt-3">
+                <h1 className="text-7xl sm:text-8xl font-black font-display text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-400 tracking-tighter drop-shadow-2xl">
+                  {runs}<span className="text-zinc-600 font-sans text-5xl sm:text-6xl">/{wickets}</span>
+                </h1>
+                <span className="text-2xl sm:text-3xl font-bold font-sans text-zinc-500 tracking-tight">({oversFormatted})</span>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Right: Advanced Metrics */}
-        <div className="flex flex-wrap md:flex-col gap-3 md:gap-3 items-start md:items-end p-5 md:p-0 bg-black/20 md:bg-transparent rounded-2xl md:rounded-none border border-white/5 md:border-none w-full md:w-auto">
+        <div className="flex flex-wrap md:flex-col gap-3 md:gap-3 items-start md:items-end p-5 md:p-0 bg-zinc-900/50 md:bg-transparent rounded-2xl md:rounded-none border border-zinc-800/50 md:border-none w-full md:w-auto mt-6 md:mt-0">
           
           {/* CRR */}
-          <div className="flex items-center gap-3 bg-white/5 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/10 w-full md:w-auto justify-between md:justify-start shadow-inner">
+          <div className="flex items-center gap-3 bg-zinc-900/80 backdrop-blur-sm rounded-xl px-4 py-2 border border-zinc-800 w-full md:w-auto justify-between md:justify-start shadow-inner">
             <span className="text-[11px] text-zinc-400 uppercase font-black tracking-widest">Curr. RR</span>
-            <span className="text-lg font-black text-white font-jetbrains">{currentRR}</span>
+            <span className="text-lg font-black font-display text-white">{currentRR}</span>
           </div>
           
           {/* Innings 1: Projected Score */}
           {innings === 1 && (
-            <div className="flex items-center gap-3 bg-white/5 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/10 w-full md:w-auto justify-between md:justify-start shadow-inner">
+            <div className="flex items-center gap-3 bg-zinc-900/80 backdrop-blur-sm rounded-xl px-4 py-2 border border-zinc-800 w-full md:w-auto justify-between md:justify-start shadow-inner">
               <span className="text-[11px] text-zinc-400 uppercase font-black tracking-widest">Proj. Score ({totalOvers}O)</span>
-              <span className="text-lg font-black text-emerald-400 font-jetbrains">{projectedScore}</span>
+              <span className="text-lg font-black font-display text-primary-400">{projectedScore}</span>
             </div>
           )}
 
           {/* Innings 2: Required Runs / Target */}
           {innings === 2 && reqRR !== null && runsNeeded !== null && ballsRemaining !== null && (
             <>
-              <div className="flex items-center gap-3 bg-emerald-500/10 backdrop-blur-sm rounded-xl px-4 py-2 border border-emerald-500/30 w-full md:w-auto justify-between md:justify-start shadow-[0_0_15px_rgba(16,185,129,0.1)]">
-                <span className="text-[11px] text-emerald-500/90 uppercase font-black tracking-widest">Req. RR</span>
-                <span className="text-lg font-black text-emerald-400 font-jetbrains">{reqRR}</span>
+              <div className="flex items-center gap-3 bg-primary-500/10 backdrop-blur-sm rounded-xl px-4 py-2 border border-primary-500/30 w-full md:w-auto justify-between md:justify-start shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                <span className="text-[11px] text-primary-500/90 uppercase font-black tracking-widest">Req. RR</span>
+                <span className="text-lg font-black font-display text-primary-400">{reqRR}</span>
               </div>
               <div className="w-full text-left md:text-right mt-1">
-                <span className="text-xs font-bold font-jetbrains text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-lg inline-block border border-emerald-500/20">
+                <span className="text-xs font-bold font-display tracking-wide text-primary-400 bg-primary-500/10 px-3 py-1.5 rounded-lg inline-block border border-primary-500/20">
                   {battingTeamName} needs {runsNeeded} runs from {ballsRemaining} balls
                 </span>
               </div>

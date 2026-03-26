@@ -59,7 +59,7 @@ export const createMatchSchema = z.object({
   startTime: z.coerce.date(),
   format: z.enum(['T20', 'ODI', 'TEST', 'T10', 'CUSTOM']),
   overs: z.coerce.number().int().min(1).max(50),
-  gullyRules: z.record(z.boolean()).optional(),
+  gullyRules: z.record(z.union([z.boolean(), z.number()])).optional(),
   tournamentId: uuidSchema.optional(),
 });
 
@@ -261,11 +261,11 @@ export const addPlayerToSquadSchema = z.object({
 
 export const createPlayerSchema = z.object({
   name: z.string().min(2, 'Player name must be at least 2 characters').max(100),
-  phone: z.string().max(20).optional(),
-  email: z.string().email().optional(),
-  avatarUrl: z.string().url().optional(),
-  dateOfBirth: z.coerce.date().optional(),
-  battingStyle: z.enum(['RIGHT_HANDED', 'LEFT_HANDED']).optional(),
+  phone: z.string().max(20).nullable().optional(),
+  email: z.string().email().nullable().optional(),
+  avatarUrl: z.string().url().nullable().optional(),
+  dateOfBirth: z.coerce.date().nullable().optional(),
+  battingStyle: z.enum(['RIGHT_HANDED', 'LEFT_HANDED']).nullable().optional(),
   bowlingStyle: z.enum([
     'RIGHT_ARM_FAST',
     'RIGHT_ARM_MEDIUM_FAST',
@@ -279,10 +279,10 @@ export const createPlayerSchema = z.object({
     'LEG_BREAK',
     'OFF_BREAK',
     'GOOGLY',
-  ]).optional(),
+  ]).nullable().optional(),
   role: z.enum(['BATSMAN', 'BOWLER', 'ALL_ROUNDER', 'WICKET_KEEPER', 'WICKET_KEEPER_BATSMAN']),
-  teamId: uuidSchema.optional(),
-  jerseyNumber: z.coerce.number().int().min(0).max(999).optional(),
+  teamId: uuidSchema.nullable().optional(),
+  jerseyNumber: z.coerce.number().int().min(0).max(999).nullable().optional(),
 });
 
 export const updatePlayerSchema = createPlayerSchema.partial();

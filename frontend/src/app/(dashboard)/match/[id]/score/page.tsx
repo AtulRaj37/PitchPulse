@@ -6,7 +6,7 @@ import { useScorerStore } from '@/features/scorer/scorer.store';
 import { MatchService } from '@/services/api/match.service';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Activity } from 'lucide-react';
+import { Activity, ArrowLeft } from 'lucide-react';
 import clsx from 'clsx';
 import { toast } from 'sonner';
 
@@ -29,6 +29,7 @@ export default function MatchScorerPage() {
     innings,
     target,
     events,
+    gullyRules,
     setMatchId, 
     setPlayers,
     setBowler,
@@ -224,6 +225,16 @@ export default function MatchScorerPage() {
         )}
       </AnimatePresence>
 
+      {/* 0. Top Navigation Bar */}
+      <div className="flex items-center justify-between w-full mb-2">
+        <Link href="/dashboard">
+          <button className="flex items-center gap-2 text-zinc-400 hover:text-emerald-400 transition-colors group text-xs sm:text-sm font-bold uppercase tracking-widest bg-zinc-900/50 hover:bg-emerald-500/10 px-4 py-2 rounded-xl border border-zinc-800 hover:border-emerald-500/50 backdrop-blur-sm">
+            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+            Back to Command Center
+          </button>
+        </Link>
+      </div>
+
       {/* 1. Header Area */}
       <MatchScoreHeader 
         battingTeamName={battingTeam?.name || 'Waiting...'}
@@ -266,57 +277,92 @@ export default function MatchScorerPage() {
             }}
           />
 
-          {/* Quick Player Selectors (If needs assignment) */}
+          {/* Premium Player Assigment Hub */}
           {(needsPlayerAssignment || isInitialSetup) && (
-            <div className="glass-premium p-4 md:p-6 rounded-2xl border border-amber-500/30 shadow-[0_0_20px_rgba(245,158,11,0.1)]">
-              <h3 className="text-amber-500 font-bold uppercase tracking-widest text-xs mb-4">Required Action: Assign Players</h3>
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+              className="bg-zinc-950/80 backdrop-blur-xl p-6 md:p-8 rounded-[2rem] border border-amber-500/30 shadow-[0_0_30px_rgba(245,158,11,0.15)] relative overflow-hidden"
+            >
+              {/* Alert Glow */}
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600" />
               
-              <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center border border-amber-500/30">
+                  <Activity size={20} className="text-amber-500" />
+                </div>
+                <div>
+                  <h3 className="text-amber-500 font-display font-black uppercase tracking-widest text-lg leading-none">Action Required</h3>
+                  <p className="text-zinc-400 text-xs font-bold">{isInitialSetup ? "Select opening players to start the match." : "Assign new players to resume scoring."}</p>
+                </div>
+              </div>
+              
+              <div className="flex flex-col gap-8">
                 
-                {/* STRIKER DROPDOWN */}
+                {/* STRIKER CHIPS */}
                 {(!strikerId) && (
-                  <select 
-                    value="" 
-                    onChange={e => setStriker(e.target.value)}
-                    className="w-full bg-[#151a28] border border-emerald-500/50 text-emerald-400 rounded-xl p-3 text-sm outline-none focus:border-emerald-400"
-                  >
-                    <option value="">Select New Striker...</option>
-                    {battingTeam?.players?.filter((p: any) => !dismissedPlayerIds.has(p.id) && p.id !== nonStrikerId).map((p: any) => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                  </select>
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold text-zinc-300 uppercase tracking-widest flex items-center gap-2 bg-zinc-900 border border-zinc-800 w-fit px-3 py-1.5 rounded-lg shadow-sm">
+                       Select Striker
+                    </h4>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {battingTeam?.players?.filter((p: any) => !dismissedPlayerIds.has(p.id) && p.id !== nonStrikerId).map((p: any) => (
+                        <button 
+                          key={p.id}
+                          onClick={() => setStriker(p.id)}
+                          className="bg-zinc-900 border border-zinc-800 hover:border-emerald-500/50 hover:bg-emerald-500/10 text-zinc-300 py-3 px-3 rounded-xl text-sm font-bold transition-all text-left flex items-center gap-3 group overflow-hidden relative shadow-sm"
+                        >
+                          <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs text-white group-hover:bg-emerald-500 group-hover:text-zinc-950 transition-colors z-10">{p.name.slice(0,2).toUpperCase()}</div>
+                          <span className="truncate z-10 group-hover:text-white transition-colors">{p.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 )}
 
-                {/* NON-STRIKER DROPDOWN */}
+                {/* NON-STRIKER CHIPS */}
                 {(!nonStrikerId) && (
-                  <select 
-                    value="" 
-                    onChange={e => setPlayers(strikerId, e.target.value, bowlerId)}
-                    className="w-full bg-[#151a28] border border-emerald-500/50 text-emerald-400 rounded-xl p-3 text-sm outline-none focus:border-emerald-400"
-                  >
-                    <option value="">Select New Non-Striker...</option>
-                    {battingTeam?.players?.filter((p: any) => !dismissedPlayerIds.has(p.id) && p.id !== strikerId).map((p: any) => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                  </select>
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-bold text-zinc-300 uppercase tracking-widest flex items-center gap-2 bg-zinc-900 border border-zinc-800 w-fit px-3 py-1.5 rounded-lg shadow-sm">
+                       Select Non-Striker
+                    </h4>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {battingTeam?.players?.filter((p: any) => !dismissedPlayerIds.has(p.id) && p.id !== strikerId).map((p: any) => (
+                        <button 
+                          key={p.id}
+                          onClick={() => setPlayers(strikerId, p.id, bowlerId)}
+                          className="bg-zinc-900 border border-zinc-800 hover:border-emerald-500/50 hover:bg-emerald-500/10 text-zinc-300 py-3 px-3 rounded-xl text-sm font-bold transition-all text-left flex items-center gap-3 group overflow-hidden relative shadow-sm"
+                        >
+                          <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs text-white group-hover:bg-emerald-500 group-hover:text-zinc-950 transition-colors z-10">{p.name.slice(0,2).toUpperCase()}</div>
+                          <span className="truncate z-10 group-hover:text-white transition-colors">{p.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 )}
                 
-                {/* BOWLER DROPDOWN */}
+                {/* BOWLER CHIPS */}
                 {(!bowlerId) && (
-                  <select 
-                    value="" 
-                    onChange={e => setBowler(e.target.value)}
-                    className="w-full bg-[#151a28] border border-blue-500/50 text-blue-400 rounded-xl p-3 text-sm outline-none focus:border-blue-400"
-                  >
-                    <option value="">Select New Bowler...</option>
-                    {bowlingTeam?.players?.filter((p: any) => p.id !== previousBowlerId).map((p: any) => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                  </select>
+                  <div className="space-y-3 pt-4 border-t border-zinc-800/50">
+                    <h4 className="text-xs font-bold text-blue-400 uppercase tracking-widest flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 w-fit px-3 py-1.5 rounded-lg shadow-sm">
+                       Select New Bowler
+                    </h4>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {bowlingTeam?.players?.filter((p: any) => p.id !== previousBowlerId).map((p: any) => (
+                        <button 
+                          key={p.id}
+                          onClick={() => setBowler(p.id)}
+                          className="bg-zinc-900 border border-zinc-800 hover:border-blue-500/50 hover:bg-blue-500/10 text-zinc-300 py-3 px-3 rounded-xl text-sm font-bold transition-all text-left flex items-center gap-3 group overflow-hidden relative shadow-sm"
+                        >
+                          <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs text-white group-hover:bg-blue-500 group-hover:text-white transition-colors z-10">{p.name.slice(0,2).toUpperCase()}</div>
+                          <span className="truncate z-10 group-hover:text-white transition-colors">{p.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 )}
 
               </div>
-            </div>
+            </motion.div>
           )}
         </div>
 
@@ -352,6 +398,7 @@ export default function MatchScorerPage() {
             <OverTimeline timeline={currentOverTimeline} />
             
             <ScoreActionPad 
+              gullyRules={gullyRules}
               onScore={(runs, extras) => {
                 if (!handleScoreActionCheck()) return;
                 scoreRuns(runs, extras);

@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/services/api/api.client';
+import { PlayerService } from '@/services/api/player.service';
 import { LoadingLayer } from '@/components/ui/LoadingLayer';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Users, Plus, Trash2, Shield, Sword, UserMinus, ArrowLeft, Edit2, Check, X, TrendingUp, HelpCircle } from 'lucide-react';
+import { MapPin, Users, Plus, Trash2, Shield, Sword, UserMinus, ArrowLeft, Edit2, Check, X, TrendingUp, HelpCircle, Activity, Target } from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
@@ -22,6 +23,10 @@ export default function TeamDetailsPage({ params }: { params: { id: string } }) 
   const [isEditingTeam, setIsEditingTeam] = useState(false);
   const [editedTeam, setEditedTeam] = useState({ name: '', shortName: '', homeGround: '', logoUrl: '' });
   const [isUpdatingTeam, setIsUpdatingTeam] = useState(false);
+
+  // Edit Player State
+  const [editingPlayer, setEditingPlayer] = useState<any | null>(null);
+  const [isUpdatingPlayer, setIsUpdatingPlayer] = useState(false);
 
   // Add Player Form State
   const [isAddingPlayer, setIsAddingPlayer] = useState(false);
@@ -139,6 +144,40 @@ export default function TeamDetailsPage({ params }: { params: { id: string } }) 
     }
   };
 
+  const handleUpdatePlayer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingPlayer || !editingPlayer.name.trim()) {
+      toast.error('Player name is required');
+      return;
+    }
+    
+    setIsUpdatingPlayer(true);
+    try {
+      const payload: any = {
+        name: editingPlayer.name.trim(),
+        role: editingPlayer.role,
+        battingStyle: editingPlayer.battingStyle,
+      };
+
+      if (editingPlayer.jerseyNumber) {
+        payload.jerseyNumber = parseInt(editingPlayer.jerseyNumber);
+      }
+
+      if (editingPlayer.role === 'BOWLER' || editingPlayer.role === 'ALL_ROUNDER') {
+        payload.bowlingStyle = editingPlayer.bowlingStyle || 'RIGHT_ARM_FAST';
+      }
+
+      await PlayerService.updatePlayer(editingPlayer.id, payload);
+      toast.success('Player updated successfully');
+      setEditingPlayer(null);
+      fetchTeamAndMatches(); // Refresh roster
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to update player');
+    } finally {
+      setIsUpdatingPlayer(false);
+    }
+  };
+
   const handleAssignRole = async (playerId: string, roleType: 'CAPTAIN' | 'VICE_CAPTAIN') => {
     try {
       const payload: any = {};
@@ -174,6 +213,81 @@ export default function TeamDetailsPage({ params }: { params: { id: string } }) 
   const players = team.players || [];
   const totalMatches = teamMatches.length;
   const completedMatches = teamMatches.filter(m => m.status === 'COMPLETED');
+  
+  // Advanced Analytics Computed
+  const wins = completedMatches.filter(m => m.scorecard?.winnerId === params.id).length;
+  const winRate = totalMatches > 0 ? Math.round((wins / totalMatches) * 100) : 0;
+
+  // Roster Grouping
+  const batsmen = players.filter((p: any) => p.role === 'BATSMAN');
+  const allRounders = players.filter((p: any) => p.role === 'ALL_ROUNDER');
+  const wicketKeepers = players.filter((p: any) => p.role === 'WICKET_KEEPER' || p.role === 'WICKET_KEEPER_BATSMAN');
+  const bowlers = players.filter((p: any) => p.role === 'BOWLER');
+
+  const renderPlayerCard = (player: any) => {
+    const isCaptain = team.captainId === player.id;
+    const isViceCaptain = team.viceCaptainId === player.id;
+
+    return (
+      <motion.div 
+        key={player.id}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className={`flex items-center justify-between group py-4 border-b transition-colors pl-4 pr-4 -mx-4 hover:bg-white/[0.02] ${isCaptain ? 'border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10' : isViceCaptain ? 'border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10' : 'border-white/5 last:border-0'}`}
+      >
+        <div className="flex items-center gap-6 w-full pr-2">
+          {/* Avatar */}
+          <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-xl font-black text-white shrink-0 relative shadow-inner">
+            {player.name.charAt(0).toUpperCase()}
+            {player.jerseyNumber && (
+              <div className="absolute -bottom-2 -right-2 w-6 h-6 bg-zinc-950 rounded-lg border border-zinc-800 flex items-center justify-center text-[10px] font-black text-emerald-400 shadow-xl">
+                {player.jerseyNumber}
+              </div>
+            )}
+          </div>
+          {/* Details */}
+          <div className="flex flex-col flex-1 min-w-0">
+            <div className="flex items-center gap-3">
+              <span className="font-black font-display tracking-tight text-white text-xl truncate uppercase group-hover:text-emerald-400 transition-colors">{player.name}</span>
+              {isCaptain && <span title="Captain" className="bg-amber-500 text-zinc-950 text-[10px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider">C</span>}
+              {isViceCaptain && <span title="Vice Captain" className="bg-emerald-500 text-zinc-950 text-[10px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider">VC</span>}
+            </div>
+            
+            <div className="flex items-center gap-3 text-[11px] font-bold text-zinc-500 uppercase tracking-widest mt-1">
+              <span className="flex items-center gap-1.5 bg-white/5 px-2 py-0.5 rounded"><Sword size={12} className="text-zinc-400" /> {player.battingStyle === 'RIGHT_HANDED' ? 'RIGHT-HAND BAT' : 'LEFT-HAND BAT'}</span>
+              {(player.role === 'BOWLER' || player.role === 'ALL_ROUNDER') && player.bowlingStyle && (
+                <span className="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded text-emerald-500">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/50"></span>
+                  <span className="truncate">{player.bowlingStyle.replace(/_/g, ' ')}</span>
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+        
+        {/* Actions inside a sleeker container */}
+        <div className="flex items-center gap-1 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-all shrink-0 bg-zinc-950 rounded-xl border border-white/5 p-1 shadow-xl lg:-translate-x-4 lg:group-hover:translate-x-0">
+          {(!isCaptain) && (
+            <button onClick={() => handleAssignRole(player.id, 'CAPTAIN')} title="Make Captain" className="p-2 text-zinc-500 hover:text-amber-500 hover:bg-amber-500/10 rounded-lg transition-colors">
+              <span className="text-[11px] font-black w-4 text-center block">C</span>
+            </button>
+          )}
+          {(!isViceCaptain) && (
+            <button onClick={() => handleAssignRole(player.id, 'VICE_CAPTAIN')} title="Make Vice Captain" className="p-2 text-zinc-500 hover:text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-colors">
+               <span className="text-[11px] font-black w-4 text-center block">VC</span>
+            </button>
+          )}
+          <div className="w-px h-4 bg-white/10 mx-1 hidden sm:block"></div>
+          <button onClick={() => setEditingPlayer({...player, jerseyNumber: player.jerseyNumber || ''})} title="Edit Player" className="p-2 text-zinc-500 hover:text-blue-500 hover:bg-blue-500/10 rounded-lg transition-colors hidden sm:block">
+            <Edit2 size={16} />
+          </button>
+          <button onClick={() => handleRemovePlayer(player.id, player.name)} title="Remove Player" className="p-2 text-zinc-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors hidden sm:block">
+            <UserMinus size={16} />
+          </button>
+        </div>
+      </motion.div>
+    );
+  };
 
   // Optgroup styles specifically for Windows/Chrome native select dropdowns
   const selectOptGroupStyle = "bg-zinc-900 text-emerald-400 font-black";
@@ -235,7 +349,7 @@ export default function TeamDetailsPage({ params }: { params: { id: string } }) 
               </div>
             ) : (
               <div>
-                <h1 className="text-3xl md:text-5xl font-black font-clash text-white mb-2 truncate max-w-lg">{team.name}</h1>
+                <h1 className="text-3xl md:text-5xl font-black font-display text-white mb-2 leading-tight">{team.name}</h1>
                 <div className="flex flex-wrap items-center gap-3 text-sm font-medium text-zinc-400">
                   <span className="flex items-center gap-1.5 bg-zinc-900/50 px-3 py-1.5 rounded-lg border border-white/5">
                     <Users size={16} className="text-emerald-500" /> {players.length} Players
@@ -426,7 +540,7 @@ export default function TeamDetailsPage({ params }: { params: { id: string } }) 
             )}
           </AnimatePresence>
 
-          {/* Players List */}
+          {/* Players List Grouped By Role */}
           {players.length === 0 ? (
             <div className="glass-premium rounded-[2rem] p-12 text-center border-dashed border-white/10">
               <Shield size={48} className="mx-auto text-zinc-800 mb-4" />
@@ -434,101 +548,239 @@ export default function TeamDetailsPage({ params }: { params: { id: string } }) 
               <p className="text-zinc-600">This team currently has no players registered.</p>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {players.map((player: any, idx: number) => {
-                const isCaptain = team.captainId === player.id;
-                const isViceCaptain = team.viceCaptainId === player.id;
+            <div className="space-y-8">
+              {batsmen.length > 0 && (
+                <div className="mb-12">
+                   <div className="flex items-center gap-4 mb-4">
+                     <h3 className="text-2xl font-black font-display text-white uppercase tracking-tight">Batters</h3>
+                     <div className="h-px bg-white/10 flex-1"></div>
+                   </div>
+                   <div className="flex flex-col">
+                     {batsmen.map(renderPlayerCard)}
+                   </div>
+                </div>
+              )}
+              
+              {allRounders.length > 0 && (
+                <div className="mb-12">
+                   <div className="flex items-center gap-4 mb-4">
+                     <h3 className="text-2xl font-black font-display text-white uppercase tracking-tight">All-Rounders</h3>
+                     <div className="h-px bg-white/10 flex-1"></div>
+                   </div>
+                   <div className="flex flex-col">
+                     {allRounders.map(renderPlayerCard)}
+                   </div>
+                </div>
+              )}
 
-                return (
-                  <motion.div 
-                    key={player.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.05 }}
-                    className={`glass-premium p-5 rounded-2xl flex items-center justify-between group border transition-all ${isCaptain ? 'border-amber-500/30 bg-amber-500/5' : isViceCaptain ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-white/5 hover:border-white/10'}`}
-                  >
-                    <div className="flex items-center gap-4 w-full pr-2">
-                      <div className="relative shrink-0">
-                        {player.avatarUrl ? (
-                          <img src={player.avatarUrl} alt={player.name} className="w-12 h-12 rounded-full object-cover border border-zinc-800" />
-                        ) : (
-                          <div className="w-12 h-12 bg-zinc-900 rounded-full flex items-center justify-center border border-zinc-800 text-emerald-500 font-black">
-                            {player.name.charAt(0)}
-                          </div>
-                        )}
-                        {player.jerseyNumber && (
-                          <div className="absolute -bottom-1 -right-1 bg-white text-zinc-950 text-[9px] font-black w-5 h-5 flex items-center justify-center rounded-full border-2 border-[#0B0F1A]">
-                            {player.jerseyNumber}
-                          </div>
-                        )}
-                      </div>
-                      <div className="overflow-hidden flex-1">
-                        <div className="flex items-center gap-2">
-                          <Link href={`/players/${player.id}`} className="hover:underline">
-                            <h4 className="text-lg font-bold text-white leading-tight truncate">{player.name}</h4>
-                          </Link>
-                          {isCaptain && <span className="bg-amber-500 text-amber-950 text-[9px] px-1.5 py-0.5 rounded font-black tracking-widest shrink-0">C</span>}
-                          {isViceCaptain && <span className="bg-emerald-500 text-emerald-950 text-[9px] px-1.5 py-0.5 rounded font-black tracking-widest shrink-0">VC</span>}
-                        </div>
-                        <span className="text-xs font-medium text-zinc-500 flex items-center gap-1 mt-1 truncate">
-                          {player.role === 'BATSMAN' && <Sword size={12} className="text-blue-400 shrink-0" />}
-                          {(player.role === 'BOWLER' || player.role === 'ALL_ROUNDER') && <div className="w-2 h-2 rounded-full bg-red-400 shrink-0" />}
-                          {player.role.replace(/_/g, ' ')} 
-                          {player.battingStyle ? ` - ${player.battingStyle.replace('_HANDED', 'H')}` : ''}
-                          {player.bowlingStyle ? ` (${player.bowlingStyle.replace(/_ARM_|_/g, ' ')})` : ''}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex shrink-0 items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all pl-2">
-                      <button 
-                        onClick={() => handleAssignRole(player.id, 'CAPTAIN')}
-                        className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${isCaptain ? 'bg-amber-500 text-amber-950' : 'bg-zinc-800/80 text-zinc-500 hover:bg-amber-500/20 hover:text-amber-400'}`}
-                        title={isCaptain ? "Remove Captain" : "Make Captain"}
-                      >
-                        <span className="font-black text-[10px]">C</span>
-                      </button>
-                      <button 
-                        onClick={() => handleAssignRole(player.id, 'VICE_CAPTAIN')}
-                        className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${isViceCaptain ? 'bg-emerald-500 text-emerald-950' : 'bg-zinc-800/80 text-zinc-500 hover:bg-emerald-500/20 hover:text-emerald-400'}`}
-                        title={isViceCaptain ? "Remove Vice Captain" : "Make Vice Captain"}
-                      >
-                        <span className="font-black text-[10px]">VC</span>
-                      </button>
-                      <button 
-                        onClick={() => handleRemovePlayer(player.id, player.name)}
-                        className="w-8 h-8 rounded-full bg-red-500/10 text-red-400 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all ml-1"
-                        title="Remove Player"
-                      >
-                        <UserMinus size={14} />
-                      </button>
-                    </div>
-                  </motion.div>
-                );
-              })}
+              {wicketKeepers.length > 0 && (
+                <div className="mb-12">
+                   <div className="flex items-center gap-4 mb-4">
+                     <h3 className="text-2xl font-black font-display text-white uppercase tracking-tight">Wicket Keepers</h3>
+                     <div className="h-px bg-white/10 flex-1"></div>
+                   </div>
+                   <div className="flex flex-col">
+                     {wicketKeepers.map(renderPlayerCard)}
+                   </div>
+                </div>
+              )}
+
+              {bowlers.length > 0 && (
+                <div className="mb-12">
+                   <div className="flex items-center gap-4 mb-4">
+                     <h3 className="text-2xl font-black font-display text-white uppercase tracking-tight">Bowlers</h3>
+                     <div className="h-px bg-white/10 flex-1"></div>
+                   </div>
+                   <div className="flex flex-col">
+                     {bowlers.map(renderPlayerCard)}
+                   </div>
+                </div>
+              )}
             </div>
           )}
         </div>
       ) : (
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="glass-premium p-6 rounded-3xl border border-white/5 md:col-span-3">
-            <h3 className="font-clash font-black text-2xl mb-6">Historical Analytics</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-white/[0.02] p-6 rounded-2xl border border-white/5">
-                <div className="text-zinc-500 text-xs font-bold uppercase tracking-widest mb-2">Total Matches</div>
-                <div className="text-4xl font-black text-white">{totalMatches}</div>
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-6"
+        >
+          <div className="glass-premium p-8 rounded-[2rem] border border-white/5">
+            <h2 className="text-2xl font-black font-display text-white mb-6">Historical Analytics</h2>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="bg-zinc-900/50 rounded-2xl p-5 border border-white/5">
+                <div className="flex items-center gap-2 mb-2">
+                  <Activity size={14} className="text-emerald-500" />
+                  <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Matches Played</span>
+                </div>
+                <div className="text-4xl font-black font-display text-white mb-1">{totalMatches}</div>
+                <div className="text-[10px] text-zinc-500">({totalMatches} Total Scheduled)</div>
               </div>
-              <div className="bg-white/[0.02] p-6 rounded-2xl border border-white/5">
-                <div className="text-zinc-500 text-xs font-bold uppercase tracking-widest mb-2">Completed</div>
-                <div className="text-4xl font-black text-emerald-400">{completedMatches.length}</div>
+              
+              <div className="bg-zinc-900/50 rounded-2xl p-5 border border-white/5">
+                <div className="flex items-center gap-2 mb-2">
+                  <TrendingUp size={14} className="text-emerald-500" />
+                  <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Win Rate</span>
+                </div>
+                <div className="text-4xl font-black font-display text-emerald-400 mb-1">{winRate}%</div>
+                <div className="text-[10px] text-zinc-500">{wins} Wins / {completedMatches.length} Completed</div>
               </div>
-              <div className="bg-white/[0.02] p-6 rounded-2xl border border-white/5 md:col-span-2 flex flex-col items-center justify-center text-center">
-                <HelpCircle className="w-8 h-8 text-zinc-600 mb-2" />
-                <p className="text-sm font-medium text-zinc-500">More Deep Win/Loss and Net Run Rate Analytics will populate here as more historical Match Data Scorecards are completed and closed.</p>
+
+              <div className="bg-zinc-900/50 rounded-2xl p-5 border border-white/5 opacity-50">
+                <div className="flex items-center gap-2 mb-2">
+                  <Target size={14} className="text-blue-500" />
+                  <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Highest Score</span>
+                </div>
+                <div className="text-4xl font-black font-display text-white mb-1">N/A</div>
+                <div className="text-[10px] text-zinc-500">Best Batting Performance</div>
+              </div>
+
+              <div className="bg-zinc-900/50 rounded-2xl p-5 border border-white/5 opacity-50">
+                <div className="flex items-center gap-2 mb-2">
+                  <Activity size={14} className="text-blue-500" />
+                  <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Net Run Rate</span>
+                </div>
+                <div className="text-4xl font-black font-display text-white mb-1">0.000</div>
+                <div className="text-[10px] text-zinc-500">Overall Tournament NRR</div>
               </div>
             </div>
+            
+            <div className="mt-6 flex items-start gap-3 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-500">
+               <Shield size={16} className="shrink-0 mt-0.5" />
+               <p className="text-xs font-medium leading-relaxed text-emerald-100">
+                 <strong className="text-emerald-400 block mb-1">Analytics Engine</strong>
+                 Deep Win/Loss parsing, exact NRR aggregation, and precise Highest Score resolution are currently running in preview mode. Full historical pipeline materializes as more Scorecards are securely closed and processed.
+               </p>
+            </div>
           </div>
-        </div>
+        </motion.div>
       )}
+
+      {/* Edit Player Modal Overlay */}
+      <AnimatePresence>
+        {editingPlayer && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-neutral-950/80 backdrop-blur-sm"
+              onClick={() => setEditingPlayer(null)}
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-lg bg-zinc-950 border border-white/10 rounded-3xl p-6 shadow-2xl overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 p-4">
+                <button onClick={() => setEditingPlayer(null)} className="text-zinc-500 hover:text-white transition-colors bg-white/5 rounded-full p-2">
+                  <X size={20} />
+                </button>
+              </div>
+              <h3 className="text-2xl font-black font-display text-white mb-6">Edit Player</h3>
+              
+              <form onSubmit={handleUpdatePlayer} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2 col-span-2">
+                    <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider pl-1">Player Name</label>
+                    <input 
+                      type="text" 
+                      value={editingPlayer.name}
+                      onChange={(e) => setEditingPlayer({...editingPlayer, name: e.target.value})}
+                      placeholder="Enter full name"
+                      className="w-full bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all font-medium"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider pl-1">Jersey Number</label>
+                    <input 
+                      type="number" 
+                      value={editingPlayer.jerseyNumber}
+                      onChange={(e) => setEditingPlayer({...editingPlayer, jerseyNumber: e.target.value})}
+                      placeholder="Num"
+                      className="w-full bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all font-medium"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider pl-1">Role</label>
+                    <select 
+                      value={editingPlayer.role}
+                      onChange={(e) => setEditingPlayer({...editingPlayer, role: e.target.value})}
+                      className="w-full bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all font-medium appearance-none"
+                    >
+                      <option className={selectOptionStyle} value="BATSMAN">Batsman</option>
+                      <option className={selectOptionStyle} value="BOWLER">Bowler</option>
+                      <option className={selectOptionStyle} value="ALL_ROUNDER">All-Rounder</option>
+                      <option className={selectOptionStyle} value="WICKET_KEEPER">Wicket Keeper</option>
+                      <option className={selectOptionStyle} value="WICKET_KEEPER_BATSMAN">WK Batsman</option>
+                    </select>
+                  </div>
+                  
+                  <div className="space-y-2 col-span-2 sm:col-span-1">
+                    <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider pl-1">Batting Style</label>
+                    <select 
+                      value={editingPlayer.battingStyle || 'RIGHT_HANDED'}
+                      onChange={(e) => setEditingPlayer({...editingPlayer, battingStyle: e.target.value})}
+                      className="w-full bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all font-medium appearance-none"
+                    >
+                      <option className={selectOptionStyle} value="RIGHT_HANDED">Right Hand</option>
+                      <option className={selectOptionStyle} value="LEFT_HANDED">Left Hand</option>
+                    </select>
+                  </div>
+
+                  {(editingPlayer.role === 'BOWLER' || editingPlayer.role === 'ALL_ROUNDER') && (
+                    <div className="space-y-2 col-span-2 sm:col-span-1">
+                      <label className="text-xs font-bold text-emerald-400 uppercase tracking-wider pl-1">Bowling Style</label>
+                      <select 
+                        value={editingPlayer.bowlingStyle || 'RIGHT_ARM_FAST'}
+                        onChange={(e) => setEditingPlayer({...editingPlayer, bowlingStyle: e.target.value})}
+                        className="w-full bg-emerald-900/10 border border-emerald-500/20 rounded-xl px-4 py-3 text-emerald-100 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all font-medium appearance-none"
+                      >
+                        <optgroup className={selectOptGroupStyle} label="Fast / Pace">
+                          <option className={selectOptionStyle} value="RIGHT_ARM_FAST">Right Arm Fast</option>
+                          <option className={selectOptionStyle} value="RIGHT_ARM_MEDIUM_FAST">Right Arm Medium Fast</option>
+                          <option className={selectOptionStyle} value="RIGHT_ARM_MEDIUM">Right Arm Medium</option>
+                          <option className={selectOptionStyle} value="LEFT_ARM_FAST">Left Arm Fast</option>
+                          <option className={selectOptionStyle} value="LEFT_ARM_MEDIUM_FAST">Left Arm Medium Fast</option>
+                        </optgroup>
+                        <optgroup className={selectOptGroupStyle} label="Spin">
+                          <option className={selectOptionStyle} value="RIGHT_ARM_OFF_SPIN">Right Arm Off Spin</option>
+                          <option className={selectOptionStyle} value="RIGHT_ARM_LEG_SPIN">Right Arm Leg Spin</option>
+                          <option className={selectOptionStyle} value="LEFT_ARM_SPIN">Left Arm Spin</option>
+                          <option className={selectOptionStyle} value="CHINAMAN">Chinaman</option>
+                          <option className={selectOptionStyle} value="GOOGLY">Googly</option>
+                        </optgroup>
+                      </select>
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-4 flex gap-3">
+                  <button 
+                    type="submit"
+                    disabled={isUpdatingPlayer}
+                    className="flex-1 bg-emerald-500 text-emerald-950 font-bold py-3.5 rounded-xl hover:bg-emerald-400 transition-colors shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
+                  >
+                    {isUpdatingPlayer ? 'Saving...' : <><Check size={18} /> Update Player</>}
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={() => setEditingPlayer(null)}
+                    className="px-6 bg-white/5 border border-white/10 text-white font-bold py-3.5 rounded-xl hover:bg-white/10 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

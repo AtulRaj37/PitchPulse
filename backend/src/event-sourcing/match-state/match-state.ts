@@ -560,12 +560,15 @@ function processWicketFell(acc: BuilderAccumulator, event: StoredEvent): Builder
     };
   }
 
+  const isStrikerOut = payload.batsmanId === innings.strikerId;
+  const isNonStrikerOut = payload.batsmanId === innings.nonStrikerId;
+
   const updatedInnings = {
     ...innings,
     totalWickets: innings.totalWickets + 1,
     battingOrder,
-    strikerId: innings.nonStrikerId,
-    nonStrikerId: undefined,
+    strikerId: isStrikerOut ? undefined : innings.strikerId,
+    nonStrikerId: isNonStrikerOut ? undefined : innings.nonStrikerId,
   };
 
   const newInningsList = [...acc.innings];
@@ -716,7 +719,7 @@ function processBatsmanOut(acc: BuilderAccumulator, event: StoredEvent): Builder
 function processNewBatsman(acc: BuilderAccumulator, event: StoredEvent): BuilderAccumulator {
   if (acc.currentInningsIndex < 0) return acc;
 
-  const payload = event.payload as { newBatsmanId: string };
+  const payload = event.payload as { newBatsmanId: string, isNonStriker?: boolean };
   const innings = acc.innings[acc.currentInningsIndex];
 
   const battingOrder = [...innings.battingOrder];
@@ -733,10 +736,29 @@ function processNewBatsman(acc: BuilderAccumulator, event: StoredEvent): Builder
     });
   }
 
+  let newStrikerId = innings.strikerId;
+  let newNonStrikerId = innings.nonStrikerId;
+
+  if (payload.isNonStriker) {
+    newNonStrikerId = payload.newBatsmanId;
+    if (newStrikerId === payload.newBatsmanId) newStrikerId = undefined;
+  } else {
+    if (!newStrikerId) {
+      newStrikerId = payload.newBatsmanId;
+    } else if (!newNonStrikerId) {
+      newNonStrikerId = payload.newBatsmanId;
+    } else {
+      // Both full, manual override
+      newStrikerId = payload.newBatsmanId;
+      if (newNonStrikerId === payload.newBatsmanId) newNonStrikerId = undefined;
+    }
+  }
+
   const updatedInnings = {
     ...innings,
     battingOrder,
-    strikerId: payload.newBatsmanId,
+    strikerId: newStrikerId,
+    nonStrikerId: newNonStrikerId,
   };
 
   const newInningsList = [...acc.innings];

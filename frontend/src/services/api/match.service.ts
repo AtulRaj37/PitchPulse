@@ -1,8 +1,8 @@
 import { apiClient } from './api.client';
 
 export class MatchService {
-  static async getMatches(): Promise<any[]> {
-    const res = await apiClient.get('/matches');
+  static async getMatches(params?: { tournamentId?: string, status?: string[] }): Promise<any[]> {
+    const res = await apiClient.get('/matches', { params });
     return Array.isArray(res.data?.data) ? res.data.data : (res.data?.data?.items || res.data?.data?.matches || []);
   }
 

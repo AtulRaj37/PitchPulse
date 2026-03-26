@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, Outfit, JetBrains_Mono } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import { Providers } from '@/components/providers';
 import { Toaster } from '@/components/ui/toaster';
 import SmoothScroll from '@/components/SmoothScroll';
@@ -11,17 +11,8 @@ const inter = Inter({
   display: 'swap',
 });
 
-const clashDisplay = Outfit({
-  subsets: ['latin'],
-  variable: '--font-clash',
-  display: 'swap',
-});
+// Satoshi is loaded via CDN link in the layout HTML below
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  variable: '--font-jetbrains',
-  display: 'swap',
-});
 
 export const metadata: Metadata = {
   title: 'PitchPulse | Hyper-Local Cricket Scoring',
@@ -61,8 +52,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${clashDisplay.variable} ${jetbrainsMono.variable}`}>
-      <body className="min-h-screen bg-zinc-950 antialiased">
+    <html lang="en" className={`${inter.variable}`}>
+      <head>
+        <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap" rel="stylesheet" />
+      </head>
+      <body className="min-h-screen bg-zinc-950 text-zinc-50 antialiased font-sans flex flex-col">
         <Providers>
           <SmoothScroll>
             <ErrorBoundary>

@@ -11,7 +11,7 @@ import {
   validateBody,
   validateQuery,
 } from '../../core/validation/schemas.js';
-import { verifyToken, requireRole } from '../../core/middleware/auth.middleware.js';
+import { verifyToken } from '../../core/middleware/auth.middleware.js';
 import { asyncHandler } from '../../shared/utils/async-handler.js';
 
 export async function playerRoutes(fastify: FastifyInstance): Promise<void> {

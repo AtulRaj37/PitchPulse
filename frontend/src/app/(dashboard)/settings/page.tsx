@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { User, Bell, Shield, Smartphone, Globe, Activity, Moon, Sun, ToggleLeft, ToggleRight, Save, LogOut } from 'lucide-react';
 import clsx from 'clsx';
 import { useAuthStore } from '@/features/auth/auth.store';
@@ -9,10 +9,10 @@ import { useSettingsStore, SettingsState } from '@/features/settings/settings.st
 import { toast } from 'sonner';
 
 const TABS = [
-  { id: 'profile', label: 'Profile', icon: User },
-  { id: 'preferences', label: 'Preferences', icon: Smartphone },
-  { id: 'notifications', label: 'Notifications', icon: Bell },
-  { id: 'match-defaults', label: 'Match Defaults', icon: Activity },
+  { id: 'profile', label: 'Identity', icon: User },
+  { id: 'preferences', label: 'Display', icon: Smartphone },
+  { id: 'notifications', label: 'Alerts', icon: Bell },
+  { id: 'match-defaults', label: 'Engine', icon: Activity },
   { id: 'security', label: 'Security', icon: Shield },
 ];
 
@@ -32,106 +32,122 @@ export default function SettingsPage() {
   };
 
   const handleSaveProfile = () => {
-    toast.success('Profile settings updated successfully!');
+    toast.success('System configuration updated successfully.');
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-6xl mx-auto pb-20">
+    <div className="pb-32 w-full max-w-[1400px] mx-auto overflow-hidden">
       
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-white/5">
+      {/* CINEMATIC SETTINGS HEADER */}
+      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="pt-12 px-8 md:px-16 flex flex-col md:flex-row md:items-end justify-between gap-10 mb-16">
         <div>
-          <h1 className="text-3xl md:text-5xl font-black font-clash text-white mb-2 tracking-tight">Settings</h1>
-          <p className="text-emerald-500 font-bold uppercase tracking-widest text-xs">Manage your PitchPulse experience</p>
-        </div>
-        <button 
-          onClick={handleSaveProfile}
-          className="flex items-center gap-2 bg-emerald-500 text-zinc-950 px-6 py-2.5 rounded-lg font-bold hover:bg-emerald-400 transition-colors shadow-[0_0_15px_rgba(16,185,129,0.3)] w-fit"
-        >
-          <Save size={16} /> Save Changes
-        </button>
-      </div>
-
-      <div className="flex flex-col lg:flex-row gap-8 mt-4">
-        
-        {/* Sidebar Tabs */}
-        <div className="lg:w-64 shrink-0 flex flex-col gap-2">
-          {TABS.map(tab => {
-            const isActive = activeTab === tab.id;
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={clsx(
-                  "flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-bold transition-all relative overflow-hidden group text-left",
-                  isActive ? "text-white bg-[#0a0f1c] border border-white/10" : "text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.02]"
-                )}
-              >
-                {isActive && (
-                  <motion.div 
-                    layoutId="active-settings-tab" 
-                    className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-emerald-400 to-teal-600 rounded-r-full"
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
-                <Icon size={18} className={clsx("relative z-10 transition-colors", isActive ? "text-emerald-400" : "text-zinc-600 group-hover:text-zinc-400")} />
-                <span className="relative z-10">{tab.label}</span>
-              </button>
-            );
-          })}
+          <h1 className="text-6xl md:text-8xl font-black font-clash text-white tracking-tighter uppercase mb-2">
+            System <span className="text-emerald-500 italic drop-shadow-[0_0_20px_rgba(16,185,129,0.4)]">Config</span>
+          </h1>
+          <p className="text-zinc-500 font-bold tracking-widest uppercase text-sm">
+            Manage your interface, identity, and engine defaults.
+          </p>
         </div>
 
-        {/* Content Area */}
-        <div className="flex-1 bg-[#0a0f1c]/80 backdrop-blur-xl border border-white/5 rounded-2xl p-6 md:p-10 shadow-2xl min-h-[600px]">
+        <div className="flex w-full md:w-auto">
+          <motion.button 
+            onClick={handleSaveProfile}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full bg-white text-zinc-950 px-8 py-3 rounded-full text-xs font-black uppercase tracking-widest hover:bg-emerald-400 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-all flex items-center justify-center gap-2"
+          >
+            <Save size={16} /> Save Changes
+          </motion.button>
+        </div>
+      </motion.div>
+
+      {/* SLEEK HORIZONTAL TABS */}
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="px-4 md:px-16 mb-16 overflow-x-auto no-scrollbar">
+        <div className="flex items-end gap-10 md:gap-16 border-b border-white/5 pb-4 px-4 min-w-max">
+          {TABS.map((tab) => (
+            <button 
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className="relative group pb-2"
+            >
+              <div className="flex items-center gap-3">
+                <tab.icon className={clsx("w-5 h-5 transition-colors", activeTab === tab.id ? "text-emerald-500" : "text-zinc-700")} />
+                <span className={clsx(
+                  "text-2xl md:text-3xl font-black font-clash uppercase tracking-tighter transition-colors",
+                  activeTab === tab.id ? "text-white" : "text-zinc-700 group-hover:text-zinc-500"
+                )}>
+                  {tab.label}
+                </span>
+              </div>
+              {activeTab === tab.id && (
+                <motion.div layoutId="settingsTab" className="absolute -bottom-4 left-0 w-full h-[3px] bg-gradient-to-r from-emerald-500 to-cyan-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+              )}
+            </button>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* CONTENT AREA (BORDERLESS) */}
+      <div className="px-8 md:px-20 min-h-[500px]">
+        <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
+            className="max-w-4xl"
           >
             
             {/* PROFILE TAB */}
             {activeTab === 'profile' && (
-              <div className="space-y-10">
-                <div className="flex items-center gap-6">
-                  <div className="relative">
-                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-emerald-400 to-teal-800 flex items-center justify-center font-black text-3xl text-white shadow-[0_0_30px_rgba(16,185,129,0.4)] border-4 border-[#0a0e1a]">
-                      {profileName.charAt(0) || user?.name?.charAt(0) || 'U'}
+              <div className="space-y-16">
+                <div className="flex flex-col md:flex-row items-start md:items-center gap-10">
+                  <div className="relative group cursor-pointer">
+                    <div className="w-32 h-32 rounded-[2rem] bg-gradient-to-br from-[#050505] to-zinc-900 flex items-center justify-center font-clash font-black text-5xl text-emerald-400 border border-zinc-800 shadow-[0_0_30px_rgba(16,185,129,0.1)] group-hover:border-emerald-500/50 group-hover:shadow-[0_0_40px_rgba(16,185,129,0.2)] transition-all">
+                      {profileName.charAt(0).toUpperCase() || user?.name?.charAt(0).toUpperCase() || 'U'}
                     </div>
-                    <button className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-zinc-800 border-2 border-[#0a0e1a] flex items-center justify-center hover:bg-zinc-700 transition-colors text-white">
-                      <User size={14} />
-                    </button>
+                    <div className="absolute -bottom-4 -right-4 w-12 h-12 rounded-full bg-emerald-500 text-zinc-950 flex items-center justify-center hover:scale-110 transition-transform shadow-[0_0_20px_rgba(16,185,129,0.4)]">
+                      <User size={18} />
+                    </div>
                   </div>
                   <div>
-                    <h3 className="text-2xl font-black text-white">{profileName || user?.name || 'Scorer Profile'}</h3>
-                    <p className="text-zinc-500 font-bold uppercase tracking-widest text-xs mt-1">{user?.role || 'PLAYER'}</p>
-                    <button className="mt-3 text-sm text-emerald-400 hover:text-emerald-300 font-semibold underline underline-offset-4">Change Avatar</button>
+                    <h3 className="text-4xl md:text-5xl font-black font-clash text-white tracking-tighter uppercase mb-2">{profileName || user?.name || 'Scorer Profile'}</h3>
+                    <p className="text-zinc-500 font-bold uppercase tracking-widest text-xs flex items-center gap-3">
+                      <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded text-[10px]">{user?.role || 'SYSTEM ADMIN'}</span>
+                      ID: {user?.id?.slice(0,8) || 'USR-001'}
+                    </p>
                   </div>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest pl-1">Display Name</label>
+                <div className="grid md:grid-cols-2 gap-x-16 gap-y-12">
+                  <div className="space-y-4 group">
+                    <label className="text-[10px] font-bold text-emerald-500 uppercase tracking-[0.2em]">Display Name</label>
                     <input 
                       type="text" 
                       value={profileName} 
                       onChange={(e) => setProfileName(e.target.value)} 
-                      className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50 transition-all font-medium" 
+                      className="w-full bg-transparent border-b border-white/10 pb-4 text-2xl font-black font-clash text-white tracking-wide uppercase focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-zinc-800" 
+                      placeholder="ENTER NAME"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest pl-1">Email Address</label>
-                    <input type="email" defaultValue={user?.email || 'user@pitchpulse.io'} disabled className="w-full bg-black/20 border border-white/5 rounded-xl px-4 py-3 text-zinc-500 focus:outline-none transition-all font-medium cursor-not-allowed" />
+                  <div className="space-y-4 group opacity-50 cursor-not-allowed">
+                    <label className="text-[10px] font-bold text-zinc-600 uppercase tracking-[0.2em]">Email Address (Locked)</label>
+                    <input 
+                      type="email" 
+                      defaultValue={user?.email || 'user@pitchpulse.io'} 
+                      disabled 
+                      className="w-full bg-transparent border-b border-white/5 pb-4 text-xl font-bold font-clash text-zinc-500 tracking-wide focus:outline-none transition-colors" 
+                    />
                   </div>
-                  <div className="space-y-2 md:col-span-2">
-                    <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest pl-1">Bio</label>
+                  <div className="space-y-4 md:col-span-2 group">
+                    <label className="text-[10px] font-bold text-emerald-500 uppercase tracking-[0.2em]">Biography / Tagline</label>
                     <textarea 
-                      rows={3} 
+                      rows={2} 
                       value={profileBio} 
                       onChange={(e) => setProfileBio(e.target.value)}
-                      placeholder="Tell the community about yourself..." 
-                      className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50 transition-all font-medium resize-none"
+                      placeholder="TELL THE COMMUNITY ABOUT YOURSELF..." 
+                      className="w-full bg-transparent border-b border-white/10 pb-4 text-xl font-bold font-clash text-white tracking-wide uppercase focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-zinc-800 resize-none"
                     />
                   </div>
                 </div>
@@ -140,123 +156,95 @@ export default function SettingsPage() {
 
             {/* PREFERENCES TAB */}
             {activeTab === 'preferences' && (
-              <div className="space-y-8">
-                <div>
-                  <h2 className="text-xl font-black text-white mb-2">App Preferences</h2>
-                  <p className="text-zinc-500 text-sm">Customize how PitchPulse looks and feels.</p>
-                </div>
+              <div className="space-y-12">
                 
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-black/20 border border-white/5 rounded-xl hover:bg-white/[0.02] transition-colors">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-zinc-900 border border-white/10 flex items-center justify-center text-zinc-400">
-                        {settings.darkMode ? <Moon size={18} /> : <Sun size={18} />}
-                      </div>
-                      <div>
-                        <p className="font-bold text-white">Dark Mode</p>
-                        <p className="text-xs text-zinc-500">Enable cinematic dark UI (recommended).</p>
-                      </div>
-                    </div>
-                    <button onClick={() => handleToggle('darkMode')}>
-                      {settings.darkMode ? <ToggleRight size={36} className="text-emerald-500" /> : <ToggleLeft size={36} className="text-zinc-600" />}
-                    </button>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 py-6 border-b border-white/5 group hover:bg-white/[0.01] transition-colors -mx-8 px-8">
+                  <div className="flex flex-col">
+                    <span className="text-3xl font-black font-clash text-white tracking-tighter uppercase mb-2 group-hover:text-emerald-400 transition-colors">Cinematic Mode</span>
+                    <span className="text-zinc-500 text-xs font-bold uppercase tracking-widest">Enable deep dark UI surfaces (Recommended)</span>
                   </div>
+                  <button onClick={() => handleToggle('darkMode')} className="transition-transform hover:scale-105">
+                    {settings.darkMode ? <ToggleRight size={48} className="text-emerald-500 drop-shadow-[0_0_15px_rgba(16,185,129,0.4)]" /> : <ToggleLeft size={48} className="text-zinc-700" />}
+                  </button>
+                </div>
 
-                  <div className="flex items-center justify-between p-4 bg-black/20 border border-white/5 rounded-xl hover:bg-white/[0.02] transition-colors">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-zinc-900 border border-white/10 flex items-center justify-center text-zinc-400">
-                        <Globe size={18} />
-                      </div>
-                      <div>
-                        <p className="font-bold text-white">Language / Region</p>
-                        <p className="text-xs text-zinc-500">Set the default locale for dates and times.</p>
-                      </div>
-                    </div>
-                    <select 
-                      value={settings.language} 
-                      onChange={(e) => {
-                        settings.setSetting('language', e.target.value);
-                        toast.success(`Language set to ${e.target.value}`);
-                      }}
-                      className="bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500"
-                    >
-                      <option>English (US)</option>
-                      <option>English (UK)</option>
-                      <option>Hindi</option>
-                    </select>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 py-6 border-b border-white/5 group hover:bg-white/[0.01] transition-colors -mx-8 px-8">
+                  <div className="flex flex-col">
+                    <span className="text-3xl font-black font-clash text-white tracking-tighter uppercase mb-2 group-hover:text-emerald-400 transition-colors">Locale Engine</span>
+                    <span className="text-zinc-500 text-xs font-bold uppercase tracking-widest">Set system-wide date and time representation</span>
                   </div>
+                  <select 
+                    value={settings.language} 
+                    onChange={(e) => {
+                      settings.setSetting('language', e.target.value);
+                      toast.success(`Language set to ${e.target.value}`);
+                    }}
+                    className="bg-transparent border-b border-emerald-500/30 pb-2 text-xl font-black font-clash text-emerald-400 uppercase tracking-wide focus:outline-none cursor-pointer"
+                  >
+                    <option className="bg-black">English (US)</option>
+                    <option className="bg-black">English (UK)</option>
+                    <option className="bg-black">Hindi</option>
+                  </select>
                 </div>
               </div>
             )}
 
             {/* NOTIFICATIONS TAB */}
             {activeTab === 'notifications' && (
-              <div className="space-y-8">
-                <div>
-                  <h2 className="text-xl font-black text-white mb-2">Alerts & Notifications</h2>
-                  <p className="text-zinc-500 text-sm">Control what information hits your device.</p>
+              <div className="space-y-12">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 py-6 border-b border-white/5 group hover:bg-white/[0.01] transition-colors -mx-8 px-8">
+                  <div className="flex flex-col">
+                    <span className="text-3xl font-black font-clash text-white tracking-tighter uppercase mb-2 group-hover:text-emerald-400 transition-colors">Push Notifications</span>
+                    <span className="text-zinc-500 text-xs font-bold uppercase tracking-widest">Real-time alerts for match events, wickets, and starts</span>
+                  </div>
+                  <button onClick={() => handleToggle('pushNotifications')} className="transition-transform hover:scale-105">
+                    {settings.pushNotifications ? <ToggleRight size={48} className="text-emerald-500 drop-shadow-[0_0_15px_rgba(16,185,129,0.4)]" /> : <ToggleLeft size={48} className="text-zinc-700" />}
+                  </button>
                 </div>
-                
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-black/20 border border-white/5 rounded-xl hover:bg-white/[0.02] transition-colors">
-                    <div>
-                      <p className="font-bold text-white">Push Notifications</p>
-                      <p className="text-xs text-zinc-500">Live alerts for Wickets, Match Starts, and results.</p>
-                    </div>
-                    <button onClick={() => handleToggle('pushNotifications')}>
-                      {settings.pushNotifications ? <ToggleRight size={36} className="text-emerald-500" /> : <ToggleLeft size={36} className="text-zinc-600" />}
-                    </button>
-                  </div>
 
-                  <div className="flex items-center justify-between p-4 bg-black/20 border border-white/5 rounded-xl hover:bg-white/[0.02] transition-colors">
-                    <div>
-                      <p className="font-bold text-white">Email Match Summaries</p>
-                      <p className="text-xs text-zinc-500">Receive an aesthetic scorecard to your email after every game.</p>
-                    </div>
-                    <button onClick={() => handleToggle('emailSummaries')}>
-                      {settings.emailSummaries ? <ToggleRight size={36} className="text-emerald-500" /> : <ToggleLeft size={36} className="text-zinc-600" />}
-                    </button>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 py-6 border-b border-white/5 group hover:bg-white/[0.01] transition-colors -mx-8 px-8">
+                  <div className="flex flex-col">
+                    <span className="text-3xl font-black font-clash text-white tracking-tighter uppercase mb-2 group-hover:text-emerald-400 transition-colors">Email Summaries</span>
+                    <span className="text-zinc-500 text-xs font-bold uppercase tracking-widest">Detailed aesthetic scorecards delivered to your inbox</span>
                   </div>
+                  <button onClick={() => handleToggle('emailSummaries')} className="transition-transform hover:scale-105">
+                    {settings.emailSummaries ? <ToggleRight size={48} className="text-emerald-500 drop-shadow-[0_0_15px_rgba(16,185,129,0.4)]" /> : <ToggleLeft size={48} className="text-zinc-700" />}
+                  </button>
                 </div>
               </div>
             )}
 
             {/* MATCH DEFAULTS TAB */}
             {activeTab === 'match-defaults' && (
-              <div className="space-y-8">
-                <div>
-                  <h2 className="text-xl font-black text-white mb-2">Scoring Defaults</h2>
-                  <p className="text-zinc-500 text-sm">Pre-configure your Match Creation settings.</p>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest pl-1">Default Overs</label>
+              <div className="space-y-16">
+                <div className="grid md:grid-cols-2 gap-x-16 gap-y-12">
+                  <div className="space-y-4 group">
+                    <label className="text-[10px] font-bold text-emerald-500 uppercase tracking-[0.2em]">Base Overs Configuration</label>
                     <input 
                       type="number" 
                       value={settings.defaultOvers} 
                       onChange={(e) => settings.setSetting('defaultOvers', parseInt(e.target.value) || 5)}
-                      className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50 transition-all font-medium" 
+                      className="w-full bg-transparent border-b border-white/10 pb-4 text-4xl font-black font-clash text-white tracking-wide focus:outline-none focus:border-emerald-500 transition-colors" 
                     />
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest pl-1">Default Squad Size</label>
+                  <div className="space-y-4 group">
+                    <label className="text-[10px] font-bold text-emerald-500 uppercase tracking-[0.2em]">Roster Size Limit</label>
                     <input 
                       type="number" 
                       value={settings.defaultSquadSize} 
                       onChange={(e) => settings.setSetting('defaultSquadSize', parseInt(e.target.value) || 11)}
-                      className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500/50 transition-all font-medium" 
+                      className="w-full bg-transparent border-b border-white/10 pb-4 text-4xl font-black font-clash text-white tracking-wide focus:outline-none focus:border-emerald-500 transition-colors" 
                     />
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-black/20 border border-white/5 rounded-xl hover:bg-white/[0.02] transition-colors">
-                  <div>
-                    <p className="font-bold text-white">Cinematic Sound Effects</p>
-                    <p className="text-xs text-zinc-500">Play impact sounds when scoring Boundaries or Wickets.</p>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 py-6 border-b border-white/5 group hover:bg-white/[0.01] transition-colors -mx-8 px-8">
+                  <div className="flex flex-col">
+                    <span className="text-3xl font-black font-clash text-white tracking-tighter uppercase mb-2 group-hover:text-emerald-400 transition-colors">Haptic & Audio Engine</span>
+                    <span className="text-zinc-500 text-xs font-bold uppercase tracking-widest">Impact sounds for boundaries, wickets, and milestones</span>
                   </div>
-                  <button onClick={() => handleToggle('soundEffects')}>
-                    {settings.soundEffects ? <ToggleRight size={36} className="text-emerald-500" /> : <ToggleLeft size={36} className="text-zinc-600" />}
+                  <button onClick={() => handleToggle('soundEffects')} className="transition-transform hover:scale-105">
+                    {settings.soundEffects ? <ToggleRight size={48} className="text-emerald-500 drop-shadow-[0_0_15px_rgba(16,185,129,0.4)]" /> : <ToggleLeft size={48} className="text-zinc-700" />}
                   </button>
                 </div>
               </div>
@@ -264,35 +252,30 @@ export default function SettingsPage() {
 
             {/* SECURITY TAB */}
             {activeTab === 'security' && (
-              <div className="space-y-8">
-                <div>
-                  <h2 className="text-xl font-black text-white mb-2">Security & Privacy</h2>
-                  <p className="text-zinc-500 text-sm">Protect your account and control visibility.</p>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-black/20 border border-white/5 rounded-xl hover:bg-white/[0.02] transition-colors">
-                  <div>
-                    <p className="font-bold text-white">Public Profile</p>
-                    <p className="text-xs text-zinc-500">Allow other players to search for your profile and view stats.</p>
+              <div className="space-y-12">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 py-6 border-b border-white/5 group hover:bg-white/[0.01] transition-colors -mx-8 px-8">
+                  <div className="flex flex-col">
+                    <span className="text-3xl font-black font-clash text-white tracking-tighter uppercase mb-2 group-hover:text-emerald-400 transition-colors">Global Visibility</span>
+                    <span className="text-zinc-500 text-xs font-bold uppercase tracking-widest">Allow platform discovery and stats sharing</span>
                   </div>
-                  <button onClick={() => handleToggle('publicProfile')}>
-                    {settings.publicProfile ? <ToggleRight size={36} className="text-emerald-500" /> : <ToggleLeft size={36} className="text-zinc-600" />}
+                  <button onClick={() => handleToggle('publicProfile')} className="transition-transform hover:scale-105">
+                    {settings.publicProfile ? <ToggleRight size={48} className="text-emerald-500 drop-shadow-[0_0_15px_rgba(16,185,129,0.4)]" /> : <ToggleLeft size={48} className="text-zinc-700" />}
                   </button>
                 </div>
 
-                <div className="pt-6 border-t border-white/5">
-                  <h3 className="text-sm font-bold text-white mb-4 uppercase tracking-wider">Danger Zone</h3>
-                  <button className="bg-red-500/10 text-red-500 border border-red-500/20 px-4 py-3 rounded-lg font-bold text-sm w-full md:w-auto hover:bg-red-500 hover:text-white transition-colors">
-                    Delete Account Permanently
+                <div className="pt-10">
+                  <span className="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em] block mb-6">Danger Protocol</span>
+                  <button className="flex items-center gap-3 text-red-500 border border-red-500/20 px-8 py-4 rounded-full text-xs font-black uppercase tracking-widest hover:bg-red-500 hover:text-white hover:shadow-[0_0_30px_rgba(239,68,68,0.4)] transition-all">
+                    Initiate Account Deletion <LogOut size={16} />
                   </button>
                 </div>
               </div>
             )}
 
           </motion.div>
-        </div>
-
+        </AnimatePresence>
       </div>
+
     </div>
   );
 }

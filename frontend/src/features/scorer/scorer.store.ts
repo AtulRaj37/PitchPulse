@@ -54,6 +54,8 @@ interface ScorerState {
   nonStrikerId: string | null;
   bowlerId: string | null;
 
+  gullyRules: Record<string, boolean | number> | null;
+
   // Derived State (recalculated every time events change)
   score: ScorerSnapshot;
 
@@ -210,6 +212,7 @@ function recalculateState(events: MatchEvent[], innings: number, currentStriker:
 export const useScorerStore = create<ScorerState>((set, get) => ({
   matchId: null,
   isLoading: false,
+  gullyRules: null,
   
   events: [],
   innings: 1,
@@ -228,6 +231,9 @@ export const useScorerStore = create<ScorerState>((set, get) => ({
 
     const backendEvents = matchData.events || [];
     
+    // Grab rules from DB
+    const incomingGullyRules = matchData.gullyRules || null;
+
     const rawBackendEvents = matchData.events || [];
     const mappedEvents: MatchEvent[] = [];
 
@@ -277,6 +283,7 @@ export const useScorerStore = create<ScorerState>((set, get) => ({
 
     return {
       matchId: matchData.id,
+      gullyRules: incomingGullyRules,
       events: mappedEvents,
       innings: snap.innings || 1,
       target: snap.target || null,
@@ -398,6 +405,35 @@ export const useScorerStore = create<ScorerState>((set, get) => ({
     const { isWide, isNoBall, isBye, isLegBye } = options;
     const isExtras = !!(isWide || isNoBall || isBye || isLegBye);
 
+    // --- GULLY RULES INTERCEPTS ---
+    if (state.gullyRules) {
+      // 1. Direct 6 = OUT
+      if (runs === 6 && state.gullyRules.sixIsOut) {
+        toast.error("Gully Rule Enforced: Direct 6 is OUT!", { icon: "🔥", duration: 4000 });
+        return state.markWicket();
+      }
+
+      // 2. Ball Miss Out
+      if (runs === 0 && !isExtras && state.gullyRules.ballMissOut) {
+        const limit = state.gullyRules.ballMissOut as number;
+        let dotCount = 1; // include current
+        for (let i = state.events.length - 1; i >= 0; i--) {
+          const e = state.events[i];
+          if (e.batsmanId !== state.strikerId) break; // End if not striker
+          const eIsExtras = !!(e.isWide || e.isNoBall || e.isBye || e.isLegBye);
+          if (e.type !== 'RUN' || eIsExtras) break; // Not a regular ball
+          if (e.value === 0) dotCount++; // Found dot
+          else break; // Found run
+        }
+        
+        if (dotCount >= limit) {
+          toast.error(`Gully Rule Enforced: ${limit} consecutive misses is OUT!`, { icon: "🔥", duration: 4000 });
+          return state.markWicket();
+        }
+      }
+    }
+    // --- END GULLY RULES ---
+
     const newEvent: MatchEvent = {
        id: generateId(),
        type: isExtras ? 'EXTRA' : 'RUN',
@@ -427,7 +463,7 @@ export const useScorerStore = create<ScorerState>((set, get) => ({
 
     const legalDelivery = !(isWide || isNoBall);
 
-    if (runs % 2 !== 0 && legalDelivery && score.balls !== 0) {
+    if (runs % 2 !== 0 && legalDelivery) {
       const temp = newStrikerId;
       newStrikerId = newNonStrikerId;
       newNonStrikerId = temp;
@@ -449,25 +485,8 @@ export const useScorerStore = create<ScorerState>((set, get) => ({
     });
 
     try {
-      // Auto-transition match from CREATED to LIVE on first scoring action
-      const patchData: any = {
-        currentSnapshot: {
-          innings: state.innings,
-          target: state.target,
-          strikerId: newStrikerId,
-          nonStrikerId: newNonStrikerId,
-          bowlerId: newBowlerId
-        }
-      };
-
-      // If this is the very first event, transition status to LIVE
-      if (newEvents.length === 1) {
-        patchData.status = 'LIVE';
-      }
-
-      await apiClient.patch(`/matches/${state.matchId}`, patchData);
-
-      // Persist the actual event to the backend Event store
+      // 1. Persist the actual event to the backend Event store FIRST
+      // This allows the Event Validator to check against the PRE-ROTATION snapshot
       if (isWide) {
         await apiClient.post('/commands/wide', { matchId: state.matchId, batsmanId: state.strikerId, bowlerId: state.bowlerId, extraRuns: runs });
       } else if (isNoBall) {
@@ -479,6 +498,23 @@ export const useScorerStore = create<ScorerState>((set, get) => ({
       } else {
         await apiClient.post('/commands/score-run', { matchId: state.matchId, batsmanId: state.strikerId, bowlerId: state.bowlerId, runs });
       }
+
+      // 2. Auto-transition match from CREATED to LIVE on first scoring action AND patch the updated snapshot
+      const patchData: any = {
+        currentSnapshot: {
+          innings: state.innings,
+          target: state.target,
+          strikerId: newStrikerId,
+          nonStrikerId: newNonStrikerId,
+          bowlerId: newBowlerId
+        }
+      };
+
+      if (newEvents.length === 1) {
+        patchData.status = 'LIVE';
+      }
+
+      await apiClient.patch(`/matches/${state.matchId}`, patchData);
 
     } catch (err: any) {
       console.error('API Sync Failed', err);
@@ -531,6 +567,16 @@ export const useScorerStore = create<ScorerState>((set, get) => ({
     });
 
     try {
+      // 1. Record the Event FIRST
+      await apiClient.post('/commands/wicket', {
+        matchId: state.matchId,
+        batsmanId: state.strikerId!,
+        bowlerId: state.bowlerId!,
+        wicketType: 'BOWLED',
+        dismissalMode: 'BATSMAN_OUT'
+      });
+
+      // 2. Patch the empty striker slots to backend 
       const patchData: any = {
         currentSnapshot: {
           innings: state.innings,
@@ -542,14 +588,6 @@ export const useScorerStore = create<ScorerState>((set, get) => ({
       };
 
       await apiClient.patch(`/matches/${state.matchId}`, patchData);
-
-      await apiClient.post('/commands/wicket', {
-        matchId: state.matchId,
-        batsmanId: state.strikerId!,
-        bowlerId: state.bowlerId!,
-        wicketType: 'BOWLED',
-        dismissalMode: 'BATSMAN_OUT'
-      });
     } catch (err: any) {
       console.error('API Sync Failed', err);
       toast.error(err?.response?.data?.error?.message || 'API Sync Failed: Match offline');

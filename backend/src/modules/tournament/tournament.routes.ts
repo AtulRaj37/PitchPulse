@@ -11,7 +11,7 @@ import {
   validateBody,
   validateQuery,
 } from '../../core/validation/schemas.js';
-import { verifyToken, requireRole } from '../../core/middleware/auth.middleware.js';
+import { verifyToken } from '../../core/middleware/auth.middleware.js';
 import { asyncHandler } from '../../shared/utils/async-handler.js';
 import { z } from 'zod';
 
@@ -29,7 +29,7 @@ export async function tournamentRoutes(fastify: FastifyInstance): Promise<void> 
    * Create a new tournament
    */
   fastify.post('/', {
-    preHandler: [verifyToken, requireRole('ADMIN', 'ORGANIZER'), validateBody(createTournamentSchema)],
+    preHandler: [verifyToken, validateBody(createTournamentSchema)],
     schema: { description: 'Create a tournament', tags: ['tournaments'] },
   }, asyncHandler(async (request: FastifyRequest, reply: FastifyReply) => {
     const user = (request as any).user;
@@ -37,7 +37,7 @@ export async function tournamentRoutes(fastify: FastifyInstance): Promise<void> 
 
     const tournament = await TournamentService.createTournament({
       ...body,
-      organizerId: user.id,
+      organizerId: user.userId,
     });
 
     reply.status(201).send({
@@ -100,7 +100,7 @@ export async function tournamentRoutes(fastify: FastifyInstance): Promise<void> 
    * Generate fixtures for a tournament
    */
   fastify.post('/:id/generate-fixtures', {
-    preHandler: [verifyToken, requireRole('ADMIN', 'ORGANIZER'), validateBody(generateFixturesSchema)],
+    preHandler: [verifyToken, validateBody(generateFixturesSchema)],
     schema: { description: 'Generate fixtures for tournament', tags: ['tournaments'] },
   }, asyncHandler(async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
     const body = request.body as { format: 'round-robin' | 'knockout' | 'group + knockout' };
@@ -124,6 +124,42 @@ export async function tournamentRoutes(fastify: FastifyInstance): Promise<void> 
       success: true,
       data: result,
     });
+  }));
+  /**
+   * POST /tournaments/:id/fixtures
+   * Manually add a fixture
+   */
+  fastify.post('/:id/fixtures', {
+    preHandler: [verifyToken, validateBody(z.object({ team1Id: uuidSchema, team2Id: uuidSchema }))],
+    schema: { description: 'Add a manual fixture', tags: ['tournaments'] },
+  }, asyncHandler(async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+    const body = request.body as { team1Id: string, team2Id: string };
+    const result = await TournamentService.addFixture(request.params.id, body.team1Id, body.team2Id);
+    reply.send({ success: true, data: result });
+  }));
+
+  /**
+   * PATCH /tournaments/:id
+   * Update tournament details
+   */
+  fastify.patch('/:id', {
+    preHandler: [verifyToken, validateBody(updateTournamentSchema)],
+    schema: { description: 'Update tournament', tags: ['tournaments'] },
+  }, asyncHandler(async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+    const result = await TournamentService.updateTournament(request.params.id, request.body);
+    reply.send({ success: true, data: result });
+  }));
+
+  /**
+   * DELETE /tournaments/:id
+   * Delete tournament
+   */
+  fastify.delete('/:id', {
+    preHandler: [verifyToken],
+    schema: { description: 'Delete tournament', tags: ['tournaments'] },
+  }, asyncHandler(async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+    await TournamentService.deleteTournament(request.params.id);
+    reply.send({ success: true, message: 'Tournament deleted successfully' });
   }));
 }
 

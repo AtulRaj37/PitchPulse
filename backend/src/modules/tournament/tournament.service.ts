@@ -22,6 +22,7 @@ export class TournamentService {
       where: { id },
       include: {
         teams: { include: { team: true } },
+        fixtures: { include: { team1: true, team2: true }, orderBy: { matchNumber: 'asc' } },
       },
     });
 
@@ -129,6 +130,31 @@ export class TournamentService {
   }
 
   /**
+   * Add Quick Custom Fixture
+   */
+  static async addFixture(tournamentId: string, team1Id: string, team2Id: string) {
+    const tournament = await prisma.tournament.findUnique({
+      where: { id: tournamentId },
+      include: { fixtures: true },
+    });
+    if (!tournament) throw new NotFoundError('Tournament', tournamentId);
+    
+    const existingFixtures = tournament.fixtures;
+    const maxMatchNumber = existingFixtures.length > 0 ? Math.max(...existingFixtures.map(f => f.matchNumber)) : 0;
+    
+    return prisma.fixture.create({
+      data: {
+        tournamentId,
+        team1Id,
+        team2Id,
+        round: 1,
+        matchNumber: maxMatchNumber + 1,
+        status: 'TBD'
+      }
+    });
+  }
+
+  /**
    * Get dynamic Points Table
    * Computed based on matches in the tournament
    */
@@ -191,6 +217,27 @@ export class TournamentService {
 
     const results = Object.values(table).sort((a: any, b: any) => b.points - a.points || b.netRunRate - a.netRunRate);
     return results;
+  }
+
+  /**
+   * Update Tournament
+   */
+  static async updateTournament(id: string, data: any) {
+    const tournament = await prisma.tournament.findUnique({ where: { id } });
+    if (!tournament) throw new NotFoundError('Tournament', id);
+    return prisma.tournament.update({ where: { id }, data });
+  }
+
+  /**
+   * Delete Tournament
+   */
+  static async deleteTournament(id: string) {
+    const tournament = await prisma.tournament.findUnique({ where: { id } });
+    if (!tournament) throw new NotFoundError('Tournament', id);
+    
+    // Prisma cascading or manual deletion might be needed for relations
+    // Assuming schema cascades, otherwise we must delete relations first
+    return prisma.tournament.delete({ where: { id } });
   }
 }
 
