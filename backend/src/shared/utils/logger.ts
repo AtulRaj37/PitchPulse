@@ -1,7 +1,7 @@
 // Logger Utility
 // Structured logging with Pino
 
-import pino from 'pino';
+import { pino } from 'pino';
 import { config } from '../../config/index.js';
 
 // ============================================
