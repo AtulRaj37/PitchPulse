@@ -10,6 +10,14 @@ import authPlugin from './core/middleware/auth.middleware.js';
 import errorPlugin, { AppError } from './core/middleware/error.middleware.js';
 import logger from './shared/utils/logger.js';
 
+import authRoutes from './modules/auth/auth.routes.js';
+import matchRoutes from './modules/match/match.routes.js';
+import commandRoutes from './modules/command/command.routes.js';
+import teamRoutes from './modules/team/team.routes.js';
+import playerRoutes from './modules/player/player.routes.js';
+import tournamentRoutes from './modules/tournament/tournament.routes.js';
+import statsRoutes from './modules/stats/stats.routes.js';
+
 // ============================================
 // REQUEST ID PLUGIN
 // ============================================
@@ -206,25 +214,25 @@ export async function buildApp(): Promise<FastifyInstance> {
   }));
 
   // Register auth routes
-  await app.register(import('./modules/auth/auth.routes.js') as any, { prefix: '/api/auth' });
+  await app.register(authRoutes, { prefix: '/api/auth' });
 
   // Register match routes
-  await app.register(import('./modules/match/match.routes.js') as any, { prefix: '/api/matches' });
+  await app.register(matchRoutes, { prefix: '/api/matches' });
 
   // Register command routes (scoring commands with stricter rate limiting)
-  await app.register(import('./modules/command/command.routes.js') as any, { prefix: '/api/commands' });
+  await app.register(commandRoutes, { prefix: '/api/commands' });
 
   // Register team routes
-  await app.register(import('./modules/team/team.routes.js') as any, { prefix: '/api/teams' });
+  await app.register(teamRoutes, { prefix: '/api/teams' });
 
   // Register player routes
-  await app.register(import('./modules/player/player.routes.js') as any, { prefix: '/api/players' });
+  await app.register(playerRoutes, { prefix: '/api/players' });
 
   // Register tournament routes
-  await app.register(import('./modules/tournament/tournament.routes.js') as any, { prefix: '/api/tournaments' });
+  await app.register(tournamentRoutes, { prefix: '/api/tournaments' });
 
   // Register stats routes
-  await app.register(import('./modules/stats/stats.routes.js') as any, { prefix: '/api/stats' });
+  await app.register(statsRoutes, { prefix: '/api/stats' });
 
   // ============================================
   // GRACEFUL SHUTDOWN
