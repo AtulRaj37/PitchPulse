@@ -70,6 +70,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="px-8 pt-10 pb-8 flex items-center relative z-10 w-full text-center">
               <Link href="/dashboard" className="block w-full transition-transform hover:scale-105 group relative">
                 <div className="absolute inset-0 bg-emerald-500/0 group-hover:bg-emerald-500/20 blur-[30px] rounded-full transition-all duration-700" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img 
                   src="/icons/full-logo.png" 
                   alt="PitchPulse" 

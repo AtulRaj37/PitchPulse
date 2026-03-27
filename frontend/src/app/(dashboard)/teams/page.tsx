@@ -97,7 +97,7 @@ export default function TeamsPage() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center py-32 text-center">
               <Search size={48} className="text-zinc-800 mb-6" />
               <h3 className="text-2xl font-black font-clash text-zinc-500 mb-2 uppercase tracking-wide">Signal Lost</h3>
-              <p className="text-zinc-600 text-xs font-bold uppercase tracking-widest">No franchise matches "{searchQuery}"</p>
+              <p className="text-zinc-600 text-xs font-bold uppercase tracking-widest">No franchise matches &quot;{searchQuery}&quot;</p>
             </motion.div>
           ) : (
             <div className="flex flex-col">
@@ -112,6 +112,7 @@ export default function TeamsPage() {
 
                   <div className="flex items-center gap-6 md:gap-10 w-full lg:w-1/3 z-10">
                     {team.logoUrl ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
                       <img src={team.logoUrl} alt={team.name} className="w-16 h-16 md:w-20 md:h-20 rounded-2xl object-cover bg-zinc-950 border border-zinc-800 shadow-inner group-hover:border-emerald-500/50 transition-colors" />
                     ) : (
                       <div className="w-16 h-16 md:w-20 md:h-20 bg-[#050505] rounded-2xl flex items-center justify-center border border-zinc-800 font-clash text-3xl font-black text-zinc-700 shadow-inner group-hover:border-emerald-500/30 group-hover:text-emerald-500 transition-colors">

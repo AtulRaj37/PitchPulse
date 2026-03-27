@@ -50,6 +50,7 @@ export default function RegisterPage() {
 
           {/* Mobile title/logo area */}
           <div className="lg:hidden mb-10 flex items-center justify-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/icons/full-logo.png" alt="PitchPulse" className="h-10 w-auto object-contain drop-shadow-lg" />
           </div>
 
@@ -146,6 +147,7 @@ export default function RegisterPage() {
 
         {/* Top Logo */}
         <div className="absolute top-10 flex flex-col items-center justify-center w-full z-10 gap-2">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/icons/full-logo.png" alt="PitchPulse" className="h-12 lg:h-14 w-auto object-contain drop-shadow-[0_0_20px_rgba(6,182,212,0.4)]" />
           <p className="text-cyan-400/90 text-[15px] font-medium italic mt-1 font-clash">Your cricket matters</p>
         </div>
@@ -169,6 +171,7 @@ export default function RegisterPage() {
         
         {/* Floating iPhone */}
         <div className="absolute right-4 xl:right-8 top-[45%] -translate-y-1/2 w-[35%] max-w-[380px] z-10 drop-shadow-[0_25px_50px_rgba(0,0,0,0.5)]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
             src="/iphone.png" 
             alt="PitchPulse App Demo" 

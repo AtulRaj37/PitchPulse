@@ -59,6 +59,7 @@ export function Navbar() {
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 group transition-transform hover:scale-105">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
                 src="/icons/full-logo.png" 
                 alt="PitchPulse" 

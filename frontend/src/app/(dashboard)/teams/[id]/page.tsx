@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/services/api/api.client';
 import { PlayerService } from '@/services/api/player.service';
@@ -34,7 +34,7 @@ export default function TeamDetailsPage({ params }: { params: { id: string } }) 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeletingTeam, setIsDeletingTeam] = useState(false);
 
-  const fetchTeamAndMatches = async () => {
+  const fetchTeamAndMatches = useCallback(async () => {
     try {
       const [teamRes, matchesRes] = await Promise.all([
         apiClient.get(`/teams/${params.id}`),
@@ -53,11 +53,11 @@ export default function TeamDetailsPage({ params }: { params: { id: string } }) 
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [params.id, router]);
 
   useEffect(() => {
     fetchTeamAndMatches();
-  }, [params.id]);
+  }, [fetchTeamAndMatches]);
 
   const handleUpdateTeam = async () => {
     if (!editedTeam.name.trim()) {
@@ -306,6 +306,7 @@ export default function TeamDetailsPage({ params }: { params: { id: string } }) 
       <header className="flex flex-col xl:flex-row xl:justify-between xl:items-end gap-6 pb-6 border-b border-zinc-900/50">
         <div className="flex flex-col sm:flex-row sm:items-center gap-6 flex-1">
           {team.logoUrl ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
             <img src={team.logoUrl} alt={team.name} className="w-20 h-20 bg-zinc-900 rounded-3xl object-cover border border-zinc-800 shadow-[0_0_30px_rgba(16,185,129,0.1)] shrink-0" />
           ) : (
             <div className="w-20 h-20 bg-zinc-900 rounded-3xl flex shrink-0 items-center justify-center border border-zinc-800 text-3xl font-black text-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.1)]">

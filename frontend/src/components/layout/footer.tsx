@@ -45,6 +45,7 @@ export function Footer() {
           {/* Brand Column */}
           <div className="col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-4 transition-transform hover:scale-105 w-fit">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
                 src="/icons/full-logo.png" 
                 alt="PitchPulse" 

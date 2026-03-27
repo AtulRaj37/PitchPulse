@@ -15,26 +15,26 @@ export default function PlayerProfilePage({ params }: { params: { id: string } }
   const [matches, setMatches] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchPlayerDetails = async () => {
-    try {
-      const [playerRes, matchesRes] = await Promise.all([
-        apiClient.get(`/players/${params.id}`),
-        apiClient.get(`/players/${params.id}/matches?limit=50`)
-      ]);
-      setPlayer(playerRes.data?.data || playerRes.data);
-      setMatches(matchesRes.data?.data || []);
-    } catch (error) {
-      console.error('Failed to fetch player details:', error);
-      toast.error('Failed to load player profile');
-      router.back();
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchPlayerDetails = async () => {
+      try {
+        const [playerRes, matchesRes] = await Promise.all([
+          apiClient.get(`/players/${params.id}`),
+          apiClient.get(`/players/${params.id}/matches?limit=50`)
+        ]);
+        setPlayer(playerRes.data?.data || playerRes.data);
+        setMatches(matchesRes.data?.data || []);
+      } catch (error) {
+        console.error('Failed to fetch player details:', error);
+        toast.error('Failed to load player profile');
+        router.back();
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     fetchPlayerDetails();
-  }, [params.id]);
+  }, [params.id, router]);
 
   if (isLoading) return <LoadingLayer />;
   if (!player) return <div className="p-8 text-center text-zinc-400">Player not found.</div>;
@@ -95,6 +95,7 @@ export default function PlayerProfilePage({ params }: { params: { id: string } }
         <div className="relative flex flex-col md:flex-row items-center md:items-start gap-8">
           <div className="relative shrink-0">
             {player.avatarUrl ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img src={player.avatarUrl} alt={player.name} className="w-32 h-32 rounded-3xl object-cover border-2 border-zinc-800 shadow-[0_0_30px_rgba(16,185,129,0.15)]" />
             ) : (
               <div className="w-32 h-32 bg-zinc-900 rounded-3xl flex items-center justify-center border-2 border-zinc-800 text-5xl font-black text-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.15)]">

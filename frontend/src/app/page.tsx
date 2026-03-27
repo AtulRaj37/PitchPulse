@@ -312,11 +312,13 @@ export default function HybridLandingPage() {
       >
         <div className="px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link href="/" className="hover:scale-[1.02] transition-transform flex items-center gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img 
               src="/icons/logo-only.png" 
               alt="PitchPulse Logo" 
               className="h-8 md:h-10 w-auto object-contain drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]"
             />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img 
               src="/icons/text-only.png" 
               alt="PitchPulse" 
@@ -698,6 +700,7 @@ export default function HybridLandingPage() {
                 className="shrink-0 relative w-[280px] sm:w-[320px] lg:w-[350px] z-10"
               >
                 <div className="absolute inset-0 bg-emerald-500/20 blur-[100px] rounded-full"></div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/iphone.png"
                   alt="PitchPulse App Screen"
@@ -804,7 +807,9 @@ export default function HybridLandingPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-24">
               <div className="lg:pr-8">
                 <Link href="/" className="flex items-center gap-3 mb-8 hover:opacity-80 transition-opacity">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src="/icons/logo-only.png" alt="PitchPulse" className="h-8 w-auto object-contain drop-shadow-xl" />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src="/icons/text-only.png" alt="PitchPulse" className="h-5 w-auto object-contain" />
                 </Link>
                 <p className="text-zinc-500 text-sm leading-loose font-medium mb-8">
