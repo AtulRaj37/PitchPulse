@@ -360,9 +360,11 @@ export const useScorerStore = create<ScorerState>((set, get) => ({
     try {
       // Sync to backend first
       if (state.matchId) {
-        await apiClient.post('/commands/end-innings', { 
+        await apiClient.post('/commands/complete-innings', { 
           matchId: state.matchId,
-          declared: false
+          inningsNumber: state.innings,
+          declared: false,
+          followOn: false
         });
         
         // Update snapshot target locally on DB
@@ -614,6 +616,8 @@ export const useScorerStore = create<ScorerState>((set, get) => ({
     });
     
     try {
+      await apiClient.post('/commands/undo', { matchId: state.matchId });
+
       await apiClient.patch(`/matches/${state.matchId}`, {
         currentSnapshot: {
           innings: state.innings,

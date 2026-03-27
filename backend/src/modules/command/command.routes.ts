@@ -20,6 +20,7 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { z } from 'zod';
 import { executeCommand } from './command.service.js';
+import { prisma } from '../../core/db/prisma.js';
 import {
   type ScoreRunCommand,
   type WicketCommand,
@@ -151,6 +152,10 @@ const changeStrikerSchema = z.object({
 const changeNonStrikerSchema = z.object({
   matchId: z.string().uuid(),
   newNonStrikerId: z.string().uuid(),
+});
+
+const undoSchema = z.object({
+  matchId: z.string().uuid(),
 });
 
 // ============================================
@@ -627,6 +632,62 @@ export default async function commandRoutes(app: FastifyInstance): Promise<void>
 
     const result = await executeCommand(command, context);
     return reply.status(200).send(result);
+  });
+
+  // ========================================
+  // UNDO
+  // POST /commands/undo
+  // ========================================
+  app.post('/undo', {
+    preHandler: validateBody(undoSchema),
+    schema: {
+      description: 'Undo the last delivery/action',
+      tags: ['Commands'],
+    },
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const body = request.body as z.infer<typeof undoSchema>;
+    
+    // Find the last "root" delivery event
+    const rootEventTypes = ['BALL_BOWLED', 'WIDE_BALL', 'NO_BALL', 'BYE', 'LEG_BYE', 'WICKET_FELL'];
+    
+    // Fallback: If no delivery events are found, just delete the very last event (e.g. CHANGE_BOWLER)
+    // to allow progressive unspooling.
+    const veryLastEvent = await prisma.event.findFirst({
+      where: { matchId: body.matchId },
+      orderBy: { sequenceNumber: 'desc' },
+    });
+
+    if (!veryLastEvent) {
+      return reply.status(400).send({ error: { message: 'No events to undo' } });
+    }
+
+    const lastRootEvent = await prisma.event.findFirst({
+      where: { 
+        matchId: body.matchId,
+        eventType: { in: rootEventTypes as any }
+      },
+      orderBy: { sequenceNumber: 'desc' },
+    });
+
+    // Determine the cutoff sequence number
+    // Only delete grouped events if the root event is the one we are currently at (or very close).
+    // Otherwise, just delete the very last singleton event.
+    let cutoffSequence = veryLastEvent.sequenceNumber;
+    
+    if (lastRootEvent) {
+       // All events after (and including) this root event belong to the same delivery
+       cutoffSequence = lastRootEvent.sequenceNumber;
+    }
+
+    // Hard delete events from the cutoff to the end
+    await prisma.event.deleteMany({
+      where: {
+        matchId: body.matchId,
+        sequenceNumber: { gte: cutoffSequence }
+      }
+    });
+
+    return reply.status(200).send({ success: true, message: 'Undo successful' });
   });
 
   logger.info('Command routes registered');
