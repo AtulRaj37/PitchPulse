@@ -18,6 +18,9 @@ export interface ScoreRunCommand {
   readonly runs: 0 | 1 | 2 | 3 | 4 | 6;
   readonly batsmanId: string;
   readonly bowlerId: string;
+  readonly shotArea?: string;
+  readonly shotType?: string;
+  readonly bowlerAngle?: string;
   readonly commentary?: string;
   readonly timestamp: Date;
 }
@@ -30,6 +33,7 @@ export interface WicketCommand {
   readonly dismissalMode: DismissalMode;
   readonly fielderId?: string;
   readonly newBatsmanId?: string; // Will come from match players
+  readonly bowlerAngle?: string;
   readonly commentary?: string;
   readonly timestamp: Date;
 }
@@ -39,6 +43,7 @@ export interface WideCommand {
   readonly bowlerId: string;
   readonly batsmanId: string;
   readonly extraRuns: number; // Min 1
+  readonly bowlerAngle?: string;
   readonly commentary?: string;
   readonly timestamp: Date;
 }
@@ -49,6 +54,7 @@ export interface NoBallCommand {
   readonly batsmanId: string;
   readonly extraRuns: number; // 0 or more
   readonly isFreeHit: boolean;
+  readonly bowlerAngle?: string;
   readonly commentary?: string;
   readonly timestamp: Date;
 }
@@ -58,6 +64,7 @@ export interface ByeCommand {
   readonly batsmanId: string;
   readonly bowlerId: string;
   readonly runs: number;
+  readonly bowlerAngle?: string;
   readonly commentary?: string;
   readonly timestamp: Date;
 }
@@ -67,6 +74,7 @@ export interface LegByeCommand {
   readonly batsmanId: string;
   readonly bowlerId: string;
   readonly runs: number;
+  readonly bowlerAngle?: string;
   readonly commentary?: string;
   readonly timestamp: Date;
 }
@@ -296,7 +304,7 @@ function _generateEvents(
     }
 
     case 'WICKET': {
-      const { batsmanId, bowlerId, wicketType, dismissalMode, fielderId, newBatsmanId, commentary } = command.payload;
+      const { batsmanId, bowlerId, wicketType, dismissalMode, fielderId, newBatsmanId, bowlerAngle, commentary } = command.payload;
 
       const events: CommandEvent[] = [
         {
@@ -308,6 +316,7 @@ function _generateEvents(
             ballType: BallType.NORMAL,
             runs: 0,
             isExtra: false,
+            bowlerAngle,
             commentary,
           },
           overNumber,
@@ -376,7 +385,7 @@ function _generateEvents(
     }
 
     case 'WIDE': {
-      const { bowlerId, batsmanId, extraRuns, commentary } = command.payload;
+      const { bowlerId, batsmanId, extraRuns, bowlerAngle, commentary } = command.payload;
 
       return [
         {
@@ -387,6 +396,7 @@ function _generateEvents(
             batsmanId,
             extraRuns,
             isUnofficial: false,
+            bowlerAngle,
             commentary,
           },
           overNumber,
@@ -396,7 +406,7 @@ function _generateEvents(
     }
 
     case 'NO_BALL': {
-      const { bowlerId, batsmanId, extraRuns, isFreeHit, commentary } = command.payload;
+      const { bowlerId, batsmanId, extraRuns, isFreeHit, bowlerAngle, commentary } = command.payload;
 
       return [
         {
@@ -407,6 +417,7 @@ function _generateEvents(
             batsmanId,
             extraRuns,
             isFreeHit,
+            bowlerAngle,
             commentary,
           },
           overNumber,
@@ -416,7 +427,7 @@ function _generateEvents(
     }
 
     case 'BYE': {
-      const { batsmanId, bowlerId, runs, commentary } = command.payload;
+      const { batsmanId, bowlerId, runs, bowlerAngle, commentary } = command.payload;
 
       return [
         {
@@ -426,6 +437,7 @@ function _generateEvents(
             batsmanId,
             bowlerId,
             runs,
+            bowlerAngle,
             commentary,
           },
           overNumber,
@@ -435,7 +447,7 @@ function _generateEvents(
     }
 
     case 'LEG_BYE': {
-      const { batsmanId, bowlerId, runs, commentary } = command.payload;
+      const { batsmanId, bowlerId, runs, bowlerAngle, commentary } = command.payload;
 
       return [
         {
@@ -445,6 +457,7 @@ function _generateEvents(
             batsmanId,
             bowlerId,
             runs,
+            bowlerAngle,
             commentary,
           },
           overNumber,

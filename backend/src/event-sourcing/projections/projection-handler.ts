@@ -64,6 +64,14 @@ async function projectToScorecard(event: StoredEvent): Promise<void> {
   const inningsNumber = await calculateInningsNumber(event);
   if (!inningsNumber) return;
 
+  // Auto-promote Match Status to LIVE on any initial scoring event
+  if (['INNINGS_STARTED', 'BALL_BOWLED', 'RUN_SCORED', 'WICKET_FELL', 'WIDE_BALL', 'NO_BALL'].includes(eventType)) {
+    await prisma.match.updateMany({
+      where: { id: matchId, status: 'CREATED' },
+      data: { status: 'LIVE' }
+    });
+  }
+
   // Update innings based on event type
   switch (eventType) {
     case 'INNINGS_STARTED':

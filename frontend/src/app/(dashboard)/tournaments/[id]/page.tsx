@@ -6,17 +6,19 @@ import { TournamentService } from '@/services/api/tournament.service';
 import { TeamService } from '@/services/api/team.service';
 import { MatchService } from '@/services/api/match.service';
 import { useState } from 'react';
-import { Trophy, Calendar, Users, List, Plus, Loader2, Play, Settings, X, Edit3, Trash2, ChevronRight } from 'lucide-react';
+import { Trophy, Calendar, Users, List, Plus, Loader2, Play, Settings, X, Edit3, Trash2, ChevronRight, Medal, Target } from 'lucide-react';
+import { apiClient } from '@/services/api/api.client';
 import { LoadingLayer } from '@/components/ui/LoadingLayer';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import clsx from 'clsx';
+import { KnockoutBracket } from '@/features/tournament/components/KnockoutBracket';
 
 export default function TournamentDetailPage() {
   const { id } = useParams();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState<'TEAMS' | 'MATCHES' | 'POINTS_TABLE'>('TEAMS');
+  const [activeTab, setActiveTab] = useState<'TEAMS' | 'MATCHES' | 'POINTS_TABLE' | 'LEADERBOARDS'>('TEAMS');
   const [isAddingTeam, setIsAddingTeam] = useState(false);
   const [selectedTeamId, setSelectedTeamId] = useState('');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -42,6 +44,13 @@ export default function TournamentDetailPage() {
     queryKey: ['tournament-points', id],
     queryFn: () => TournamentService.getPointsTable(id as string),
     enabled: activeTab === 'POINTS_TABLE',
+  });
+
+  // Fetch Leaderboards
+  const { data: leaderboards, isLoading: isLoadingLeaderboards } = useQuery({
+    queryKey: ['tournament-leaderboards', id],
+    queryFn: () => apiClient.get(`/tournaments/${id}/leaderboards`).then(res => res.data.data),
+    enabled: activeTab === 'LEADERBOARDS',
   });
 
   // Fetch Matches for this tournament
@@ -178,7 +187,7 @@ export default function TournamentDetailPage() {
 
       {/* 2. TABBED NAVIGATION */}
       <div className="flex space-x-2 border-b border-zinc-800 pb-2">
-        {(['TEAMS', 'MATCHES', 'POINTS_TABLE'] as const).map(tab => (
+        {(['TEAMS', 'MATCHES', 'POINTS_TABLE', 'LEADERBOARDS'] as const).map(tab => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -292,6 +301,13 @@ export default function TournamentDetailPage() {
                 </div>
               ) : (
                 <div className="flex flex-col space-y-3">
+                  {/* Knockout Bracket Visualizer */}
+                  {(tournament.format === 'knockout' || tournament.format === 'group + knockout') && (
+                    <div className="bg-zinc-950/40 border border-white/5 rounded-3xl overflow-hidden mb-8">
+                       <KnockoutBracket matches={[...tournamentMatchesList, ...tbdFixtures]} />
+                    </div>
+                  )}
+
                   {/* Actual Matches */}
                   {tournamentMatchesList.map((match: any) => (
                     <div key={match.id} onClick={() => router.push(`/match/${match.id}/${match.status === 'COMPLETED' ? 'scorecard' : 'score'}`)} className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-zinc-950/40 hover:bg-zinc-900/80 border border-zinc-800/50 rounded-2xl group transition-all cursor-pointer hover:border-amber-500/30 overflow-hidden relative">
@@ -415,6 +431,93 @@ export default function TournamentDetailPage() {
                   </div>
                 )}
               </div>
+            </motion.div>
+          )}
+
+          {/* LEADERBOARDS TAB */}
+          {activeTab === 'LEADERBOARDS' && (
+            <motion.div key="leaderboards" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6">
+               <div className="flex justify-between items-center mb-6">
+                 <h3 className="text-xl font-bold text-white font-display">Tournament Leaderboards</h3>
+               </div>
+               
+               {isLoadingLeaderboards ? (
+                  <div className="flex justify-center p-20"><Loader2 className="animate-spin text-amber-500" /></div>
+               ) : !leaderboards || (leaderboards.topBatsmen.length === 0 && leaderboards.topBowlers.length === 0) ? (
+                  <div className="flex flex-col items-center justify-center py-32 text-center px-4">
+                    <Medal size={64} className="text-zinc-800 mb-6" />
+                    <p className="font-display font-black text-3xl text-zinc-500 uppercase tracking-tighter mb-2">No Records Yet</p>
+                    <p className="text-zinc-500 text-sm font-medium tracking-wide">Play matches to populate the Orange and Purple Caps.</p>
+                  </div>
+               ) : (
+                  <div className="grid lg:grid-cols-2 gap-8">
+                     
+                     {/* Orange Cap (Batsmen) */}
+                     <div className="glass-premium p-6 rounded-[2rem] border border-white/5 relative overflow-hidden">
+                       <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 blur-2xl rounded-full"></div>
+                       <div className="flex items-center gap-3 mb-6 relative z-10 border-b border-white/5 pb-4">
+                         <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500 border border-amber-500/30">
+                            <Trophy size={18} fill="currentColor" />
+                         </div>
+                         <div>
+                           <h4 className="text-white font-black font-display text-xl uppercase tracking-wider">Orange Cap</h4>
+                           <p className="text-zinc-400 text-[10px] font-bold tracking-widest uppercase">Most Runs Scored</p>
+                         </div>
+                       </div>
+                       
+                       <div className="space-y-3 relative z-10">
+                         {leaderboards.topBatsmen.map((player: any, index: number) => (
+                           <div key={player.id} onClick={() => router.push(`/players/${player.id}`)} className="flex items-center justify-between p-4 bg-zinc-950/40 border border-white/5 rounded-2xl hover:bg-zinc-900 transition-colors cursor-pointer group">
+                             <div className="flex items-center gap-4">
+                               <span className={clsx("w-6 font-black font-display text-lg text-center", index === 0 ? 'text-amber-500 text-2xl' : index < 3 ? 'text-zinc-300' : 'text-zinc-600')}>{index + 1}</span>
+                               <div>
+                                 <h5 className="text-white font-black uppercase tracking-wider group-hover:text-amber-400 transition-colors">{player.name}</h5>
+                                 <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">{player.teamName}</p>
+                               </div>
+                             </div>
+                             <div className="text-right">
+                               <p className="text-2xl font-black font-display text-amber-500">{player.runs}</p>
+                               <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">SR: {player.strikeRate}</p>
+                             </div>
+                           </div>
+                         ))}
+                       </div>
+                     </div>
+
+                     {/* Purple Cap (Bowlers) */}
+                     <div className="glass-premium p-6 rounded-[2rem] border border-white/5 relative overflow-hidden">
+                       <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 blur-2xl rounded-full"></div>
+                       <div className="flex items-center gap-3 mb-6 relative z-10 border-b border-white/5 pb-4">
+                         <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400 border border-purple-500/30">
+                            <Target size={18} />
+                         </div>
+                         <div>
+                           <h4 className="text-white font-black font-display text-xl uppercase tracking-wider">Purple Cap</h4>
+                           <p className="text-zinc-400 text-[10px] font-bold tracking-widest uppercase">Most Wickets Taken</p>
+                         </div>
+                       </div>
+                       
+                       <div className="space-y-3 relative z-10">
+                         {leaderboards.topBowlers.map((player: any, index: number) => (
+                           <div key={player.id} onClick={() => router.push(`/players/${player.id}`)} className="flex items-center justify-between p-4 bg-zinc-950/40 border border-white/5 rounded-2xl hover:bg-zinc-900 transition-colors cursor-pointer group">
+                             <div className="flex items-center gap-4">
+                               <span className={clsx("w-6 font-black font-display text-lg text-center", index === 0 ? 'text-purple-400 text-2xl' : index < 3 ? 'text-zinc-300' : 'text-zinc-600')}>{index + 1}</span>
+                               <div>
+                                 <h5 className="text-white font-black uppercase tracking-wider group-hover:text-purple-400 transition-colors">{player.name}</h5>
+                                 <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">{player.teamName}</p>
+                               </div>
+                             </div>
+                             <div className="text-right">
+                               <p className="text-2xl font-black font-display text-purple-400">{player.wickets}</p>
+                               <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">Econ: {player.economy}</p>
+                             </div>
+                           </div>
+                         ))}
+                       </div>
+                     </div>
+
+                  </div>
+               )}
             </motion.div>
           )}
         </AnimatePresence>

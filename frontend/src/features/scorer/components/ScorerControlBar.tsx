@@ -1,32 +1,43 @@
-import { Undo2, History, PauseCircle } from 'lucide-react';
+import { Undo2, History, PauseCircle, ShieldAlert } from 'lucide-react';
 import { motion } from 'framer-motion';
+import clsx from 'clsx';
 
 interface ScorerControlBarProps {
   onUndo: () => void;
+  onAudit: () => void;
   onEndInnings: () => void;
   onPause: () => void;
   innings: number;
 }
 
-export function ScorerControlBar({ onUndo, onEndInnings, onPause, innings }: ScorerControlBarProps) {
+export function ScorerControlBar({ onUndo, onAudit, onEndInnings, onPause, innings }: ScorerControlBarProps) {
   return (
-    <div className="flex gap-3 w-full">
+    <div className={clsx("grid gap-2 w-full", innings === 1 ? "grid-cols-4" : "grid-cols-3")}>
       <motion.button
         whileTap={{ scale: 0.95 }}
         onClick={onUndo}
-        className="flex-1 flex items-center justify-center gap-2 bg-[#0e1424]/80 backdrop-blur-md border border-white/5 py-3.5 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 font-bold text-sm transition-all uppercase tracking-widest shadow-lg"
+        className="flex flex-col items-center justify-center gap-1 md:gap-1.5 bg-[#0e1424]/80 backdrop-blur-md border border-white/5 py-2.5 md:py-4 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 font-bold transition-all shadow-lg"
       >
-        <Undo2 className="w-4 h-4" />
-        <span>Undo</span>
+        <Undo2 size={18} />
+        <span className="text-[9px] uppercase tracking-widest">Undo</span>
+      </motion.button>
+      
+      <motion.button
+        whileTap={{ scale: 0.95 }}
+        onClick={onAudit}
+        className="flex flex-col items-center justify-center gap-1 md:gap-1.5 bg-red-500/10 backdrop-blur-md border border-red-500/20 py-2.5 md:py-4 rounded-xl text-red-500 hover:text-red-400 hover:bg-red-500/20 font-bold transition-all shadow-[0_0_15px_rgba(239,68,68,0.1)]"
+      >
+        <ShieldAlert size={18} />
+        <span className="text-[9px] uppercase tracking-widest">Audit</span>
       </motion.button>
       
       <motion.button
         whileTap={{ scale: 0.95 }}
         onClick={onPause}
-        className="flex-1 flex items-center justify-center gap-2 bg-[#0e1424]/80 backdrop-blur-md border border-white/5 py-3.5 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 font-bold text-sm transition-all uppercase tracking-widest shadow-lg"
+        className="flex flex-col items-center justify-center gap-1 md:gap-1.5 bg-[#0e1424]/80 backdrop-blur-md border border-white/5 py-2.5 md:py-4 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 font-bold transition-all shadow-lg"
       >
-        <PauseCircle className="w-4 h-4" />
-        <span>Pause</span>
+        <PauseCircle size={18} />
+        <span className="text-[9px] uppercase tracking-widest">Pause</span>
       </motion.button>
 
       {innings === 1 && (
@@ -37,10 +48,10 @@ export function ScorerControlBar({ onUndo, onEndInnings, onPause, innings }: Sco
               onEndInnings();
             }
           }}
-          className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-sm transition-all uppercase tracking-widest py-3.5 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.2)] hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] border border-blue-400/20"
+          className="flex flex-col items-center justify-center gap-1 md:gap-1.5 bg-gradient-to-br from-blue-600 to-indigo-700 text-white font-bold transition-all py-2.5 md:py-4 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.3)] border border-blue-400/30 text-center px-1"
         >
-          <History className="w-4 h-4" />
-          <span>Innings Break</span>
+          <History size={18} />
+          <span className="text-[9px] uppercase tracking-widest leading-tight">Match<br/>Break</span>
         </motion.button>
       )}
     </div>

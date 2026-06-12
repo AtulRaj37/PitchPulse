@@ -16,6 +16,12 @@ export interface MatchEvent {
   isNoBall?: boolean;
   isBye?: boolean;
   isLegBye?: boolean;
+  shotArea?: string;
+  shotType?: string;
+  bowlerAngle?: string;
+  wicketType?: string;
+  dismissalMode?: string;
+  fielderId?: string;
 }
 
 export interface ScorerSnapshot {
@@ -35,6 +41,7 @@ export interface ScorerSnapshot {
   bowlerRuns: number;
   bowlerWickets: number;
   bowlerMaidens: number;
+  isFreeHit: boolean;
   timeline: string[]; // ['1', 'W', '4', '0'] for the *current* over only
 }
 
@@ -53,6 +60,7 @@ interface ScorerState {
   strikerId: string | null;
   nonStrikerId: string | null;
   bowlerId: string | null;
+  bowlerAngle: 'OVER_THE_WICKET' | 'ROUND_THE_WICKET' | 'BETWEEN_THE_WICKET' | null;
 
   gullyRules: Record<string, boolean | number> | null;
 
@@ -61,12 +69,12 @@ interface ScorerState {
 
   // Actions
   setMatchId: (id: string) => void;
-  setPlayers: (striker: string | null, nonStriker: string | null, bowler: string | null) => void;
-  setBowler: (bowlerId: string | null) => void;
-  setStriker: (strikerId: string | null) => void;
+  setPlayers: (strikerId: string, nonStrikerId: string, bowlerId: string | null, bowlerAngle?: any) => void;
+  setBowler: (id: string, angle: 'OVER_THE_WICKET' | 'ROUND_THE_WICKET' | 'BETWEEN_THE_WICKET') => void;
+  setStriker: (id: string) => void;
   
-  scoreRuns: (runs: number, options?: { isWide?: boolean, isNoBall?: boolean, isBye?: boolean, isLegBye?: boolean }) => Promise<void>;
-  markWicket: () => Promise<void>;
+  scoreRuns: (runs: number, options?: { extraRuns?: number; shotArea?: string; shotType?: string; bowlerAngle?: string; isWide?: boolean; isNoBall?: boolean; isBye?: boolean; isLegBye?: boolean }) => Promise<void>;
+  markWicket: (options?: { wicketType?: string, fielderId?: string, bowlerAngle?: string, dismissalMode?: string }) => Promise<void>;
   undo: () => void;
   endInnings: () => void;
   initializeFromEvents: (matchData: any) => void;
@@ -89,6 +97,7 @@ const defaultSnapshot: ScorerSnapshot = {
   bowlerRuns: 0,
   bowlerWickets: 0,
   bowlerMaidens: 0,
+  isFreeHit: false,
   timeline: [],
 };
 
@@ -119,6 +128,15 @@ function recalculateState(events: MatchEvent[], innings: number, currentStriker:
     const isExtras = !!(ev.isWide || ev.isNoBall || ev.isBye || ev.isLegBye);
     const extraRun = (ev.isWide || ev.isNoBall) ? 1 : 0;
     const legalDelivery = !(ev.isWide || ev.isNoBall);
+    
+    // Free Hit logic:
+    // If the ball is a NoBall, the NEXT delivery is a Free Hit.
+    // If it's a legal delivery or wide, it's not a free hit (unless wide was thrown ON a free hit, in which case free hit persists).
+    if (ev.isNoBall) {
+      score.isFreeHit = true;
+    } else if (legalDelivery) {
+      score.isFreeHit = false;
+    }
     
     score.runs += (ev.value + extraRun);
     
@@ -221,6 +239,7 @@ export const useScorerStore = create<ScorerState>((set, get) => ({
   strikerId: null,
   nonStrikerId: null,
   bowlerId: null,
+  bowlerAngle: null,
   
   score: { ...defaultSnapshot },
 
@@ -294,62 +313,72 @@ export const useScorerStore = create<ScorerState>((set, get) => ({
     };
   }),
   
-  setPlayers: (striker, nonStriker, bowler) => set((state) => {
-    // Sync to backend
+  setPlayers: async (strikerId, nonStrikerId, bowlerId, bowlerAngle) => {
+    const state = get();
+    const newStrikerId = strikerId ?? state.strikerId;
+    const newNonStrikerId = nonStrikerId ?? state.nonStrikerId;
+    const newBowlerId = bowlerId ?? state.bowlerId;
+    const newBowlerAngle = bowlerAngle ?? state.bowlerAngle;
+
+    set({
+      strikerId: newStrikerId,
+      nonStrikerId: newNonStrikerId,
+      bowlerId: newBowlerId,
+      bowlerAngle: newBowlerAngle,
+    });
+
     if (state.matchId) {
-      if (striker && state.strikerId !== striker) apiClient.post('/commands/change-striker', { matchId: state.matchId, newStrikerId: striker }).catch(console.error);
-      if (nonStriker && state.nonStrikerId !== nonStriker) apiClient.post('/commands/change-non-striker', { matchId: state.matchId, newNonStrikerId: nonStriker }).catch(console.error);
-      if (bowler && state.bowlerId !== bowler) apiClient.post('/commands/change-bowler', { matchId: state.matchId, newBowlerId: bowler }).catch(console.error);
-      
-      apiClient.patch(`/matches/${state.matchId}`, {
-        currentSnapshot: {
-          innings: state.innings,
-          target: state.target,
-          strikerId: striker,
-          nonStrikerId: nonStriker,
-          bowlerId: bowler
-        }
-      }).catch(console.error);
+      try {
+        await apiClient.patch(`/matches/${state.matchId}`, {
+          currentSnapshot: {
+            innings: state.innings,
+            target: state.target,
+            strikerId: newStrikerId,
+            nonStrikerId: newNonStrikerId,
+            bowlerId: newBowlerId
+          }
+        });
+      } catch (err) {
+        console.error("Failed to persist player assignments", err);
+      }
     }
-    const { score } = recalculateState(state.events, state.innings, striker, nonStriker, bowler);
-    return { strikerId: striker, nonStrikerId: nonStriker, bowlerId: bowler, score };
-  }),
+  },
 
-  setBowler: (bowlerId) => set((state) => {
-    if (state.matchId && bowlerId) {
-      apiClient.post('/commands/change-bowler', { matchId: state.matchId, newBowlerId: bowlerId }).catch(console.error);
-      
-      apiClient.patch(`/matches/${state.matchId}`, {
-        currentSnapshot: {
-          innings: state.innings,
-          target: state.target,
-          strikerId: state.strikerId,
-          nonStrikerId: state.nonStrikerId,
-          bowlerId: bowlerId
-        }
-      }).catch(console.error);
+  setStriker: async (id) => {
+    set({ strikerId: id });
+    const state = get();
+    if (state.matchId) {
+       try {
+         await apiClient.patch(`/matches/${state.matchId}`, {
+           currentSnapshot: {
+             innings: state.innings,
+             target: state.target,
+             strikerId: state.strikerId,
+             nonStrikerId: state.nonStrikerId,
+             bowlerId: state.bowlerId
+           }
+         });
+       } catch (err) {}
     }
-    const { score } = recalculateState(state.events, state.innings, state.strikerId, state.nonStrikerId, bowlerId);
-    return { bowlerId, score };
-  }),
+  },
 
-  setStriker: (strikerId) => set((state) => {
-    if (state.matchId && strikerId) {
-      apiClient.post('/commands/change-striker', { matchId: state.matchId, newStrikerId: strikerId }).catch(console.error);
-      
-      apiClient.patch(`/matches/${state.matchId}`, {
-        currentSnapshot: {
-          innings: state.innings,
-          target: state.target,
-          strikerId: strikerId,
-          nonStrikerId: state.nonStrikerId,
-          bowlerId: state.bowlerId
-        }
-      }).catch(console.error);
+  setBowler: async (id, angle) => {
+    set({ bowlerId: id, bowlerAngle: angle });
+    const state = get();
+    if (state.matchId) {
+      try {
+        await apiClient.patch(`/matches/${state.matchId}`, {
+          currentSnapshot: {
+             innings: state.innings,
+             target: state.target,
+             strikerId: state.strikerId,
+             nonStrikerId: state.nonStrikerId,
+             bowlerId: state.bowlerId
+          }
+        });
+      } catch (err) {}
     }
-    const { score } = recalculateState(state.events, state.innings, strikerId, state.nonStrikerId, state.bowlerId);
-    return { strikerId, score };
-  }),
+  },
 
   endInnings: async () => {
     const state = get();
@@ -404,7 +433,7 @@ export const useScorerStore = create<ScorerState>((set, get) => ({
       return;
     }
 
-    const { isWide, isNoBall, isBye, isLegBye } = options;
+    const { isWide, isNoBall, isBye, isLegBye, shotArea, shotType, bowlerAngle } = options;
     const isExtras = !!(isWide || isNoBall || isBye || isLegBye);
 
     // --- GULLY RULES INTERCEPTS ---
@@ -447,7 +476,10 @@ export const useScorerStore = create<ScorerState>((set, get) => ({
        isWide,
        isNoBall,
        isBye,
-       isLegBye
+       isLegBye,
+       shotArea,
+       shotType,
+       bowlerAngle: state.bowlerAngle || bowlerAngle
     };
 
     const newEvents = [...state.events, newEvent];
@@ -487,18 +519,23 @@ export const useScorerStore = create<ScorerState>((set, get) => ({
     });
 
     try {
+      // 0. Auto-start the match on the very first delivery attempt
+      if (state.events.length === 0) {
+        await apiClient.post('/commands/start-match', { matchId: state.matchId });
+      }
+
       // 1. Persist the actual event to the backend Event store FIRST
       // This allows the Event Validator to check against the PRE-ROTATION snapshot
       if (isWide) {
-        await apiClient.post('/commands/wide', { matchId: state.matchId, batsmanId: state.strikerId, bowlerId: state.bowlerId, extraRuns: runs });
+        await apiClient.post('/commands/wide', { matchId: state.matchId, batsmanId: state.strikerId, bowlerId: state.bowlerId, extraRuns: runs, bowlerAngle: state.bowlerAngle || bowlerAngle });
       } else if (isNoBall) {
-        await apiClient.post('/commands/no-ball', { matchId: state.matchId, batsmanId: state.strikerId, bowlerId: state.bowlerId, extraRuns: runs });
+        await apiClient.post('/commands/no-ball', { matchId: state.matchId, batsmanId: state.strikerId, bowlerId: state.bowlerId, extraRuns: runs, shotArea, shotType, bowlerAngle: state.bowlerAngle || bowlerAngle });
       } else if (isBye) {
-        await apiClient.post('/commands/bye', { matchId: state.matchId, batsmanId: state.strikerId, bowlerId: state.bowlerId, runs });
+        await apiClient.post('/commands/bye', { matchId: state.matchId, batsmanId: state.strikerId, bowlerId: state.bowlerId, runs, bowlerAngle: state.bowlerAngle || bowlerAngle });
       } else if (isLegBye) {
-        await apiClient.post('/commands/leg-bye', { matchId: state.matchId, batsmanId: state.strikerId, bowlerId: state.bowlerId, runs });
+        await apiClient.post('/commands/leg-bye', { matchId: state.matchId, batsmanId: state.strikerId, bowlerId: state.bowlerId, runs, bowlerAngle: state.bowlerAngle || bowlerAngle });
       } else {
-        await apiClient.post('/commands/score-run', { matchId: state.matchId, batsmanId: state.strikerId, bowlerId: state.bowlerId, runs });
+        await apiClient.post('/commands/score-run', { matchId: state.matchId, batsmanId: state.strikerId, bowlerId: state.bowlerId, runs, shotArea, shotType, bowlerAngle: state.bowlerAngle || bowlerAngle });
       }
 
       // 2. Auto-transition match from CREATED to LIVE on first scoring action AND patch the updated snapshot
@@ -524,11 +561,13 @@ export const useScorerStore = create<ScorerState>((set, get) => ({
     }
   },
 
-  markWicket: async () => {
+  markWicket: async (options = {}) => {
     const state = get();
     if (!state.matchId) return;
 
     if (!state.strikerId || !state.nonStrikerId || !state.bowlerId) return;
+
+    const { wicketType = 'BOWLED', dismissalMode = 'BATSMAN_OUT', bowlerAngle, fielderId } = options;
 
     const newEvent: MatchEvent = {
        id: generateId(),
@@ -538,6 +577,10 @@ export const useScorerStore = create<ScorerState>((set, get) => ({
        bowlerId: state.bowlerId,
        over: state.score.overs,
        ball: state.score.balls,
+       wicketType,
+       dismissalMode,
+       bowlerAngle,
+       fielderId
     };
 
     const newEvents = [...state.events, newEvent];
@@ -569,13 +612,20 @@ export const useScorerStore = create<ScorerState>((set, get) => ({
     });
 
     try {
+      // 0. Auto-start the match on the very first delivery attempt
+      if (state.events.length === 0) {
+        await apiClient.post('/commands/start-match', { matchId: state.matchId });
+      }
+
       // 1. Record the Event FIRST
       await apiClient.post('/commands/wicket', {
         matchId: state.matchId,
         batsmanId: state.strikerId!,
         bowlerId: state.bowlerId!,
-        wicketType: 'BOWLED',
-        dismissalMode: 'BATSMAN_OUT'
+        wicketType,
+        dismissalMode,
+        bowlerAngle: state.bowlerAngle || bowlerAngle,
+        fielderId
       });
 
       // 2. Patch the empty striker slots to backend 

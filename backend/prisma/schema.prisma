@@ -303,6 +303,15 @@ model Match {
   overs             Int
   ballsPerOver      Int         @default(6)
   maxOversPerBowler Int?
+  
+  // Phase 1: Pre-Match Setup Enhancements
+  team1PlayingXI    String[]    @default([]) // Array of Player IDs for Team 1
+  team2PlayingXI    String[]    @default([]) // Array of Player IDs for Team 2
+  matchType         String?     // e.g. "LIMITED", "BOX", "TEST"
+  pitchType         String?     // e.g. "ROUGH", "CEMENT", "TURF", "ASTROTURF", "MATTING"
+  ballType          String?     // e.g. "TENNIS", "LEATHER", "OTHER"
+  officials         Json?       // JSON object containing umpires, scorers, etc.
+
   gullyRules        Json?
   currentSnapshot   Json?
   tournamentId      String?

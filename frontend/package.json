@@ -13,6 +13,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@ducanh2912/next-pwa": "^10.2.9",
     "@fastify/jwt": "10.0.0",
     "@hookform/resolvers": "^3.3.4",
     "@pitchpulse/shared": "*",
@@ -31,7 +32,6 @@
     "lenis": "^1.1.1",
     "lucide-react": "^0.323.0",
     "next": "^14.2.35",
-    "next-pwa": "^2.0.2",
     "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

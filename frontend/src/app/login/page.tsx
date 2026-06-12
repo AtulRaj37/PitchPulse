@@ -42,20 +42,20 @@ export default function LoginPage() {
       <div className="w-full lg:w-[480px] xl:w-[500px] bg-[#0e1424]/95 backdrop-blur-2xl flex flex-col min-h-screen shrink-0 relative z-20 border-r border-white/5 lg:shadow-[20px_0_50px_rgba(0,0,0,0.5)]">
         
         {/* Form Container */}
-        <div className="flex-1 flex flex-col justify-center px-8 sm:px-12 lg:px-14 py-12 relative z-10">
+        <div className="flex-1 flex flex-col justify-center px-8 sm:px-12 lg:px-14 py-6 md:py-12 relative z-10">
           
           {/* Subtle top glow */}
           <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent"></div>
 
           {/* Mobile title/logo area */}
-          <div className="lg:hidden mb-10 flex items-center justify-center">
+          <div className="lg:hidden mb-4 md:mb-10 flex items-center justify-center">
             {/* eslint-disable-next-line @next/next/no-img-element */ }
-            <img src="/icons/full-logo.png" alt="PitchPulse" className="h-10 w-auto object-contain drop-shadow-lg" />
+            <img src="/icons/full-logo.png" alt="PitchPulse" className="h-8 md:h-10 w-auto object-contain drop-shadow-lg" />
           </div>
 
-          <h2 className="text-2xl text-white text-center mb-10 font-bold font-clash tracking-wide">Log in to continue</h2>
+          <h2 className="text-xl md:text-2xl text-white text-center mb-6 md:mb-10 font-bold font-clash tracking-wide">Log in to continue</h2>
           
-          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 md:gap-6">
             <div className="relative">
               <label className="text-xs text-zinc-400 font-bold uppercase tracking-wider mb-2 block">Email</label>
               <input
@@ -93,7 +93,7 @@ export default function LoginPage() {
               </div>
             )}
 
-            <div className="flex items-center justify-center my-4 opacity-50">
+            <div className="flex items-center justify-center my-2 md:my-4 opacity-50">
               <div className="h-px bg-white/10 flex-1"></div>
               <span className="px-4 text-[11px] font-bold text-zinc-500 tracking-wider">SECURE LOGIN</span>
               <div className="h-px bg-white/10 flex-1"></div>
@@ -102,13 +102,13 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-sky-500 to-cyan-400 text-white font-bold py-4 rounded-xl transition-all duration-300 ease-expo flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:from-sky-400 hover:to-cyan-300 active:scale-95 disabled:opacity-50 mt-2"
+              className="w-full bg-gradient-to-r from-sky-500 to-cyan-400 text-white font-bold py-3.5 md:py-4 rounded-xl transition-all duration-300 ease-expo flex items-center justify-center gap-3 shadow-[0_0_20px_rgba(6,182,212,0.2)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:from-sky-400 hover:to-cyan-300 active:scale-95 disabled:opacity-50 mt-1 md:mt-2"
             >
               {isLoading ? <Loader2 className="w-5 h-5 animate-spin text-white" /> : 'Sign In'}
             </button>
           </form>
 
-          <p className="text-center text-zinc-500 text-xs mt-10 leading-relaxed">
+          <p className="text-center text-zinc-500 text-xs mt-4 md:mt-10 leading-relaxed">
             By signing in, you agree to our <br className="hidden sm:block"/>
             <Link href="#" className="font-semibold text-cyan-400 hover:underline">Terms of Service</Link> and{' '}
             <Link href="#" className="font-semibold text-cyan-400 hover:underline">Privacy Policy</Link>.
@@ -116,7 +116,7 @@ export default function LoginPage() {
         </div>
 
         {/* Bottom Footer Area */}
-        <div className="px-8 sm:px-12 lg:px-14 pb-8 pt-6 border-t border-white/5 bg-[#0a0f1c]/50 backdrop-blur-md">
+        <div className="px-8 sm:px-12 lg:px-14 pb-4 md:pb-8 pt-4 md:pt-6 border-t border-white/5 bg-[#0a0f1c]/50 backdrop-blur-md">
           <p className="text-sm text-zinc-400 font-medium text-center">
             Don&apos;t have an account?{' '}
             <Link href="/register" className="text-cyan-400 font-bold hover:text-cyan-300 hover:underline ml-1 transition-colors">

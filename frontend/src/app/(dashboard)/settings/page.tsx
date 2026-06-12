@@ -264,7 +264,7 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="pt-10">
-                  <span className="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em] block mb-6">Danger Protocol</span>
+                  <span className="text-[10px] font-bold text-red-500 uppercase tracking-[0.2em] block mb-6">Danger Zone</span>
                   <button className="flex items-center gap-3 text-red-500 border border-red-500/20 px-8 py-4 rounded-full text-xs font-black uppercase tracking-widest hover:bg-red-500 hover:text-white hover:shadow-[0_0_30px_rgba(239,68,68,0.4)] transition-all">
                     Initiate Account Deletion <LogOut size={16} />
                   </button>

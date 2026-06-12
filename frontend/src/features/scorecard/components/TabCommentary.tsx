@@ -69,25 +69,87 @@ export function TabCommentary({ matchData }: TabCommentaryProps) {
 
   const getCommentaryText = (e: any) => {
     if (e.eventType === 'OVER_COMPLETED') return <span className="text-amber-500 font-bold tracking-wide">End of Over {e.overNumber !== undefined ? e.overNumber + 1 : ''}</span>;
-    if (e.eventType === 'WICKET_FELL') {
-      const mode = (e.payload.wicketType || e.payload.dismissalMode || 'Out').replace(/_/g, ' ');
-      return <span><strong className="text-red-400 text-base">WICKET!</strong> ({mode}) The bowler gets the breakthrough.</span>;
-    }
     if (e.eventType === 'MATCH_STARTED') return <span className="text-emerald-400 font-bold">Play! The match begins.</span>;
     if (e.eventType === 'INNINGS_COMPLETED') return <span className="text-amber-400 font-bold">Innings Break.</span>;
     
+    // Fallbacks
+    const runs = e.payload?.runs || 0;
+    const rawShotArea = e.payload?.shotArea;
+    const rawShotType = e.payload?.shotType;
+    const shotArea = rawShotArea ? rawShotArea.replace(/_/g, ' ').toLowerCase() : '';
+    const shotType = rawShotType ? rawShotType.replace(/_/g, ' ').toLowerCase() : '';
+
+    if (e.eventType === 'WICKET_FELL') {
+      const mode = (e.payload.wicketType || e.payload.dismissalMode || 'Out').replace(/_/g, ' ');
+      let detail = 'The bowler strikes!';
+      if (mode.includes('BOWLED')) detail = 'Cleaned him up! What a spectacular delivery.';
+      if (mode.includes('CAUGHT')) detail = 'Splendid catch taken! The batsman has to walk back.';
+      if (mode.includes('LBW')) detail = 'Trapped right in front! The umpire raises the finger.';
+      if (mode.includes('RUN OUT')) detail = 'Direct hit? Yes, he is short of his crease! Brilliant fielding.';
+      if (mode.includes('STUMPED')) detail = 'Lightning fast glovework by the keeper, he is gone.';
+      return <span><strong className="text-red-400 text-base">WICKET!</strong> ({mode}) {detail}</span>;
+    }
+    
     if (e.eventType === 'BALL_BOWLED') {
-      if (e.payload.runs === 4) return <span><strong className="text-emerald-400">FOUR!</strong> Smashed to the boundary.</span>;
-      if (e.payload.runs === 6) return <span><strong className="text-emerald-400">SIX!</strong> Massive hit out of the park!</span>;
-      if (e.payload.runs === 0) return <span className="text-zinc-400">Dot ball. No runs.</span>;
-      return <span className="text-zinc-300">{e.payload.runs} run{e.payload.runs > 1 ? 's' : ''} pushed into the gaps.</span>;
+      const isBoundaryArea = shotArea ? ` towards ${shotArea}` : '';
+      const executedShot = shotType ? ` plays a gorgeous ${shotType}` : ' hits it';
+
+      if (runs === 4) {
+        if (shotType === 'cover drive' || shotType === 'straight drive') {
+           return <span><strong className="text-emerald-400">FOUR!</strong> Glorious {shotType}{isBoundaryArea}, pierced the gap to perfection!</span>;
+        } else if (shotType === 'pull' || shotType === 'hook') {
+           return <span><strong className="text-emerald-400">FOUR!</strong> Authoritative {shotType}{isBoundaryArea}, crunched away to the boundary!</span>;
+        } else if (shotType === 'reverse sweep' || shotType === 'scoop' || shotType === 'upper cut') {
+           return <span><strong className="text-emerald-400">FOUR!</strong> Cheeky! Fantastic {shotType} past the keeper for a boundary!</span>;
+        }
+        return <span><strong className="text-emerald-400">FOUR!</strong> The batsman{executedShot}{isBoundaryArea}, beating the fielder to the ropes!</span>;
+      }
+      
+      if (runs === 6) {
+        if (shotType === 'lofted shot' || shotType === 'helicopter') {
+           return <span><strong className="text-emerald-400">SIX!</strong> Absolute maximum! A stunning {shotType} that lands rows back{isBoundaryArea}!</span>;
+        } else if (shotType === 'pull' || shotType === 'hook' || shotType === 'slog sweep') {
+           return <span><strong className="text-emerald-400">SIX!</strong> Dispatched! What a mighty {shotType} into the stands{isBoundaryArea}!</span>;
+        }
+        return <span><strong className="text-emerald-400">SIX!</strong> Massive hit! Smashed{isBoundaryArea} for a huge maximum!</span>;
+      }
+      
+      if (runs === 0) {
+         if (shotType === 'leave') return <span className="text-zinc-400">Well left by the batsman. Good leave outside off.</span>;
+         if (shotType === 'defence' || shotType === 'solid defence') return <span className="text-zinc-400">Solid forward defence, played right off the middle of the bat.</span>;
+         if (shotType && shotArea) return <span className="text-zinc-400">Plays a {shotType} towards {shotArea}, but finds the fielder perfectly. No run.</span>;
+         if (shotType) return <span className="text-zinc-400">Attempts a {shotType}, but hits it straight to the fielder.</span>;
+         if (shotArea) return <span className="text-zinc-400">Pushed to {shotArea}, but there&apos;s no run on offer.</span>;
+         return <span className="text-zinc-400">Dot ball. Played straight to the fielder.</span>;
+      }
+
+      if (runs === 1) {
+         if (shotType && shotArea) return <span>Good cricket. Plays a {shotType} down to {shotArea} and rotates the strike.</span>;
+         if (shotArea) return <span>Tapped towards {shotArea} for a quick single.</span>;
+         return <span>The batters scramble for a quick single.</span>;
+      }
+
+      if (runs === 2) {
+         if (shotType && shotArea) return <span>Excellent running! Plays a {shotType} into the gap at {shotArea} and they come back for two.</span>;
+         if (shotArea) return <span>Worked away beautifully to {shotArea}, they push hard and complete two runs.</span>;
+         return <span>Good running between the wickets, they come back for 2.</span>;
+      }
+
+      if (runs === 3) {
+         if (shotType && shotArea) return <span>Brilliant {shotType} down to {shotArea}, fielder gives chase and cuts it off just inside the ropes. Three runs taken.</span>;
+         return <span>Great effort in the deep saves a certain boundary! The batters run 3.</span>;
+      }
+      
+      return <span>The batters scramble for {runs} runs{shotArea ? ` working it to ${shotArea}` : ''}.</span>;
     }
     
     if (['WIDE_BALL', 'NO_BALL', 'BYE', 'LEG_BYE'].includes(e.eventType)) {
-       return <span className="text-blue-300 italic">Extra delivered: {e.eventType.replace('_BALL', '').replace('_', ' ')}</span>;
+       const extraRuns = e.payload?.extraRuns || e.payload?.runs || 1;
+       const extraLabel = e.eventType === 'WIDE_BALL' ? 'Wide' : e.eventType === 'NO_BALL' ? 'No Ball' : e.eventType === 'BYE' ? 'Bye' : 'Leg Bye';
+       return <span className="text-blue-300 italic">Extras! Umpire signals {extraLabel}. Team gets {extraRuns} run{extraRuns > 1 ? 's' : ''}.</span>;
     }
     
-    return <span className="text-zinc-500 text-xs italic">System Record: {e.eventType}</span>;
+    return <span className="text-zinc-500 text-xs italic">System Update: {e.eventType}</span>;
   };
 
   return (

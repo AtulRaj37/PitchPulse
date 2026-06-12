@@ -44,7 +44,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Mobile Toggle */}
       <button 
-        className="md:hidden fixed top-5 right-5 z-50 p-2.5 bg-[#0a0f1a]/80 backdrop-blur-xl border border-white/10 rounded-xl text-zinc-300 shadow-xl"
+        className="md:hidden fixed top-4 right-4 z-50 w-10 h-10 flex items-center justify-center bg-[#0a0f1a]/80 backdrop-blur-xl border border-white/10 rounded-xl text-zinc-300 shadow-xl"
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       >
         {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -173,7 +173,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             initial={{ opacity: 0, y: 15, scale: 0.99 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="flex-1 w-full min-h-screen"
+            className="flex-1 w-full min-h-[100dvh] pb-safe"
           >
             {children}
           </motion.div>

@@ -16,6 +16,7 @@
 // - POST /commands/leg-bye
 // - POST /commands/change-bowler
 // - GET /commands/match/:matchId/state
+// - DELETE /commands/match/:matchId/events/:eventId
 
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { z } from 'zod';
@@ -53,6 +54,9 @@ const scoreRunSchema = z.object({
   runs: z.union([z.literal(0), z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(6)]),
   batsmanId: z.string().uuid(),
   bowlerId: z.string().uuid(),
+  shotArea: z.string().optional(),
+  shotType: z.string().optional(),
+  bowlerAngle: z.string().optional(),
   commentary: z.string().max(500).optional(),
 });
 
@@ -64,6 +68,7 @@ const wicketSchema = z.object({
   dismissalMode: z.enum(['BATSMAN_OUT', 'RETIRED_HURT', 'NOT_OUT']),
   fielderId: z.string().uuid().optional(),
   newBatsmanId: z.string().uuid().optional(),
+  bowlerAngle: z.string().optional(),
   commentary: z.string().max(500).optional(),
 });
 
@@ -72,6 +77,7 @@ const wideSchema = z.object({
   bowlerId: z.string().uuid(),
   batsmanId: z.string().uuid(),
   extraRuns: z.number().int().min(1).max(10),
+  bowlerAngle: z.string().optional(),
   commentary: z.string().max(500).optional(),
 });
 
@@ -81,6 +87,7 @@ const noBallSchema = z.object({
   batsmanId: z.string().uuid(),
   extraRuns: z.number().int().min(0).max(10),
   isFreeHit: z.boolean().default(false),
+  bowlerAngle: z.string().optional(),
   commentary: z.string().max(500).optional(),
 });
 
@@ -89,6 +96,7 @@ const byeSchema = z.object({
   batsmanId: z.string().uuid(),
   bowlerId: z.string().uuid(),
   runs: z.number().int().min(1).max(6),
+  bowlerAngle: z.string().optional(),
   commentary: z.string().max(500).optional(),
 });
 
@@ -97,6 +105,7 @@ const legByeSchema = z.object({
   batsmanId: z.string().uuid(),
   bowlerId: z.string().uuid(),
   runs: z.number().int().min(1).max(6),
+  bowlerAngle: z.string().optional(),
   commentary: z.string().max(500).optional(),
 });
 
@@ -156,6 +165,11 @@ const changeNonStrikerSchema = z.object({
 
 const undoSchema = z.object({
   matchId: z.string().uuid(),
+});
+
+const deleteEventSchema = z.object({
+  matchId: z.string().uuid(),
+  eventId: z.string().uuid(),
 });
 
 // ============================================
@@ -688,6 +702,64 @@ export default async function commandRoutes(app: FastifyInstance): Promise<void>
     });
 
     return reply.status(200).send({ success: true, message: 'Undo successful' });
+  });
+
+  // ========================================
+  // DELETE EVENT (Retroactive Timeline Audit)
+  // DELETE /commands/match/:matchId/events/:eventId
+  // ========================================
+  app.delete('/match/:matchId/events/:eventId', {
+    preHandler: [],
+    schema: {
+      description: 'Delete a specific event retroactively and trigger replay',
+      tags: ['Commands'],
+      params: {
+        type: 'object',
+        properties: {
+          matchId: { type: 'string', format: 'uuid' },
+          eventId: { type: 'string', format: 'uuid' },
+        },
+      },
+    },
+  }, async (request: FastifyRequest<{ Params: { matchId: string, eventId: string } }>, reply: FastifyReply) => {
+    const { matchId, eventId } = request.params;
+    
+    // 1. Delete the isolated event
+    await prisma.event.delete({
+       where: { id: eventId }
+    });
+
+    // 2. Invalidate Snapshots strictly to force a clean replay
+    await prisma.snapshot.deleteMany({
+       where: { matchId: matchId }
+    });
+
+    // 3. Manually broadcast the Replay signal using standard WebSockets
+    const { buildMatchState } = await import('../../event-sourcing/match-state/match-state.js');
+    const { getEvents } = await import('../../event-sourcing/event-store/event-store.js');
+    
+    const match = await prisma.match.findUnique({ where: { id: matchId }});
+    if (match) {
+        const { events } = await getEvents({ matchId, limit: 10000 });
+        const updatedState = buildMatchState(matchId, events, {
+          format: match.format,
+          overs: match.overs,
+          ballsPerOver: match.ballsPerOver,
+          team1Id: match.team1Id,
+          team2Id: match.team2Id,
+          status: match.status as any,
+        });
+
+        // Broadcast to clients
+        const { broadcastScoreboardUpdate } = await import('../../core/websocket/socket-server.js');
+        await broadcastScoreboardUpdate(matchId, updatedState);
+        
+        // Also run projections
+        const { runProjections } = await import('../../event-sourcing/projections/projection-handler.js');
+        await runProjections(matchId, events as any);
+    }
+    
+    return reply.status(200).send({ success: true, message: 'Event soft deleted & state replayed' });
   });
 
   logger.info('Command routes registered');

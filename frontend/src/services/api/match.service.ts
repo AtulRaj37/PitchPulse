@@ -25,6 +25,11 @@ export class MatchService {
     return res.data?.data || res.data;
   }
 
+  static async updateMatch(matchId: string, payload: any) {
+    const res = await apiClient.patch(`/matches/${matchId}`, payload);
+    return res.data?.data || res.data;
+  }
+
   static async deleteMatch(matchId: string) {
     const res = await apiClient.delete(`/matches/${matchId}`);
     return res.data?.data || res.data;

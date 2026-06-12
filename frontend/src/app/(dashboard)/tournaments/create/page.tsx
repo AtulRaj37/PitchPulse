@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Trophy, Loader2 } from 'lucide-react';
+import Link from 'next/link';
+import { Trophy, Loader2, ArrowLeft } from 'lucide-react';
 import { apiClient } from '@/services/api/api.client';
 import { toast } from 'sonner';
 
@@ -58,6 +59,12 @@ export default function CreateTournamentPage() {
       
       {/* CINEMATIC HEADER */}
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="pt-8 px-4 md:px-8 mb-10">
+        <Link href="/dashboard" className="inline-flex items-center gap-2 text-zinc-500 hover:text-amber-400 font-bold uppercase tracking-widest text-xs mb-3 transition-colors group">
+          <div className="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-amber-500/20 group-hover:border-amber-500/40 transition-all">
+            <ArrowLeft size={14} />
+          </div>
+          Back to Dashboard
+        </Link>
         <h1 className="text-5xl md:text-7xl font-black font-clash text-white tracking-tighter uppercase mb-2">
           Create <span className="text-amber-500 italic drop-shadow-[0_0_30px_rgba(245,158,11,0.4)]">Tournament</span>
         </h1>

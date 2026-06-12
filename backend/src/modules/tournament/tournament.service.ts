@@ -168,11 +168,17 @@ export class TournamentService {
 
     const matchRecords = await prisma.match.findMany({
       where: { tournamentId, status: 'COMPLETED' },
-      include: { scorecard: true },
+      include: { scorecard: true, innings: true },
     });
 
-    // Compute stats per team logically based on actual Match schema
     const rules: any = tournament.rules || { winPoints: 2, tiePoints: 1, noResultPoints: 1 };
+    
+    // Helper to process Cricket overs syntax (1.4 overs = 10 balls)
+    const oversToBalls = (oversFloat: number) => {
+      const fullOvers = Math.floor(oversFloat);
+      const balls = Math.round((oversFloat - fullOvers) * 10);
+      return (fullOvers * 6) + balls;
+    };
     
     const table: Record<string, any> = {};
     for (const tt of tournament.teams) {
@@ -185,38 +191,165 @@ export class TournamentService {
         tied: 0,
         noResult: 0,
         points: 0,
+        runsScored: 0,
+        ballsFaced: 0,
+        runsConceded: 0,
+        ballsBowled: 0,
         netRunRate: 0,
       };
     }
 
     matchRecords.forEach(match => {
-      // Determine winner safely for demonstration mapping
-      // Real implementation would look deeply at scorecard
       const sc: any = match.scorecard?.matchResult || {};
       const winnerId = sc.winnerTeamId || null;
       const t1 = match.team1Id;
       const t2 = match.team2Id;
 
-      if (table[t1]) table[t1].played += 1;
-      if (table[t2]) table[t2].played += 1;
+      const hasResult = winnerId || sc.result === 'TIE' || sc.result === 'NO_RESULT';
 
-      if (winnerId) {
-        if (winnerId === t1) {
-          if (table[t1]) { table[t1].won += 1; table[t1].points += rules.winPoints; }
-          if (table[t2]) table[t2].lost += 1;
-        } else if (winnerId === t2) {
-          if (table[t2]) { table[t2].won += 1; table[t2].points += rules.winPoints; }
-          if (table[t1]) table[t1].lost += 1;
+      if (hasResult) {
+        if (table[t1]) table[t1].played += 1;
+        if (table[t2]) table[t2].played += 1;
+
+        if (winnerId && winnerId !== 'TIE' && winnerId !== 'NO_RESULT') {
+          if (winnerId === t1) {
+            if (table[t1]) { table[t1].won += 1; table[t1].points += rules.winPoints; }
+            if (table[t2]) table[t2].lost += 1;
+          } else if (winnerId === t2) {
+            if (table[t2]) { table[t2].won += 1; table[t2].points += rules.winPoints; }
+            if (table[t1]) table[t1].lost += 1;
+          }
+        } else if (sc.result === 'TIE' || winnerId === 'TIE') {
+          if (table[t1]) { table[t1].tied += 1; table[t1].points += rules.tiePoints; }
+          if (table[t2]) { table[t2].tied += 1; table[t2].points += rules.tiePoints; }
+        } else if (sc.result === 'NO_RESULT') {
+          if (table[t1]) { table[t1].noResult += 1; table[t1].points += rules.noResultPoints; }
+          if (table[t2]) { table[t2].noResult += 1; table[t2].points += rules.noResultPoints; }
         }
-      } else {
-        // Tie or No Result
-        if (table[t1]) { table[t1].noResult += 1; table[t1].points += rules.noResultPoints; }
-        if (table[t2]) { table[t2].noResult += 1; table[t2].points += rules.noResultPoints; }
+
+        // Apply NRR Statistics
+        match.innings?.forEach((inn) => {
+          const isT1Batting = inn.battingTeamId === t1;
+          const isT2Batting = inn.battingTeamId === t2;
+
+          let effectiveBalls = oversToBalls(inn.overs);
+          // Standard Cricket Rule: If a team is bowled out, their factored overs is the full quota
+          if (inn.totalWickets >= 10) {
+            effectiveBalls = match.overs * 6;
+          }
+
+          if (isT1Batting && table[t1]) {
+            table[t1].runsScored += inn.totalRuns;
+            table[t1].ballsFaced += effectiveBalls;
+            if (table[t2]) {
+               table[t2].runsConceded += inn.totalRuns;
+               table[t2].ballsBowled += effectiveBalls;
+            }
+          }
+          if (isT2Batting && table[t2]) {
+            table[t2].runsScored += inn.totalRuns;
+            table[t2].ballsFaced += effectiveBalls;
+            if (table[t1]) {
+               table[t1].runsConceded += inn.totalRuns;
+               table[t1].ballsBowled += effectiveBalls;
+            }
+          }
+        });
       }
+    });
+
+    // Finalize Component Metrics
+    Object.values(table).forEach((team: any) => {
+      const rsPerOver = team.ballsFaced > 0 ? (team.runsScored / (team.ballsFaced / 6)) : 0;
+      const rcPerOver = team.ballsBowled > 0 ? (team.runsConceded / (team.ballsBowled / 6)) : 0;
+      team.netRunRate = Number((rsPerOver - rcPerOver).toFixed(3));
     });
 
     const results = Object.values(table).sort((a: any, b: any) => b.points - a.points || b.netRunRate - a.netRunRate);
     return results;
+  }
+
+  /**
+   * Get Tournament Leaderboards (Orange Cap, Purple Cap)
+   */
+  static async getLeaderboards(tournamentId: string, limit: number = 10) {
+    const tournament = await prisma.tournament.findUnique({
+      where: { id: tournamentId }
+    });
+    if (!tournament) throw new NotFoundError('Tournament', tournamentId);
+
+    // Get all matches for this tournament
+    const matches = await prisma.match.findMany({
+      where: { tournamentId, status: 'COMPLETED' },
+      select: { id: true }
+    });
+    const matchIds = matches.map(m => m.id);
+
+    if (matchIds.length === 0) {
+      return { topBatsmen: [], topBowlers: [] };
+    }
+
+    // Top Batsmen (Orange Cap)
+    const battingStats = await prisma.battingStats.findMany({
+      where: { innings: { matchId: { in: matchIds } } },
+      include: { player: { select: { id: true, name: true, team: { select: { name: true, shortName: true } } } } }
+    });
+
+    const batMap: Record<string, any> = {};
+    battingStats.forEach(b => {
+      if (!batMap[b.playerId]) {
+        batMap[b.playerId] = {
+           id: b.playerId,
+           name: b.player.name,
+           teamName: b.player.team?.shortName || b.player.team?.name,
+           innings: 0, runs: 0, balls: 0, fours: 0, sixes: 0
+        };
+      }
+      batMap[b.playerId].innings += 1;
+      batMap[b.playerId].runs += b.runs;
+      batMap[b.playerId].balls += b.balls;
+      batMap[b.playerId].fours += b.fours;
+      batMap[b.playerId].sixes += b.sixes;
+    });
+
+    const topBatsmen = Object.values(batMap)
+      .map(p => ({ ...p, strikeRate: p.balls > 0 ? ((p.runs / p.balls) * 100).toFixed(2) : '0.00' }))
+      .sort((a, b) => b.runs - a.runs || parseFloat(b.strikeRate) - parseFloat(a.strikeRate))
+      .slice(0, limit);
+
+    // Top Bowlers (Purple Cap)
+    const bowlingStats = await prisma.bowlingStats.findMany({
+      where: { innings: { matchId: { in: matchIds } } },
+      include: { player: { select: { id: true, name: true, team: { select: { name: true, shortName: true } } } } }
+    });
+
+    const bowlMap: Record<string, any> = {};
+    bowlingStats.forEach(b => {
+      if (!bowlMap[b.playerId]) {
+        bowlMap[b.playerId] = {
+           id: b.playerId,
+           name: b.player.name,
+           teamName: b.player.team?.shortName || b.player.team?.name,
+           innings: 0, wickets: 0, runs: 0, overs: 0, maidens: 0
+        };
+      }
+      bowlMap[b.playerId].innings += 1;
+      bowlMap[b.playerId].wickets += b.wickets;
+      bowlMap[b.playerId].runs += b.runs;
+      bowlMap[b.playerId].overs += b.overs;
+      bowlMap[b.playerId].maidens += b.maidens || 0;
+    });
+
+    const topBowlers = Object.values(bowlMap)
+      .map((p: any) => {
+         const balls = Math.floor(p.overs) * 6 + Math.round((p.overs - Math.floor(p.overs)) * 10);
+         const economy = balls > 0 ? (p.runs / (balls / 6)).toFixed(2) : '0.00';
+         return { ...p, economy };
+      })
+      .sort((a: any, b: any) => b.wickets - a.wickets || parseFloat(a.economy) - parseFloat(b.economy))
+      .slice(0, limit);
+
+    return { topBatsmen, topBowlers };
   }
 
   /**

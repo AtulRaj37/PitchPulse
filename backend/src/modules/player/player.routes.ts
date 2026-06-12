@@ -81,6 +81,20 @@ export async function playerRoutes(fastify: FastifyInstance): Promise<void> {
   }));
 
   /**
+   * GET /players/:id/stats
+   * Get player career statistics
+   */
+  fastify.get('/:id/stats', {
+    schema: { description: 'Get player statistics', tags: ['players'] },
+  }, asyncHandler(async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+    const stats = await PlayerService.getPlayerStats(request.params.id);
+    reply.send({
+      success: true,
+      data: stats,
+    });
+  }));
+
+  /**
    * GET /players/:id/matches
    * Get match history for a player
    */

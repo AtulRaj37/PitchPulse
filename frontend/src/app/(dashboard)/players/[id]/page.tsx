@@ -8,21 +8,27 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, User, Sword, Shield, Activity, Target, Trophy, Award, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, PieChart, Pie, Cell, Legend } from 'recharts';
+
+const PIE_COLORS = ['#ef4444', '#f97316', '#eab308', '#84cc16', '#06b6d4', '#8b5cf6'];
 
 export default function PlayerProfilePage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [player, setPlayer] = useState<any>(null);
+  const [stats, setStats] = useState<any>(null);
   const [matches, setMatches] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchPlayerDetails = async () => {
       try {
-        const [playerRes, matchesRes] = await Promise.all([
+        const [playerRes, statsRes, matchesRes] = await Promise.all([
           apiClient.get(`/players/${params.id}`),
+          apiClient.get(`/players/${params.id}/stats`),
           apiClient.get(`/players/${params.id}/matches?limit=50`)
         ]);
         setPlayer(playerRes.data?.data || playerRes.data);
+        setStats(statsRes.data?.data || null);
         setMatches(matchesRes.data?.data || []);
       } catch (error) {
         console.error('Failed to fetch player details:', error);
@@ -39,37 +45,25 @@ export default function PlayerProfilePage({ params }: { params: { id: string } }
   if (isLoading) return <LoadingLayer />;
   if (!player) return <div className="p-8 text-center text-zinc-400">Player not found.</div>;
 
-  // Process Batting Stats
-  const battingStats = player.BattingStats || [];
-  const totalRuns = battingStats.reduce((sum: number, stat: any) => sum + stat.runs, 0);
-  const totalBalls = battingStats.reduce((sum: number, stat: any) => sum + stat.balls, 0);
-  const fours = battingStats.reduce((sum: number, stat: any) => sum + stat.fours, 0);
-  const sixes = battingStats.reduce((sum: number, stat: any) => sum + stat.sixes, 0);
-  const strikeRate = totalBalls > 0 ? ((totalRuns / totalBalls) * 100).toFixed(1) : '0.0';
-  const highestScore = battingStats.length > 0 ? Math.max(...battingStats.map((s: any) => s.runs)) : 0;
+  // Extract Career from Stats Endpoint
+  const career = stats?.career || { runs: 0, ballsFaced: 0, fours: 0, sixes: 0, wickets: 0, runsConceded: 0, ballsBowled: 0, maidenOvers: 0 };
+  const recentBatting = stats?.recentBatting || [];
+  const recentBowling = stats?.recentBowling || [];
+  const shotDistribution = stats?.shotDistribution || [];
+  const dismissalTypes = stats?.dismissalTypes || [];
+
+  const strikeRate = career.ballsFaced > 0 ? ((career.runs / career.ballsFaced) * 100).toFixed(1) : '0.0';
+  const economyRate = career.ballsBowled > 0 ? (career.runsConceded / (career.ballsBowled / 6)).toFixed(2) : '0.00';
+  const normalizedOvers = Math.floor(career.ballsBowled / 6) + ((career.ballsBowled % 6) / 10);
   
-  // Highlighting 50s and 100s
+  // Highlighting 50s/100s via BattingStats array for accurate history processing
+  const battingStats = player.BattingStats || [];
   const fifties = battingStats.filter((s: any) => s.runs >= 50 && s.runs < 100).length;
   const centuries = battingStats.filter((s: any) => s.runs >= 100).length;
+  const highestScore = battingStats.length > 0 ? Math.max(...battingStats.map((s: any) => s.runs)) : 0;
 
-  // Process Bowling Stats
+  // Best Bowling
   const bowlingStats = player.BowlingStats || [];
-  const totalWickets = bowlingStats.reduce((sum: number, stat: any) => sum + stat.wickets, 0);
-  const totalMaidens = bowlingStats.reduce((sum: number, stat: any) => sum + stat.maidens, 0);
-  const totalRunsConceded = bowlingStats.reduce((sum: number, stat: any) => sum + (stat.runs || 0), 0);
-  
-  // Calculate total overs from overs float (e.g., 2.3 overs => 2 overs + 3 balls)
-  let totalBallsBowled = 0;
-  bowlingStats.forEach((stat: any) => {
-    const fullOvers = Math.floor(stat.overs);
-    const remainderBalls = Math.round((stat.overs - fullOvers) * 10);
-    totalBallsBowled += (fullOvers * 6) + remainderBalls;
-  });
-  const normalizedOvers = Math.floor(totalBallsBowled / 6) + (totalBallsBowled % 6) / 10;
-  
-  const economyRate = normalizedOvers > 0 ? (totalRunsConceded / (totalBallsBowled / 6)).toFixed(2) : '0.00';
-  
-  // Best Bowling Figures
   let bestBowling = { wickets: 0, runs: 0 };
   bowlingStats.forEach((stat: any) => {
     if (stat.wickets > bestBowling.wickets || (stat.wickets === bestBowling.wickets && (stat.runs || 0) < bestBowling.runs)) {
@@ -161,7 +155,7 @@ export default function PlayerProfilePage({ params }: { params: { id: string } }
               </div>
               <div>
                 <div className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-1">Runs</div>
-                <div className="text-3xl font-black text-emerald-400">{totalRuns}</div>
+                <div className="text-3xl font-black text-emerald-400">{career.runs}</div>
               </div>
               <div>
                 <div className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-1">Highest</div>
@@ -173,7 +167,7 @@ export default function PlayerProfilePage({ params }: { params: { id: string } }
               </div>
               <div>
                 <div className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-1">Boundaries (4s/6s)</div>
-                <div className="text-2xl font-black text-zinc-300">{fours} / {sixes}</div>
+                <div className="text-2xl font-black text-zinc-300">{career.fours} / {career.sixes}</div>
               </div>
               <div>
                 <div className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-1">Milestones (50s/100s)</div>
@@ -199,7 +193,7 @@ export default function PlayerProfilePage({ params }: { params: { id: string } }
               </div>
               <div>
                 <div className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-1">Wickets</div>
-                <div className="text-3xl font-black text-emerald-400">{totalWickets}</div>
+                <div className="text-3xl font-black text-emerald-400">{career.wickets}</div>
               </div>
               <div>
                 <div className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-1">Best Figures</div>
@@ -215,13 +209,132 @@ export default function PlayerProfilePage({ params }: { params: { id: string } }
               </div>
               <div>
                 <div className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-1">Maidens</div>
-                <div className="text-2xl font-black text-amber-500">{totalMaidens}</div>
+                <div className="text-2xl font-black text-amber-500">{career.maidenOvers}</div>
               </div>
             </div>
           </div>
         </div>
 
       </div>
+
+      {/* Advanced Player Stats (Scores & Forms) */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Radar Heatmap */}
+        {shotDistribution.length > 0 && (
+           <div className="space-y-4">
+               <h3 className="font-clash font-black text-2xl text-white flex items-center gap-3">
+                 <Target size={24} className="text-emerald-500" /> Shot Area Heatmap
+               </h3>
+               <div className="glass-premium p-6 rounded-[2rem] border border-white/5 h-72 flex items-center justify-center">
+                 <ResponsiveContainer width="100%" height="100%">
+                   <RadarChart cx="50%" cy="50%" outerRadius="80%" data={shotDistribution}>
+                     <PolarGrid stroke="#ffffff20" />
+                     <PolarAngleAxis dataKey="name" tick={{ fill: '#a1a1aa', fontSize: 10, fontWeight: 'bold' }} />
+                     <PolarRadiusAxis angle={30} domain={[0, 'auto']} tick={{ fill: '#71717a', fontSize: 10 }} axisLine={false} tickLine={false} />
+                     <Radar name="Runs" dataKey="value" stroke="#10b981" fill="#10b981" fillOpacity={0.6} />
+                     <Tooltip 
+                        contentStyle={{ backgroundColor: '#0a0f1c', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                        itemStyle={{ color: '#10b981', fontWeight: 'black' }}
+                     />
+                   </RadarChart>
+                 </ResponsiveContainer>
+               </div>
+           </div>
+        )}
+
+        {/* Wicket Breakdown PieChart */}
+        {dismissalTypes.length > 0 && (
+           <div className="space-y-4">
+               <h3 className="font-clash font-black text-2xl text-white flex items-center gap-3">
+                 <Shield size={24} className="text-amber-500" /> Dismissal Analysis
+               </h3>
+               <div className="glass-premium p-6 rounded-[2rem] border border-white/5 h-72 flex flex-col items-center justify-center">
+                 <ResponsiveContainer width="100%" height="100%">
+                   <PieChart>
+                     <Pie
+                       data={dismissalTypes}
+                       cx="50%"
+                       cy="50%"
+                       innerRadius={60}
+                       outerRadius={80}
+                       paddingAngle={5}
+                       dataKey="value"
+                       stroke="none"
+                     >
+                       {dismissalTypes.map((entry: any, index: number) => (
+                         <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                       ))}
+                     </Pie>
+                     <Tooltip 
+                        contentStyle={{ backgroundColor: '#0a0f1c', border: '1px solid #272f40', borderRadius: '12px', fontWeight: 'bold' }}
+                        itemStyle={{ color: '#fff' }}
+                     />
+                     <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '11px', fontWeight: 'bold' }}/>
+                   </PieChart>
+                 </ResponsiveContainer>
+               </div>
+           </div>
+        )}
+      </div>
+
+      {/* Recent Form Graphs */}
+      {recentBatting.length > 0 && (
+        <div className="space-y-4">
+          <h3 className="font-clash font-black text-2xl text-white flex items-center gap-3">
+            <TrendingUp size={24} className="text-emerald-500" /> Recent Batting Form
+          </h3>
+          <div className="glass-premium p-6 rounded-[2rem] border border-white/5 h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={recentBatting.slice().reverse()} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorRuns" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                <XAxis dataKey="matchName" tickFormatter={(v) => v.substring(0, 10) + '...'} stroke="#71717a" fontSize={10} axisLine={false} tickLine={false} />
+                <YAxis stroke="#71717a" fontSize={10} axisLine={false} tickLine={false} />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#0a0f1c', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                  labelStyle={{ color: '#a1a1aa', fontWeight: 'bold' }}
+                  itemStyle={{ color: '#10b981', fontWeight: 'black' }}
+                />
+                <Area type="monotone" dataKey="runs" name="Runs Scored" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorRuns)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+
+      {recentBowling.length > 0 && (
+        <div className="space-y-4">
+          <h3 className="font-clash font-black text-2xl text-white flex items-center gap-3">
+            <TrendingUp size={24} className="text-blue-400" /> Recent Bowling Form
+          </h3>
+          <div className="glass-premium p-6 rounded-[2rem] border border-white/5 h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={recentBowling.slice().reverse()} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorWickets" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#60a5fa" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#60a5fa" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                <XAxis dataKey="matchName" tickFormatter={(v) => v.substring(0, 10) + '...'} stroke="#71717a" fontSize={10} axisLine={false} tickLine={false} />
+                <YAxis stroke="#71717a" fontSize={10} axisLine={false} tickLine={false} />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#0a0f1c', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                  labelStyle={{ color: '#a1a1aa', fontWeight: 'bold' }}
+                  itemStyle={{ color: '#60a5fa', fontWeight: 'black' }}
+                />
+                <Area type="step" dataKey="wickets" name="Wickets Taken" stroke="#60a5fa" strokeWidth={3} fillOpacity={1} fill="url(#colorWickets)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
 
       {/* Recent Matches Timeline */}
       <div className="space-y-6">

@@ -17,7 +17,7 @@ export function OverTimeline({ timeline }: OverTimelineProps) {
   };
 
   return (
-    <div className="bg-[#0e1424]/80 backdrop-blur-xl rounded-[1.5rem] border border-white/5 px-6 py-5 w-full shadow-2xl relative overflow-hidden">
+    <div className="bg-[#0e1424]/80 backdrop-blur-xl rounded-[1.5rem] border border-white/5 px-6 py-5 lg:py-7 w-full shadow-2xl relative overflow-hidden">
       
       {/* Background ambient glow */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 blur-2xl pointer-events-none rounded-full" />
@@ -27,7 +27,7 @@ export function OverTimeline({ timeline }: OverTimelineProps) {
         <span className="text-[10px] bg-white/[0.05] border border-white/10 px-2.5 py-1 rounded text-zinc-400 font-bold uppercase tracking-widest">{timeline.length} Ball{timeline.length !== 1 ? 's' : ''}</span>
       </div>
       
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar min-h-[50px] relative z-10">
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar min-h-[50px] lg:min-h-[70px] relative z-10">
         <AnimatePresence mode="popLayout">
           {timeline.map((event, idx) => (
             <motion.div

@@ -6,7 +6,7 @@ import { apiClient } from '@/services/api/api.client';
 import { PlayerService } from '@/services/api/player.service';
 import { LoadingLayer } from '@/components/ui/LoadingLayer';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Users, Plus, Trash2, Shield, Sword, UserMinus, ArrowLeft, Edit2, Check, X, TrendingUp, HelpCircle, Activity, Target } from 'lucide-react';
+import { MapPin, Users, Plus, Trash2, Shield, Sword, UserMinus, ArrowLeft, Edit2, Check, X, TrendingUp, HelpCircle, Activity, Target, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
@@ -23,6 +23,21 @@ export default function TeamDetailsPage({ params }: { params: { id: string } }) 
   const [isEditingTeam, setIsEditingTeam] = useState(false);
   const [editedTeam, setEditedTeam] = useState({ name: '', shortName: '', homeGround: '', logoUrl: '' });
   const [isUpdatingTeam, setIsUpdatingTeam] = useState(false);
+
+  const handleLogoUploadEdit = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error('Image size must be less than 2MB');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setEditedTeam(prev => ({ ...prev, logoUrl: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   // Edit Player State
   const [editingPlayer, setEditingPlayer] = useState<any | null>(null);
@@ -305,7 +320,34 @@ export default function TeamDetailsPage({ params }: { params: { id: string } }) 
       
       <header className="flex flex-col xl:flex-row xl:justify-between xl:items-end gap-6 pb-6 border-b border-zinc-900/50">
         <div className="flex flex-col sm:flex-row sm:items-center gap-6 flex-1">
-          {team.logoUrl ? (
+          {isEditingTeam ? (
+            <div className="relative group shrink-0">
+              {editedTeam.logoUrl ? (
+                <div className="relative w-20 h-20 bg-zinc-900 rounded-3xl overflow-hidden border border-emerald-500/30 shadow-[0_0_30px_rgba(16,185,129,0.1)] flex items-center justify-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={editedTeam.logoUrl} alt="Preview" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => setEditedTeam({ ...editedTeam, logoUrl: '' })}
+                    className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-400 transition-colors z-20"
+                  >
+                    <X size={10} />
+                  </button>
+                </div>
+              ) : (
+                <div className="w-20 h-20 bg-zinc-950 rounded-3xl flex items-center justify-center border-2 border-dashed border-white/10 hover:border-emerald-500/40 transition-colors">
+                  <Upload size={18} className="text-zinc-500 group-hover:text-emerald-400 transition-colors" />
+                </div>
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleLogoUploadEdit}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                title="Upload Team Logo"
+              />
+            </div>
+          ) : team.logoUrl ? (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img src={team.logoUrl} alt={team.name} className="w-20 h-20 bg-zinc-900 rounded-3xl object-cover border border-zinc-800 shadow-[0_0_30px_rgba(16,185,129,0.1)] shrink-0" />
           ) : (

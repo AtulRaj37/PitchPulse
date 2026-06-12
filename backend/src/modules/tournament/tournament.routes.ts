@@ -125,6 +125,21 @@ export async function tournamentRoutes(fastify: FastifyInstance): Promise<void> 
       data: result,
     });
   }));
+
+  /**
+   * GET /tournaments/:id/leaderboards
+   * Get Orange Cap and Purple Cap rankings
+   */
+  fastify.get('/:id/leaderboards', {
+    schema: { description: 'Get tournament leaderboards', tags: ['tournaments'] },
+  }, asyncHandler(async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+    const result = await TournamentService.getLeaderboards(request.params.id);
+    reply.send({
+      success: true,
+      data: result,
+    });
+  }));
+
   /**
    * POST /tournaments/:id/fixtures
    * Manually add a fixture

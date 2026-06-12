@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import localFont from 'next/font/local';
 import { Providers } from '@/components/providers';
 import { Toaster } from '@/components/ui/toaster';
 import SmoothScroll from '@/components/SmoothScroll';
@@ -12,8 +13,11 @@ const inter = Inter({
 });
 
 // Satoshi is loaded via CDN link in the layout HTML below
-
-
+const sprintura = localFont({
+  src: '../../public/fonts/sprintura-demo.otf',
+  variable: '--font-sprintura',
+  display: 'swap',
+});
 export const metadata: Metadata = {
   title: 'PitchPulse | Hyper-Local Cricket Scoring',
   description: 'The ultimate cricket scoring and tournament management platform for local tournaments, gully cricket, and professional leagues.',
@@ -52,7 +56,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable}`}>
+    <html lang="en" className={`${inter.variable} ${sprintura.variable}`} suppressHydrationWarning>
       <head>
         <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap" rel="stylesheet" />
       </head>

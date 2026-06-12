@@ -142,6 +142,8 @@ export async function matchRoutes(fastify: FastifyInstance): Promise<void> {
       startTime?: Date;
       currentOver?: number;
       currentBall?: number;
+      team1PlayingXI?: string[];
+      team2PlayingXI?: string[];
     });
 
     reply.send({

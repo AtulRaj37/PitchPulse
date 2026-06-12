@@ -175,6 +175,8 @@ async function listMatches(params: {
       include: {
         team1: { select: { id: true, name: true, shortName: true, logoUrl: true } },
         team2: { select: { id: true, name: true, shortName: true, logoUrl: true } },
+        scorecard: true,
+        innings: { orderBy: { inningsNumber: 'asc' } },
       },
     }),
     prisma.match.count({ where }),
@@ -190,6 +192,9 @@ async function listMatches(params: {
       status: m.status,
       format: m.format,
       overs: m.overs,
+      currentSnapshot: m.currentSnapshot,
+      scorecard: m.scorecard,
+      innings: m.innings,
     })),
     total,
   };
@@ -214,6 +219,8 @@ async function updateMatch(matchId: string, input: any): Promise<void> {
       venue: input.venue,
       startTime: input.startTime,
       endTime: input.endTime,
+      team1PlayingXI: input.team1PlayingXI,
+      team2PlayingXI: input.team2PlayingXI,
       currentSnapshot: input.currentSnapshot ? input.currentSnapshot : undefined
     },
   });

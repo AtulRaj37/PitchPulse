@@ -59,6 +59,10 @@ export const createMatchSchema = z.object({
   startTime: z.coerce.date(),
   format: z.enum(['T20', 'ODI', 'TEST', 'T10', 'CUSTOM']),
   overs: z.coerce.number().int().min(1).max(50),
+  matchType: z.string().optional(),
+  pitchType: z.string().optional(),
+  ballType: z.string().optional(),
+  officials: z.record(z.string()).optional(),
   gullyRules: z.record(z.union([z.boolean(), z.number()])).optional(),
   tournamentId: uuidSchema.optional(),
 });
@@ -66,7 +70,9 @@ export const createMatchSchema = z.object({
 export const updateMatchSchema = z.object({
   status: z.enum(['CREATED', 'LIVE', 'INNINGS_BREAK', 'COMPLETED', 'ABANDONED']).optional(),
   team1Id: z.string().uuid().optional(),
+  team1PlayingXI: z.array(z.string().uuid()).optional(),
   team2Id: z.string().uuid().optional(),
+  team2PlayingXI: z.array(z.string().uuid()).optional(),
   venue: z.string().min(3).optional(),
   startTime: z.string().datetime().optional(),
   currentOver: z.number().min(0).optional(),
@@ -117,6 +123,9 @@ export const createBallBowledEventSchema = baseEventSchema.extend({
   runs: z.coerce.number().int().min(0).max(7),
   isExtra: z.boolean().default(false),
   commentary: z.string().max(500).optional(),
+  shotArea: z.string().optional(),
+  shotType: z.string().optional(),
+  bowlerAngle: z.enum(['OVER_THE_WICKET', 'ROUND_THE_WICKET']).optional(),
 });
 
 export const createRunScoredEventSchema = baseEventSchema.extend({
@@ -126,6 +135,9 @@ export const createRunScoredEventSchema = baseEventSchema.extend({
   bowlerId: uuidSchema,
   isByes: z.boolean().default(false),
   isLegByes: z.boolean().default(false),
+  shotArea: z.string().optional(),
+  shotType: z.string().optional(),
+  bowlerAngle: z.enum(['OVER_THE_WICKET', 'ROUND_THE_WICKET']).optional(),
 });
 
 export const createWicketEventSchema = baseEventSchema.extend({
@@ -135,6 +147,7 @@ export const createWicketEventSchema = baseEventSchema.extend({
   wicketType: z.enum(['BOWLED', 'CAUGHT', 'LBW', 'STUMPED', 'RUN_OUT', 'HIT_WICKET', 'HANDLED_BALL', 'TIMED_OUT']),
   dismissalMode: z.enum(['BATSMAN_OUT', 'RETIRED_HURT', 'NOT_OUT']),
   fielderId: uuidSchema.optional(),
+  bowlerAngle: z.enum(['OVER_THE_WICKET', 'ROUND_THE_WICKET']).optional(),
 });
 
 export const createDisputeEventSchema = baseEventSchema.extend({
@@ -233,14 +246,14 @@ export const tournamentQuerySchema = paginationSchema.extend({
 export const createTeamSchema = z.object({
   name: z.string().min(2, 'Team name must be at least 2 characters').max(100),
   shortName: z.string().min(2).max(10).optional(),
-  logoUrl: z.string().url().optional(),
+  logoUrl: z.string().optional(),
   homeGround: z.string().max(200).optional(),
 });
 
 export const updateTeamSchema = z.object({
   name: z.string().min(2).max(100).optional(),
   shortName: z.string().min(2).max(10).optional(),
-  logoUrl: z.string().url().optional(),
+  logoUrl: z.string().optional(),
   homeGround: z.string().max(200).optional(),
   captainId: uuidSchema.nullable().optional(),
   viceCaptainId: uuidSchema.nullable().optional(),

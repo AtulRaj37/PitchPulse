@@ -61,42 +61,42 @@ const features = [
   {
     icon: Activity,
     title: 'Ball-by-Ball Scoring',
-    description: 'Real-time cricket scoring with instant updates. Track every run, wicket, and over with precision.',
+    description: 'Tap to score every delivery — runs, extras, wickets, and shot types — all captured with precision in real time.',
   },
   {
     icon: Users,
-    title: 'Tournament Management',
-    description: 'Create leagues, generate fixtures, track points tables, and manage knockout stages effortlessly.',
+    title: 'Tournament Engine',
+    description: 'Set up leagues, round-robins, or knockouts in minutes. Automatic fixtures, points tables, and standings.',
   },
   {
     icon: Zap,
     title: 'Live Spectator Mode',
-    description: 'Share matches publicly with real-time score updates via WebSocket. Perfect for distant fans.',
+    description: 'Share a live link or QR code. Fans see ball-by-ball updates instantly via WebSocket — zero delay.',
   },
   {
     icon: BarChart3,
-    title: 'Advanced Analytics',
-    description: 'Visualize performance with run rate graphs, partnership charts, and wagon wheels.',
+    title: 'Wagon Wheel & Analytics',
+    description: 'Shot maps, run-rate graphs, partnership breakdowns, and bowler economy — all generated automatically.',
   },
   {
     icon: Smartphone,
-    title: 'Offline Scoring',
-    description: 'Score matches without internet. Sync automatically when you\'re back online.',
+    title: 'Mobile-First Design',
+    description: 'Built for the field. Score matches on any phone with a buttery-smooth, native-app experience.',
   },
   {
     icon: Trophy,
-    title: 'Statistics & Leaderboards',
-    description: 'Track player careers, generate leaderboards, and celebrate top performers.',
+    title: 'Player Profiles & Stats',
+    description: 'Career batting averages, strike rates, bowling figures, and head-to-head records for every player.',
   },
   {
     icon: Shield,
-    title: 'Dispute Resolution',
-    description: 'Built-in flagging system for scoring disputes with full event history.',
+    title: 'Undo & Audit Trail',
+    description: 'Made a mistake? Undo any delivery. Full event-sourced history means every action is traceable.',
   },
   {
     icon: Globe,
-    title: 'QR Code Sharing',
-    description: 'Generate QR codes for instant match joining. No account required for viewers.',
+    title: 'Instant Match Sharing',
+    description: 'Generate a QR code or shareable link. Viewers can follow the match live — no account needed.',
   },
 ];
 
@@ -194,11 +194,17 @@ export default function HybridLandingPage() {
     };
 
     const renderCanvas = (frameIndex: number) => {
-      if (frameIndex === lastRenderedFrame) return;
-      lastRenderedFrame = frameIndex;
+      // Prevents black flickering during fast scrolls
+      let renderIndex = frameIndex;
+      while (renderIndex >= 0 && (!imageStatus[renderIndex] || !images[renderIndex].complete)) {
+        renderIndex--;
+      }
 
-      const img = images[frameIndex];
-      if (img && imageStatus[frameIndex] && img.complete) {
+      if (renderIndex === lastRenderedFrame) return;
+      lastRenderedFrame = renderIndex;
+
+      if (renderIndex >= 0) {
+        const img = images[renderIndex];
         ctx.drawImage(img, dimensions.offsetX, dimensions.offsetY, dimensions.drawWidth, dimensions.drawHeight);
       } else {
         ctx.fillStyle = '#050505';
@@ -207,14 +213,31 @@ export default function HybridLandingPage() {
     };
 
     let loadedCount = 0;
+    // Invisible canvas setup to force GPU hardware decoding off the scroll thread
+    let preloadCanvas: HTMLCanvasElement | null = null;
+    let preloadCtx: CanvasRenderingContext2D | null = null;
+    if (typeof window !== 'undefined') {
+      preloadCanvas = document.createElement('canvas');
+      preloadCanvas.width = 1;
+      preloadCanvas.height = 1;
+      preloadCtx = preloadCanvas.getContext('2d', { alpha: false, willReadFrequently: true });
+    }
+
     for (let i = 1; i <= FRAME_COUNT; i++) {
       const img = new Image();
       const paddedIndex = i.toString().padStart(4, '0');
       img.src = `/frames/frame_${paddedIndex}.webp`;
       img.onload = () => {
+        // Force the browser to silently decompress the massive WebP image right now
+        // instead of doing it later when the user actually scrolls to it
+        if (preloadCtx) {
+          preloadCtx.drawImage(img, 0, 0, 1, 1);
+        }
+        
         imageStatus[i - 1] = true;
         loadedCount++;
-        if (loadedCount === 1) {
+        // If this is the very first image to load OR it is the specific first frame, calculate dimensions
+        if (loadedCount === 1 || i === 1) {
           calculateDimensions();
         }
       };
@@ -229,7 +252,7 @@ export default function HybridLandingPage() {
           start: 'top top',
           end: '+=2500',
           pin: true,
-          scrub: 0.2,
+          scrub: 0.2, // Restored the original 0.2 scrub for perfect Lenis compatibility
           onUpdate: (self) => {
             const frameIndex = Math.floor(self.progress * (FRAME_COUNT - 1));
             renderCanvas(frameIndex);
@@ -292,6 +315,7 @@ export default function HybridLandingPage() {
     return () => {
       lenis.destroy();
       ctx_gsap.revert();
+      ScrollTrigger.getAll().forEach(t => t.kill());
       window.removeEventListener('resize', calculateDimensions);
     };
   }, []);
@@ -310,19 +334,19 @@ export default function HybridLandingPage() {
         ref={navbarRef}
         className="fixed top-4 md:top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-6xl z-50 transition-all pointer-events-auto rounded-full border border-transparent translate-y-[10px]"
       >
-        <div className="px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link href="/" className="hover:scale-[1.02] transition-transform flex items-center gap-3">
+        <div className="px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <Link href="/" className="hover:scale-[1.02] transition-transform flex items-center gap-2 sm:gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img 
               src="/icons/logo-only.png" 
               alt="PitchPulse Logo" 
-              className="h-8 md:h-10 w-auto object-contain drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]"
+              className="h-6 sm:h-8 md:h-10 w-auto object-contain drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]"
             />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img 
               src="/icons/text-only.png" 
               alt="PitchPulse" 
-              className="h-5 md:h-6 w-auto object-contain"
+              className="h-3 sm:h-4 md:h-6 w-auto object-contain"
             />
           </Link>
           
@@ -345,11 +369,11 @@ export default function HybridLandingPage() {
             <Link href="/login" className="text-xs uppercase tracking-widest font-bold text-zinc-400 hover:text-white transition-colors hidden sm:block relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-white after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:origin-right hover:after:origin-left">
               Log In
             </Link>
-            <Link href="/register" className="relative group">
+            <Link href="/register" className="relative group shrink-0">
               <span className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-cyan-500 opacity-20 group-hover:opacity-60 blur-md transition-opacity rounded-full"></span>
-              <span className="relative flex items-center gap-2 text-xs uppercase tracking-widest font-bold bg-white text-black px-6 py-2.5 rounded-full hover:bg-zinc-100 transition-colors">
+              <span className="relative flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs uppercase tracking-widest font-bold bg-white text-black px-4 py-2 sm:px-6 sm:py-2.5 rounded-full hover:bg-zinc-100 transition-colors">
                 Start Free
-                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                <ChevronRight className="w-3 sm:w-3.5 h-3 sm:h-3.5 group-hover:translate-x-0.5 transition-transform" />
               </span>
             </Link>
           </div>
@@ -369,27 +393,29 @@ export default function HybridLandingPage() {
             {/* Ambient Background Glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none" />
 
-            <h1 className="relative flex items-center justify-center leading-none">
-              <span className="text-7xl md:text-8xl lg:text-[10rem] font-black font-clash uppercase tracking-tighter text-white drop-shadow-[0_0_40px_rgba(255,255,255,0.4)]">
+            <h1 className="relative flex flex-col md:flex-row items-center justify-center leading-none mt-4 md:mt-0 z-10">
+              <span 
+                className="relative text-7xl sm:text-8xl md:text-[8rem] lg:text-[12rem] font-normal uppercase tracking-tighter text-white drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]"
+                style={{ fontFamily: 'var(--font-sprintura), sans-serif', textShadow: '0 0 40px rgba(255,255,255,0.2)' }}
+              >
                 PITCH
               </span>
-              <span className="text-7xl md:text-8xl lg:text-[10rem] font-black font-clash uppercase tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-emerald-400 to-cyan-500 drop-shadow-[0_0_30px_rgba(16,185,129,0.3)] saturate-150">
+              <span 
+                className="relative text-7xl sm:text-8xl md:text-[8rem] lg:text-[12rem] font-normal uppercase tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)] saturate-200 mt-2 md:mt-0 md:-ml-4 lg:-ml-8"
+                style={{ fontFamily: 'var(--font-sprintura), sans-serif', filter: 'drop-shadow(0px 0px 25px rgba(16, 185, 129, 0.3))' }}
+              >
                 PULSE
               </span>
             </h1>
 
-            <div className="relative mt-4 flex items-center gap-4">
-              <div className="h-[1px] w-12 md:w-24 bg-gradient-to-r from-transparent to-white/40 shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
-              <p className="text-[10px] md:text-sm font-black tracking-[0.4em] uppercase text-zinc-300 drop-shadow-md">
+            <div className="relative mt-6 md:mt-2 flex items-center gap-4 z-10">
+              <div className="h-[2px] w-16 md:w-32 bg-gradient-to-r from-transparent via-emerald-500/50 to-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.8)] rounded-full" />
+              <p className="text-[10px] md:text-sm font-black tracking-[0.5em] uppercase text-zinc-100 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                 The Immutable Street Ledger
               </p>
-              <div className="h-[1px] w-12 md:w-24 bg-gradient-to-l from-transparent to-white/40 shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
+              <div className="h-[2px] w-16 md:w-32 bg-gradient-to-l from-transparent via-cyan-500/50 to-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.8)] rounded-full" />
             </div>
 
-            <div className="mt-12 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/10 bg-black/40 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.8)]" />
-              <span className="text-[9px] font-bold uppercase tracking-widest text-emerald-400/90 mix-blend-screen leading-none">Live Scoring Engine Active</span>
-            </div>
           </div>
         </div>
 
@@ -685,7 +711,7 @@ export default function HybridLandingPage() {
                       <h3 className="text-xl font-black text-black mb-2 uppercase tracking-wide">{feature.title}</h3>
                       <p className="text-zinc-500 text-sm font-medium leading-relaxed max-w-sm">{feature.description}</p>
                     </div>
-                    <div className="order-1 lg:order-2 text-6xl font-black text-zinc-100 w-16 text-center font-clash">
+                    <div className="order-1 lg:order-2 text-7xl font-black w-20 text-center font-clash text-zinc-200">
                       {`0${index + 1}`}
                     </div>
                   </motion.div>
@@ -697,14 +723,24 @@ export default function HybridLandingPage() {
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, ease: 'easeOut' }}
-                className="shrink-0 relative w-[280px] sm:w-[320px] lg:w-[350px] z-10"
+                className="shrink-0 relative w-[280px] sm:w-[320px] lg:w-[350px] z-10 group/phone"
               >
                 <div className="absolute inset-0 bg-emerald-500/20 blur-[100px] rounded-full"></div>
+                
+                {/* Primary Image - phone1.png (visible by default, hidden on hover) */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/iphone.png"
-                  alt="PitchPulse App Screen"
-                  className="w-full h-auto object-contain relative z-10 filter drop-shadow-[0_40px_80px_rgba(0,0,0,0.3)] hover:scale-[1.02] transition-transform duration-700"
+                  src="/phone1.png"
+                  alt="PitchPulse App - Home Screen"
+                  className="w-full h-auto object-contain relative z-10 filter drop-shadow-[0_40px_80px_rgba(0,0,0,0.3)] block group-hover/phone:hidden"
+                />
+                
+                {/* Hover Image - phone2.png (hidden by default, shown on hover) */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/phone2.png"
+                  alt="PitchPulse App - Scoring Screen"
+                  className="w-full h-auto object-contain relative z-10 filter drop-shadow-[0_40px_80px_rgba(0,0,0,0.3)] hidden group-hover/phone:block"
                 />
               </motion.div>
 
@@ -718,7 +754,7 @@ export default function HybridLandingPage() {
                     transition={{ delay: index * 0.1 }}
                     className="flex flex-col lg:flex-row items-center lg:items-start gap-6"
                   >
-                    <div className="text-6xl font-black text-zinc-100 w-16 text-center font-clash">
+                    <div className="text-7xl font-black w-20 text-center font-clash text-zinc-200">
                       {`0${index + 5}`}
                     </div>
                     <div className="text-center lg:text-left">
@@ -733,18 +769,24 @@ export default function HybridLandingPage() {
         </section>
 
         {/* Testimonials */}
-        <section className="py-32 bg-[#050505] border-t border-white/5">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <section className="py-32 bg-[#050505] border-t border-white/5 relative overflow-hidden">
+          {/* Background ambient glow */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-emerald-500/5 blur-[200px] rounded-full pointer-events-none" />
+          
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
             <div className="text-center max-w-3xl mx-auto mb-20">
-              <span className="text-emerald-500 font-bold mb-4 tracking-[0.2em] uppercase text-xs block">
-                The Community
+              <span className="text-emerald-500 font-bold mb-4 tracking-[0.3em] uppercase text-[10px] block">
+                Trusted by Organizers
               </span>
               <h2 className="text-4xl sm:text-6xl font-black font-clash text-white mb-6 uppercase tracking-tight">
-                Loved by Organizers
+                Voices from the <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-400">Field</span>
               </h2>
+              <p className="text-zinc-500 font-medium text-base max-w-md mx-auto">
+                See what cricket organizers across the country are saying about PitchPulse.
+              </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
               {testimonials.map((testimonial, index) => (
                 <motion.div
                   key={index}
@@ -752,21 +794,33 @@ export default function HybridLandingPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.15 }}
-                  className="p-10 rounded-3xl bg-white/[0.02] border border-white/10 hover:bg-white/[0.04] transition-colors"
+                  className="relative p-8 lg:p-10 rounded-3xl bg-gradient-to-b from-white/[0.04] to-white/[0.01] border border-white/10 hover:border-emerald-500/30 transition-all duration-500 group"
                 >
-                  <div className="flex gap-1 mb-8">
-                    {Array.from({ length: testimonial.rating }).map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-emerald-500 text-emerald-500" />
-                    ))}
-                  </div>
-                  <p className="text-zinc-300 font-medium mb-10 leading-relaxed text-lg">&ldquo;{testimonial.content}&rdquo;</p>
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center font-black text-emerald-400">
-                      {testimonial.avatar}
+                  {/* Hover glow effect */}
+                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-b from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                  
+                  <div className="relative z-10">
+                    {/* Quote mark */}
+                    <div className="text-5xl font-black text-emerald-500/20 leading-none mb-4 font-serif">&ldquo;</div>
+                    
+                    <div className="flex gap-1 mb-6">
+                      {Array.from({ length: testimonial.rating }).map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-emerald-500 text-emerald-500" />
+                      ))}
                     </div>
-                    <div>
-                      <div className="text-white font-bold">{testimonial.name}</div>
-                      <div className="text-zinc-500 text-xs font-bold uppercase tracking-wider">{testimonial.role}</div>
+                    
+                    <p className="text-zinc-300 font-medium mb-8 leading-relaxed text-base lg:text-lg">
+                      {testimonial.content}
+                    </p>
+                    
+                    <div className="flex items-center gap-4 pt-6 border-t border-white/5">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center font-black text-sm text-black shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                        {testimonial.avatar}
+                      </div>
+                      <div>
+                        <div className="text-white font-bold text-sm">{testimonial.name}</div>
+                        <div className="text-emerald-500/70 text-xs font-bold uppercase tracking-wider">{testimonial.role}</div>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -782,26 +836,42 @@ export default function HybridLandingPage() {
 
           <div className="container mx-auto px-6 lg:px-10 max-w-7xl">
             {/* Grand CTA Banner */}
-            <div className="flex flex-col md:flex-row items-center justify-between p-12 lg:p-16 rounded-[2.5rem] bg-[#0a0a0a] border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative overflow-hidden mb-24 group">
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-transparent to-cyan-500/10 opacity-50 group-hover:opacity-100 transition-opacity duration-700" />
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="flex flex-col md:flex-row items-center justify-between p-12 lg:p-16 rounded-[2.5rem] bg-gradient-to-br from-[#0a0f1a] to-[#050a12] border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative overflow-hidden mb-24 group"
+            >
+              {/* Animated gradient border glow */}
+              <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-r from-emerald-500/20 via-cyan-500/10 to-emerald-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 blur-xl pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-transparent to-cyan-500/5 opacity-50 group-hover:opacity-100 transition-opacity duration-700" />
+              
+              {/* Decorative cricket ball */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+                className="absolute -right-10 -top-10 w-40 h-40 rounded-full border-2 border-dashed border-emerald-500/10 hidden lg:block"
+              />
+              
               <div className="relative z-10 md:w-1/2 text-center md:text-left mb-10 md:mb-0">
+                <span className="text-emerald-500 font-bold tracking-[0.3em] uppercase text-[10px] mb-4 block">Ready to play?</span>
                 <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black font-clash text-white tracking-tighter leading-[1.1]">
-                  Ready to elevate <br className="hidden lg:block" />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">your tournament?</span>
+                  Every ball <br className="hidden lg:block" />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500">counts.</span>
                 </h2>
-                <p className="mt-6 text-zinc-400 font-medium text-lg leading-relaxed max-w-sm mx-auto md:mx-0">
-                  Deploy PitchPulse today and experience the most advanced street cricket scoring engine.
+                <p className="mt-6 text-zinc-400 font-medium text-base lg:text-lg leading-relaxed max-w-md mx-auto md:mx-0">
+                  Start scoring your next match with PitchPulse — the most advanced cricket scoring engine built for the gully.
                 </p>
               </div>
               <div className="relative z-10 md:w-1/2 flex justify-center md:justify-end">
                 <Link href="/register">
-                  <button className="group/btn relative inline-flex items-center justify-center gap-3 bg-white text-[#050505] px-8 py-4 md:px-10 md:py-5 rounded-full font-black text-sm lg:text-base uppercase tracking-widest transition-all hover:scale-[1.02] active:scale-95 shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:shadow-[0_0_50px_rgba(255,255,255,0.4)]">
+                  <button className="group/btn relative inline-flex items-center justify-center gap-3 bg-gradient-to-r from-emerald-400 to-emerald-500 text-[#050505] px-8 py-4 md:px-12 md:py-5 rounded-full font-black text-sm lg:text-base uppercase tracking-widest transition-all hover:scale-[1.03] active:scale-95 shadow-[0_0_40px_rgba(16,185,129,0.3)] hover:shadow-[0_0_60px_rgba(16,185,129,0.5)]">
                     <span className="relative">Start Scoring Now</span>
                     <ChevronRight className="relative w-5 h-5 group-hover/btn:translate-x-1.5 transition-transform" />
                   </button>
                 </Link>
               </div>
-            </div>
+            </motion.div>
 
             {/* Structured Links Area */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-24">
@@ -813,16 +883,16 @@ export default function HybridLandingPage() {
                   <img src="/icons/text-only.png" alt="PitchPulse" className="h-5 w-auto object-contain" />
                 </Link>
                 <p className="text-zinc-500 text-sm leading-loose font-medium mb-8">
-                  The ultimate hyper-local cricket scoring platform powering thousands of fast-paced tournaments worldwide.
+                  Built for the gully. Powered by precision. The cricket scoring platform that takes your local tournament to the next level.
                 </p>
                 <div className="flex items-center gap-4">
-                  <a href="#" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all">
+                  <a href="#" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/20 transition-all">
                     <Activity size={18} />
                   </a>
-                  <a href="#" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all">
+                  <a href="#" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/20 transition-all">
                     <Globe size={18} />
                   </a>
-                  <a href="#" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all">
+                  <a href="#" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/20 transition-all">
                     <Users size={18} />
                   </a>
                 </div>
@@ -831,20 +901,30 @@ export default function HybridLandingPage() {
               <div>
                 <h4 className="text-white font-black uppercase tracking-widest text-xs mb-8">Platform</h4>
                 <ul className="space-y-4">
-                  <li><a href="#" className="text-zinc-400 hover:text-emerald-400 text-sm font-medium transition-colors">Match Center</a></li>
-                  <li><a href="#" className="text-zinc-400 hover:text-emerald-400 text-sm font-medium transition-colors">Tournament Engine</a></li>
+                  <li><Link href="/dashboard" className="text-zinc-400 hover:text-emerald-400 text-sm font-medium transition-colors">Match Center</Link></li>
+                  <li><Link href="/tournaments" className="text-zinc-400 hover:text-emerald-400 text-sm font-medium transition-colors">Tournament Engine</Link></li>
                   <li><a href="#" className="text-zinc-400 hover:text-emerald-400 text-sm font-medium transition-colors">Live Spectator</a></li>
+                  <li><Link href="/teams" className="text-zinc-400 hover:text-emerald-400 text-sm font-medium transition-colors">Squad Manager</Link></li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="text-white font-black uppercase tracking-widest text-xs mb-8">Product</h4>
+                <ul className="space-y-4">
+                  <li><a href="#" className="text-zinc-400 hover:text-emerald-400 text-sm font-medium transition-colors">Wagon Wheel</a></li>
+                  <li><a href="#" className="text-zinc-400 hover:text-emerald-400 text-sm font-medium transition-colors">Shot Selection</a></li>
+                  <li><a href="#" className="text-zinc-400 hover:text-emerald-400 text-sm font-medium transition-colors">Commentary Feed</a></li>
                   <li><a href="#" className="text-zinc-400 hover:text-emerald-400 text-sm font-medium transition-colors">Player Analytics</a></li>
                 </ul>
               </div>
 
               <div>
-                <h4 className="text-white font-black uppercase tracking-widest text-xs mb-8">Resources</h4>
+                <h4 className="text-white font-black uppercase tracking-widest text-xs mb-8">Developer</h4>
                 <ul className="space-y-4">
-                  <li><a href="#" className="text-zinc-400 hover:text-emerald-400 text-sm font-medium transition-colors">Documentation</a></li>
-                  <li><a href="#" className="text-zinc-400 hover:text-emerald-400 text-sm font-medium transition-colors">Scoring Guidelines</a></li>
-                  <li><a href="#" className="text-zinc-400 hover:text-emerald-400 text-sm font-medium transition-colors">Community</a></li>
-                  <li><a href="#" className="text-zinc-400 hover:text-emerald-400 text-sm font-medium transition-colors">API Access</a></li>
+                  <li><a href="#" className="text-zinc-400 hover:text-emerald-400 text-sm font-medium transition-colors">API Reference</a></li>
+                  <li><a href="#" className="text-zinc-400 hover:text-emerald-400 text-sm font-medium transition-colors">Event Sourcing</a></li>
+                  <li><a href="#" className="text-zinc-400 hover:text-emerald-400 text-sm font-medium transition-colors">WebSocket Docs</a></li>
+                  <li><a href="#" className="text-zinc-400 hover:text-emerald-400 text-sm font-medium transition-colors">Open Source</a></li>
                 </ul>
               </div>
             </div>
