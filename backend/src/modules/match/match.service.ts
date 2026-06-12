@@ -158,8 +158,10 @@ async function listMatches(params: {
   }
 
   if (teamId) {
-    where.team1Id = teamId;
-    where.team2Id = teamId;
+    where.OR = [
+      { team1Id: teamId },
+      { team2Id: teamId }
+    ];
   }
 
   if (tournamentId) {

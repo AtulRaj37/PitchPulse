@@ -93,8 +93,8 @@ export const tossSchema = z.object({
 
 export const matchQuerySchema = paginationSchema.extend({
   status: z.array(z.enum(['CREATED', 'LIVE', 'COMPLETED', 'ABANDONED'])).optional(),
-  teamId: uuidSchema.optional(),
-  tournamentId: uuidSchema.optional(),
+  teamId: z.string().optional(),
+  tournamentId: z.string().optional(),
   format: z.enum(['T20', 'ODI', 'TEST', 'T10', 'CUSTOM']).optional(),
 });
 
